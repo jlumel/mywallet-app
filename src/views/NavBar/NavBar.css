@@ -1,0 +1,29 @@
+.logo {
+   width: 3rem; 
+   height: 3rem;
+   margin-right: 0.75rem;
+   display: none;
+}
+
+.logoMobile {
+    width: 3rem; 
+    height: 3rem;
+    margin-right: 0.75rem;
+    display: none;
+ }
+
+ @media (max-width: 899px) {
+    .logoMobile {
+      display: inline;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .logo {
+      display: inline;
+    }
+  }
+
+  .hideItem {
+    display: none;
+  }

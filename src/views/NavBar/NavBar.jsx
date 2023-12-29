@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import './NavBar.css'
 import { useUserContext } from '../../context/userContext';
 import { capitalizeFirstLetter, fetchAPI } from '../../utils';
+import { Link } from 'react-router-dom'
 
 const NavBar = () => {
 
@@ -52,7 +53,7 @@ const NavBar = () => {
         if (setting == 'Logout') {
             return
         }
-            setAnchorElUser(null);
+        setAnchorElUser(null);
     };
 
     const logout = (event) => {
@@ -60,7 +61,8 @@ const NavBar = () => {
         fetchAPI('post', '/user/logout')
         setIsLogged(false)
         setUsername("")
-        
+        localStorage.clear()
+
     }
 
     return (
@@ -116,7 +118,8 @@ const NavBar = () => {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page} component={Link}
+                                    to={"/" + page} onClick={handleCloseNavMenu}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
@@ -145,6 +148,8 @@ const NavBar = () => {
                         {pages.map((page) => (
                             <Button
                                 key={page}
+                                component={Link}
+                                to={"/" + page}
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >

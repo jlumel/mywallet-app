@@ -1,30 +1,43 @@
-import { fetchAPI } from "../../utils"
-import { useUserContext } from "../../context/userContext"
-import axios from "axios"
+import React from 'react'
+import { Button, Container, Box } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 const LoggedOutHome = () => {
 
-    const { setUsername, setIsLogged } = useUserContext()
-
-    const logIn = (event) => {
-        event.preventDefault()
-        // axios.post('http://localhost:8080/user/login', {username: event.target['username'].value, password: event.target['password'].value})
-        // .then(res => console.log(res.data))
-        fetchAPI('post', '/user/login', { username: event.target['username'].value, password: event.target['password'].value })
-            .then(data => {
-                if (data.username) {
-                    setIsLogged(true)
-                    setUsername(data.username)
-                }
-            })
-    }
 
     return (
-        <form onSubmit={logIn}>
-            <input type="text" name="username" />
-            <input type="text" name="password" />
-            <button>Log In</button>
-        </form>
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <h2>Welcome to My Wallet. Please...</h2>
+                <Button
+                    component={Link}
+                    to="/login"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, mb: 2 }}
+                >
+                    Login
+                </Button>
+                <h2>or...</h2>
+                <Button
+                    component={Link}
+                    to="/register"
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    sx={{ mb: 2 }}
+                >
+                    Register
+                </Button>
+            </Box>
+        </Container>
     )
 }
 

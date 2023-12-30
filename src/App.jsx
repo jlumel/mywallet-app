@@ -1,14 +1,17 @@
-import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import Home from './views/Home'
+import Menu from './views/Menu'
 import NavBar from './views/NavBar'
-import UserProvider from './context/userContext'
+import { useUserContext } from './context/userContext'
 import Register from './views/Register'
 import Login from './views/Login/Login'
 import { useEffect, useState } from 'react'
 import { fetchAPI } from './utils'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import ChangePassword from './views/ChangePassword/ChangePassword'
 import Loader from './components/Loader'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Transactions from './views/Transactions'
+import Accounts from './views/Accounts/Accounts'
+import Admin from './views/Admin'
 
 const theme = createTheme({
   direction: 'rtl',
@@ -16,11 +19,9 @@ const theme = createTheme({
 
 function App() {
 
-  const [token, setToken] = useState(null)
+  const { setIsLogged, setUsername, token, setToken } = useUserContext()
 
-
-
-  const [defaultSession, setDefaultSession] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
 
@@ -35,34 +36,45 @@ function App() {
 
     if (token) {
 
-      fetchAPI('post', '/api/user', {}, token)
+      fetchAPI('post', '/api/user', null, token)
         .then(res => {
-          if (res.username) {
-            setDefaultSession(res)
+
+          if (res.isLogged) {
+
+            if (res.token != token) {
+              setToken(res.token)
+              localStorage.setItem('token', res.token)
+            }
+
+            setIsLogged(true)
+            setUsername(res.username)
           }
         })
+        .catch(err => err)
+        .finally(() => {
+          setLoading(false)
+        })
     } else {
-      setDefaultSession({isLogged: false, username:""})
+      setLoading(false)
     }
 
   }, [token])
 
-  if (defaultSession === null) {
-
-    return <Loader />
-  }
-
   return (
-    <ThemeProvider theme={theme}>
-      <UserProvider defaultSession={defaultSession}>
+    <>
+      {loading ? (<Loader />) : (<ThemeProvider theme={theme}>
         <NavBar />
         <Routes>
-          <Route path='/' element={defaultSession ? <Home /> : <Loader />} />
+          <Route path='/' element={<Menu />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/change-password' element={<ChangePassword />} />
+          <Route path='/transactions' element={<Transactions />} />
+          <Route path='/accounts' element={<Accounts />} />
+          <Route path='/admin' element={<Admin />} />
         </Routes>
-      </UserProvider>
-    </ThemeProvider>
+      </ThemeProvider>)}
+    </>
   )
 }
 

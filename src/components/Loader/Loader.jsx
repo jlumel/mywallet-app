@@ -1,4 +1,4 @@
-import { CircularProgress, Box } from '@mui/material'
+import { CircularProgress, Box, Typography } from '@mui/material'
 
 const Loader = () => {
 
@@ -7,7 +7,7 @@ const Loader = () => {
         <Box sx={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', height: '90vh', flexDirection: 'column'
         }}>
-            <h2>Loading</h2>
+            <Typography variant="h5">Loading</Typography>
             <CircularProgress />
         </Box >
 

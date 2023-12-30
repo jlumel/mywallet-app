@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Container, Box } from '@mui/material'
 import { Link } from 'react-router-dom'
 
-const LoggedOutHome = () => {
+const LoggedOutMenu = () => {
 
 
     return (
@@ -41,4 +41,4 @@ const LoggedOutHome = () => {
     )
 }
 
-export default LoggedOutHome
+export default LoggedOutMenu

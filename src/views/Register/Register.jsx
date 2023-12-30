@@ -4,7 +4,7 @@ const Register = () => {
     
 
     return (
-        <Form type="register"/>
+        <Form type="Register"/>
     )
 }
 

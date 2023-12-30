@@ -4,13 +4,17 @@ export const UserContext = React.createContext([])
 
 export const useUserContext = () => useContext(UserContext)
 
-const UserProvider = ({ children, defaultSession }) => {
+const UserProvider = ({ children }) => {
 
-    const [username, setUsername] = useState(defaultSession.username)
+    const [username, setUsername] = useState("")
 
-    const [isLogged, setIsLogged] = useState(defaultSession.isLogged)
+    const [isLogged, setIsLogged] = useState(false)
 
-    return <UserContext.Provider value={{ username, isLogged, setIsLogged, setUsername }}>
+    const [token, setToken] = useState(null)
+
+    const [transactions, setTransactions] = useState([])
+
+    return <UserContext.Provider value={{ username, isLogged, token, transactions, setIsLogged, setUsername, setToken, setTransactions }}>
 
         {children}
 

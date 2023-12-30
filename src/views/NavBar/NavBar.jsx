@@ -14,11 +14,13 @@ import MenuItem from '@mui/material/MenuItem';
 import './NavBar.css'
 import { useUserContext } from '../../context/userContext';
 import { capitalizeFirstLetter, fetchAPI } from '../../utils';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 
-    const { isLogged, username, setIsLogged, setUsername } = useUserContext()
+    const navigate = useNavigate()
+
+    const { isLogged, username, setIsLogged, setUsername, token } = useUserContext()
 
     const settings = ['Change Password', 'Logout'];
 
@@ -27,7 +29,7 @@ const NavBar = () => {
 
     useEffect(() => {
         if (isLogged == true) {
-            setPages(['Home', 'Transactions', 'Admin'])
+            setPages(['Menu', 'Transactions', 'Accounts', 'Admin'])
             setUserIcon("")
         } else {
             setPages(['Register', 'Login'])
@@ -49,19 +51,30 @@ const NavBar = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = setting => {
-        if (setting == 'Logout') {
-            return
-        }
+    const handleCloseUserMenu = () => {
+
         setAnchorElUser(null);
     };
 
-    const logout = (event) => {
-        event.preventDefault()
-        fetchAPI('post', '/user/logout')
-        setIsLogged(false)
-        setUsername("")
-        localStorage.clear()
+    const logout = () => {
+
+        fetchAPI('post', '/api/user/logout', {}, token)
+            .then(res => {
+                setIsLogged(false)
+                setUsername("")
+                localStorage.clear()
+                handleCloseUserMenu('Logout')
+                navigate('/')
+            })
+            .catch(err => {
+                console.log("Error trying to logout")
+            })
+    }
+
+    const changePassword = () => {
+
+        handleCloseUserMenu('Logout')
+        navigate('/change-password')
 
     }
 
@@ -74,7 +87,12 @@ const NavBar = () => {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        href='/'
+                        onClick={(e) => {
+                            e.preventDefault()
+                            navigate('/')
+                        }}
+
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -85,6 +103,7 @@ const NavBar = () => {
                             textDecoration: 'none',
                         }}
                     >
+
                         My Wallet
                     </Typography>
 
@@ -119,7 +138,7 @@ const NavBar = () => {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} component={Link}
-                                    to={"/" + page} onClick={handleCloseNavMenu}>
+                                    to={page == 'Menu' ? "/" : "/" + page.toLowerCase()} onClick={handleCloseNavMenu}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
@@ -130,7 +149,11 @@ const NavBar = () => {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
+                        onClick={(e) => {
+                            e.preventDefault()
+                            navigate('/')
+                        }}
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -149,7 +172,7 @@ const NavBar = () => {
                             <Button
                                 key={page}
                                 component={Link}
-                                to={"/" + page}
+                                to={page == 'Menu' ? "/" : "/" + page.toLowerCase()}
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
@@ -182,8 +205,8 @@ const NavBar = () => {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={setting => handleCloseUserMenu(setting)}>
-                                    <Typography onClick={setting == 'Logout' ? logout : null} textAlign="center">{setting}</Typography>
+                                <MenuItem key={setting} onClick={setting == 'Logout' ? logout : changePassword}>
+                                    <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>

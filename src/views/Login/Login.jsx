@@ -4,7 +4,7 @@ const Login = () => {
 
     return (
 
-        <Form type="login" />
+        <Form type="Log In" />
 
     )
 

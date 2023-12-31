@@ -1,4 +1,4 @@
-import Form from "../../components/Form"
+import {Form} from "../../components/Forms"
 import { useUserContext } from "../../context/userContext"
 import Loader from '../../components/Loader'
 import { useState, useEffect } from "react"

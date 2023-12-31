@@ -29,13 +29,13 @@ const NavBar = () => {
 
     useEffect(() => {
         if (isLogged == true) {
-            setPages(['Menu', 'Transactions', 'Accounts', 'Admin'])
+            setPages(['Menu', 'Transactions', 'Accounts', 'Wallet Items'])
             setUserIcon("")
         } else {
             setPages(['Register', 'Login'])
             setUserIcon("hideItem")
         }
-    }, [])
+    }, [isLogged])
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -55,6 +55,32 @@ const NavBar = () => {
 
         setAnchorElUser(null);
     };
+
+    const manageNavigation = page => {
+
+        switch (page) {
+            case 'Menu':
+                return '/'
+
+            case 'Transactions':
+                return 'transactions'
+
+            case 'Accounts':
+                return 'accounts'
+
+            case 'Wallet Items':
+                return 'wallet-items'
+
+            case 'Register':
+                return 'register'
+
+            case 'Login':
+                return 'login'
+            default:
+                break;
+
+        }
+    }
 
     const logout = () => {
 
@@ -135,15 +161,17 @@ const NavBar = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
+                            {pages.map((page) =>
+                            (
                                 <MenuItem key={page} component={Link}
-                                    to={page == 'Menu' ? "/" : "/" + page.toLowerCase()} onClick={handleCloseNavMenu}>
+                                    to={manageNavigation(page)}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
-                            ))}
+                            )
+                            )}
                         </Menu>
                     </Box>
-                    <img src="favicon.ico" alt="logo" className="logoMobile" />
+                    <img src="/src/assets/logo.ico" alt="logo" className="logoMobile" />
                     <Typography
                         variant="h5"
                         noWrap
@@ -171,13 +199,14 @@ const NavBar = () => {
                             <Button
                                 key={page}
                                 component={Link}
-                                to={page == 'Menu' ? "/" : "/" + page.toLowerCase()}
+                                to={manageNavigation(page)}
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page}
                             </Button>
-                        ))}
+                        )
+                        )}
                     </Box>
 
                     <Box className={userIcon} sx={{ flexGrow: 0 }}>

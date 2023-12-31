@@ -20,7 +20,7 @@ const NavBar = () => {
 
     const navigate = useNavigate()
 
-    const { isLogged, username, setIsLogged, setUsername, token } = useUserContext()
+    const { isLogged, username, setIsLogged, setUsername } = useUserContext()
 
     const settings = ['Change Password', 'Logout'];
 
@@ -35,7 +35,7 @@ const NavBar = () => {
             setPages(['Register', 'Login'])
             setUserIcon("hideItem")
         }
-    }, [isLogged])
+    }, [])
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -58,11 +58,10 @@ const NavBar = () => {
 
     const logout = () => {
 
-        fetchAPI('post', '/api/user/logout', {}, token)
+        fetchAPI('post', '/api/user/logout', null)
             .then(res => {
                 setIsLogged(false)
                 setUsername("")
-                localStorage.clear()
                 handleCloseUserMenu('Logout')
                 navigate('/')
             })
@@ -73,7 +72,7 @@ const NavBar = () => {
 
     const changePassword = () => {
 
-        handleCloseUserMenu('Logout')
+        handleCloseUserMenu('Change Password')
         navigate('/change-password')
 
     }

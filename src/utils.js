@@ -1,16 +1,14 @@
 import axios from "axios";
 
-export const fetchAPI = async (method, url, body, token) => {
+export const fetchAPI = async (method, url, body) => {
 
   const instance = axios.create({
     baseURL: 'http://localhost:8080',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
+    withCredentials: true
   })
 
   try {
-    const response = await instance[method](url, body, token)
+    const response = await instance[method](url, body)
     return response.data
   } catch (error) {
     return null
@@ -19,18 +17,19 @@ export const fetchAPI = async (method, url, body, token) => {
 
 export const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.slice(1)
 
-export const updateToken = (token, setToken) => {
+export const updateSession = async (setIsLogged, setUsername) => {
 
-  fetchAPI('post', '/api/user', null, token)
-    .then(res => {
+  try {
 
-      if (res.isLogged) {
+    const response = await fetchAPI('post', '/api/user', null)
+    setIsLogged(true);
+    setUsername(response.username)
+    return Promise.resolve();
 
-        if (res.token != token) {
-          setToken(res.token)
-          localStorage.setItem('token', res.token)
-        }
-      }
-    })
-    .catch(err => err)
+  } catch (error) {
+    setIsLogged(false)
+    setUsername("")
+    return Promise.reject()
+
+  }
 }

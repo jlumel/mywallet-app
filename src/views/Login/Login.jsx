@@ -7,7 +7,6 @@ const Login = () => {
         <Form type="Log In" />
 
     )
-
 }
 
 export default Login

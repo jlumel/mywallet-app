@@ -4,18 +4,24 @@ import { useUserContext } from "../../context/userContext"
 import { useState } from "react"
 import Loader from "../../components/Loader"
 import { useEffect } from "react"
+import { updateSession } from "../../utils"
 
 const Menu = () => {
 
-    const { isLogged } = useUserContext()
+    const { isLogged, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
 
-        setLoading(false)
+        setLoading(true)
 
-    }, [isLogged])
+        updateSession(setIsLogged, setUsername)
+            .finally(() => {
+                setLoading(false)
+            })
+
+    }, [])
 
     return (
         <>

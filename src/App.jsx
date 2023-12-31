@@ -5,7 +5,7 @@ import { useUserContext } from './context/userContext'
 import Register from './views/Register'
 import Login from './views/Login/Login'
 import { useEffect, useState } from 'react'
-import { fetchAPI } from './utils'
+import { updateSession } from './utils'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import ChangePassword from './views/ChangePassword/ChangePassword'
 import Loader from './components/Loader'
@@ -19,46 +19,20 @@ const theme = createTheme({
 
 function App() {
 
-  const { setIsLogged, setUsername, token, setToken } = useUserContext()
+  const { isLogged, setIsLogged, setUsername } = useUserContext()
 
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
 
-    if (localStorage.getItem('token')) {
+    setLoading(true)
 
-      setToken(localStorage.getItem('token'))
-    }
+    updateSession(setIsLogged, setUsername)
+      .finally(() => {
+        setLoading(false)
+      })
 
   }, [])
-
-  useEffect(() => {
-
-    if (token) {
-
-      fetchAPI('post', '/api/user', null, token)
-        .then(res => {
-
-          if (res.isLogged) {
-
-            if (res.token != token) {
-              setToken(res.token)
-              localStorage.setItem('token', res.token)
-            }
-
-            setIsLogged(true)
-            setUsername(res.username)
-          }
-        })
-        .catch(err => err)
-        .finally(() => {
-          setLoading(false)
-        })
-    } else {
-      setLoading(false)
-    }
-
-  }, [token])
 
   return (
     <>
@@ -68,10 +42,10 @@ function App() {
           <Route path='/' element={<Menu />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/change-password' element={<ChangePassword />} />
-          <Route path='/transactions' element={<Transactions />} />
-          <Route path='/accounts' element={<Accounts />} />
-          <Route path='/admin' element={<Admin />} />
+          {isLogged && <Route path='/change-password' element={<ChangePassword />} />}
+          {isLogged && <Route path='/transactions' element={<Transactions />} />}
+          {isLogged && <Route path='/accounts' element={<Accounts />} />}
+          {isLogged && <Route path='/admin' element={<Admin />} />}
         </Routes>
       </ThemeProvider>)}
     </>

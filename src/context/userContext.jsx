@@ -1,4 +1,5 @@
-import React, { useContext, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { updateSession } from '../utils'
 
 export const UserContext = React.createContext([])
 
@@ -10,11 +11,13 @@ const UserProvider = ({ children }) => {
 
     const [isLogged, setIsLogged] = useState(false)
 
-    const [token, setToken] = useState(null)
-
     const [transactions, setTransactions] = useState([])
 
-    return <UserContext.Provider value={{ username, isLogged, token, transactions, setIsLogged, setUsername, setToken, setTransactions }}>
+    useEffect(() => {
+        updateSession(setIsLogged, setUsername)
+    }, [])
+
+    return <UserContext.Provider value={{ username, isLogged, transactions, setIsLogged, setUsername, setTransactions }}>
 
         {children}
 

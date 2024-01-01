@@ -23,11 +23,13 @@ const UserProvider = ({ children }) => {
 
     useEffect(() => {
         updateSession(setIsLogged, setUsername)
-        updateData(setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories)
-
     }, [])
 
-    return <UserContext.Provider value={{ username, isLogged, transactions,accounts, currencies, categories, subcategories, setIsLogged, setUsername, setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories }}>
+    useEffect(() => {
+        isLogged && updateData(setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories)
+    }, [isLogged])
+
+    return <UserContext.Provider value={{ username, isLogged, transactions, accounts, currencies, categories, subcategories, setIsLogged, setUsername, setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories }}>
 
         {children}
 

@@ -55,7 +55,7 @@ const CreateModifyForm = ({ action }) => {
               id="walletItem"
               value={walletItem}
               label={"Select a Wallet Item to " + action}
-              onChange={handleChange}
+              onChange={event => {setWalletItem(event.target.value)}}
             >
               <MenuItem value="currency">Currency</MenuItem>
               <MenuItem value="account">Account</MenuItem>

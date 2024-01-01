@@ -24,7 +24,20 @@ const LoggedInMenu = () => {
 
     const handleMenu = event => {
 
-        navigate(`/${event.currentTarget.innerText.toLowerCase()}`)
+        switch (event.currentTarget.innerText) {
+
+            case 'Transactions':
+                navigate('/transactions')
+                break;
+
+            case 'Accounts':
+                navigate('/accounts')
+                break;
+
+            case 'Wallet Items':
+                navigate('/wallet-items')
+                break;
+        }
     }
 
     return (
@@ -44,7 +57,7 @@ const LoggedInMenu = () => {
                             <Item onClick={handleMenu}><AccountBalanceWalletRoundedIcon fontSize="large" /><Typography fontWeight="bold">Accounts</Typography></Item>
                         </Grid>
                         <Grid item xs={6}>
-                            <Item onClick={handleMenu}><PostAddRoundedIcon fontSize="large" /><Typography fontWeight="bold">Admin</Typography></Item>
+                            <Item onClick={handleMenu}><PostAddRoundedIcon fontSize="large" /><Typography fontWeight="bold">Wallet Items</Typography></Item>
                         </Grid>
                         <Grid item xs={6}>
                             <Item className="logoItem"><img className="logoMenu" src="/src/assets/logo.ico" alt="my wallet" /></Item>

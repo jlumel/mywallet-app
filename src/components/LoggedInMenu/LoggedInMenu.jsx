@@ -6,6 +6,7 @@ import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceW
 import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded'
 import { useNavigate } from "react-router-dom"
 import './LoggedInMenu.css'
+import PageTitle from '../PageTitle'
 
 const LoggedInMenu = () => {
 
@@ -19,7 +20,7 @@ const LoggedInMenu = () => {
         padding: theme.spacing(8),
         textAlign: 'center',
         color: theme.palette.text.secondary,
-        cursor: 'pointer'
+        cursor: 'pointer',
     }))
 
     const handleMenu = event => {
@@ -42,29 +43,27 @@ const LoggedInMenu = () => {
 
     return (
         <Container>
-            <Box sx={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
-            }}>
-                <Typography marginTop="2rem" fontWeight="bold" variant="h3">Welcome {username} </Typography>
-                <Box sx={{
-                    height: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
-                }}>
-                    <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 2, md: 2 }}>
-                        <Grid item xs={6}>
-                            <Item onClick={handleMenu}><ListAltRoundedIcon fontSize="large" /><Typography fontWeight="bold">Transactions</Typography></Item>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Item onClick={handleMenu}><AccountBalanceWalletRoundedIcon fontSize="large" /><Typography fontWeight="bold">Accounts</Typography></Item>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Item onClick={handleMenu}><PostAddRoundedIcon fontSize="large" /><Typography fontWeight="bold">Wallet Items</Typography></Item>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Item className="logoItem"><img className="logoMenu" src="/src/assets/logo.ico" alt="my wallet" /></Item>
-                        </Grid>
-                    </Grid>
 
-                </Box>
+            <PageTitle text={'Welcome ' + username}/>
+
+            <Box sx={{
+                height: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
+            }}>
+                <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 2, md: 2 }}>
+                    <Grid item xs={6}>
+                        <Item className="items" onClick={handleMenu}><ListAltRoundedIcon fontSize="large" /><Typography fontWeight="bold">Transactions</Typography></Item>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Item className="items" onClick={handleMenu}><AccountBalanceWalletRoundedIcon fontSize="large" /><Typography fontWeight="bold">Accounts</Typography></Item>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Item className="items" onClick={handleMenu}><PostAddRoundedIcon fontSize="large" /><Typography fontWeight="bold">Wallet Items</Typography></Item>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Item className="logoItem"><img className="logoMenu" src="/src/assets/logo.ico" alt="my wallet" /></Item>
+                    </Grid>
+                </Grid>
+
             </Box>
         </Container>
     )

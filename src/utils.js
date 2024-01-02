@@ -22,9 +22,9 @@ export const updateSession = async (setIsLogged, setUsername) => {
   try {
 
     const response = await fetchAPI('post', '/api/user', null)
-    setIsLogged(true);
+    setIsLogged(true)
     setUsername(response.username)
-    return Promise.resolve();
+    return Promise.resolve()
 
   } catch (error) {
     setIsLogged(false)

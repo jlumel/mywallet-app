@@ -21,18 +21,60 @@ const CreateModifyForm = ({ action }) => {
 
   const [loading, setLoading] = useState(false)
 
+  const [submit, setSubmit] = useState(false)
+
   const isButtonDisabled =
     (setFormAction && (!formData.name || !formData.acronym || !formData.symbol)) ||
     (!setFormAction && !formData.name)
 
+  const parseWalletItem = walletItem => {
+
+    switch (walletItem) {
+      case 'currency':
+        return 'currencies'
+      case 'account':
+        return 'accounts'
+
+      case 'category':
+        return 'categories'
+
+      case 'subcategory':
+
+        return 'subcategories'
+    }
+  }
+
   const handleChange = prop => event => {
-    setFormData({ ...formData, [prop]: event.currentTarget.value })
+    setFormData({ ...formData, [prop]: event.target.value })
+  }
+
+  const handleWalletItemChange = event => {
+    setFormData({
+      name: "",
+      acronym: "",
+      symbol: ""
+    })
+    setWalletItem(event.target.value)
+
   }
 
   const handleFormSubmit = event => {
     event.preventDefault()
-    
 
+    const parsedWalletItem = parseWalletItem(walletItem)
+
+    switch (action) {
+      case 'create':
+        fetchAPI('post', `/api/${parsedWalletItem}`, formData)
+          .then(res => setFormData({
+            name: "",
+            acronym: "",
+            symbol: ""
+          }))
+          setWalletItem("")
+          setSubmit(true)
+        break;
+    }
   }
 
   useEffect(() => {
@@ -43,7 +85,7 @@ const CreateModifyForm = ({ action }) => {
         setLoading(false)
       })
 
-  }, [])
+  }, [submit])
 
   return (
     <>
@@ -55,7 +97,7 @@ const CreateModifyForm = ({ action }) => {
               id="walletItem"
               value={walletItem}
               label={"Select a Wallet Item to " + action}
-              onChange={event => {setWalletItem(event.target.value)}}
+              onChange={handleWalletItemChange}
             >
               <MenuItem value="currency">Currency</MenuItem>
               <MenuItem value="account">Account</MenuItem>
@@ -69,7 +111,7 @@ const CreateModifyForm = ({ action }) => {
               <TextField
                 label="Name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={handleChange('name')}
                 fullWidth
                 margin="normal"
                 required={setFormAction}
@@ -79,7 +121,7 @@ const CreateModifyForm = ({ action }) => {
                 <Select
                   id="currency"
                   value={formData.acronym}
-                  onChange={handleChange}
+                  onChange={handleChange('acronym')}
                   label="Currency"
                   fullWidth
                   required={setFormAction}
@@ -87,8 +129,8 @@ const CreateModifyForm = ({ action }) => {
                 >
                   {currencies.length ? currencies.map(currency => (
 
-                    <MenuItem value={currency}>{currency}</MenuItem>
-                  )) : <MenuItem selected value={"No currencies found"}>No currencies found</MenuItem>}
+                    <MenuItem key={currency._id} value={currency.name}>{currency.name}</MenuItem>
+                  )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
                 </Select>
               </FormControl>
             </>
@@ -99,7 +141,7 @@ const CreateModifyForm = ({ action }) => {
               <TextField
                 label="Name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={handleChange('name')}
                 fullWidth
                 margin="normal"
                 required={setFormAction}
@@ -107,7 +149,7 @@ const CreateModifyForm = ({ action }) => {
               <TextField
                 label="Acronym"
                 value={formData.acronym}
-                onChange={handleChange}
+                onChange={handleChange('acronym')}
                 fullWidth
                 margin="normal"
                 required={setFormAction}
@@ -115,7 +157,7 @@ const CreateModifyForm = ({ action }) => {
               <TextField
                 label="Symbol"
                 value={formData.symbol}
-                onChange={handleChange}
+                onChange={handleChange('symbol')}
                 fullWidth
                 margin="normal"
                 required={setFormAction}
@@ -128,7 +170,7 @@ const CreateModifyForm = ({ action }) => {
               <TextField
                 label="Name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={handleChange('name')}
                 fullWidth
                 margin="normal"
                 required={setFormAction}
@@ -141,7 +183,7 @@ const CreateModifyForm = ({ action }) => {
               <TextField
                 label="Name"
                 value={formData.name}
-                onChange={handleChange}
+                onChange={handleChange('name')}
                 fullWidth
                 margin="normal"
                 required={setFormAction}

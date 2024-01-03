@@ -107,7 +107,7 @@ const NavBar = () => {
         <AppBar position="static">
             <Container maxWidth="x3">
                 <Toolbar disableGutters>
-                    <img src="favicon.ico" alt="logo" className="logo" />
+                    <img src="/src/assets/logo.ico" alt="logo" className="logo" />
                     <Typography
                         variant="h6"
                         noWrap

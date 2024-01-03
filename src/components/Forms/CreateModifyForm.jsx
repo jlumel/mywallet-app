@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useUserContext } from '../../context/userContext'
 import { Container, FormControl, InputLabel, Select, MenuItem, Button, TextField } from '@mui/material'
+import LoadingButton from '@mui/lab/LoadingButton'
 import { fetchAPI, updateData } from '../../utils'
 import Loader from '../../components/Loader'
 import './CreateModifyForm.css'
+import ConfirmationModal from '../Modal'
+import SubmitAlert from '../SubmitAlert'
 
 const CreateModifyForm = ({ action }) => {
 
@@ -27,6 +30,14 @@ const CreateModifyForm = ({ action }) => {
   const [submit, setSubmit] = useState(false)
 
   const [registry, setRegistry] = useState("")
+
+  const [submitLoading, setSubmitLoading] = useState(false)
+
+  const [alert, setAlert] = useState(false)
+
+  const [error, setError] = useState(false)
+
+  const [errorText, setErrorText] = useState("")
 
   const isButtonDisabled =
     !walletItem || setFormAction && (
@@ -108,30 +119,74 @@ const CreateModifyForm = ({ action }) => {
 
     switch (action) {
       case 'create':
+        setSubmitLoading(true)
         fetchAPI('post', `/api/${parsedWalletItem}`, formData)
-          .then(res => setFormData({
-            name: "",
-            acronym: "",
-            currencyAcronym: "",
-            categoryName: "",
-            symbol: ""
-          }))
-        setWalletItem("")
-        setSubmit(true)
+          .then(res => {
+            console.log(res)
+            if (!res.data) {
+              setErrorText(res.response.data.message)
+              setError(true)
+            } else {
+              setError(false)
+              setErrorText("")
+            }
+            setSubmitLoading(false)
+            setFormData(
+              {
+                name: "",
+                acronym: "",
+                currencyAcronym: "",
+                categoryName: "",
+                symbol: ""
+              }
+            )
+            setWalletItem("")
+            setSubmit(true)
+          })
+          .catch(err => {
+            setError(true)
+            setSubmitLoading(false)
+            console.log(err)
+            setErrorText("An error has ocurred")
+            setSubmit(true)
+            return err
+          })
         break;
       case 'modify':
+        setSubmitLoading(true)
         const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
         const id = selectedRegistry._id
         fetchAPI('put', `/api/${parsedWalletItem}/${id}`, formData)
-          .then(res => setFormData({
-            name: "",
-            acronym: "",
-            currencyAcronym: "",
-            categoryName: "",
-            symbol: ""
-          }))
-        setWalletItem("")
-        setSubmit(true)
+          .then(res => {
+            console.log(res)
+            if (!res.data) {
+              setErrorText(res.response.data.message)
+              setError(true)
+            } else {
+              setError(false)
+              setErrorText("")
+            }
+            setSubmitLoading(false)
+            setFormData(
+              {
+                name: "",
+                acronym: "",
+                currencyAcronym: "",
+                categoryName: "",
+                symbol: ""
+              }
+            )
+            setWalletItem("")
+            setSubmit(true)
+          })
+          .catch(err => {
+            setError(true)
+            setSubmitLoading(false)
+            console.log(err)
+            setErrorText("An error has ocurred")
+            setSubmit(true)
+            return err
+          })
     }
   }
 
@@ -142,27 +197,55 @@ const CreateModifyForm = ({ action }) => {
 
     const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
     const id = selectedRegistry._id
-    fetchAPI('delete', `/api/${parsedWalletItem}/${id}`)
-      .then(res => setFormData({
-        name: "",
-        acronym: "",
-        currencyAcronym: "",
-        categoryName: "",
-        symbol: ""
-      }))
-    setWalletItem("")
-    setSubmit(true)
+    setSubmitLoading(true)
+    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?acronym=${registry}`)
+      .then(res => {
+        console.log(res)
+        if (!res.data) {
+          setErrorText(res.response.data.message)
+          setError(true)
+        } else {
+          setError(false)
+          setErrorText("")
+        }
+        setSubmitLoading(false)
+        setFormData({
+          name: "",
+          acronym: "",
+          currencyAcronym: "",
+          categoryName: "",
+          symbol: ""
+        })
+        setWalletItem("")
+        setSubmit(true)
+      })
+      .catch(err => {
+        setError(true)
+        setSubmitLoading(false)
+        setSubmit(true)
+        return err
+      })
   }
 
   useEffect(() => {
-
-    setLoading(true)
-    updateData(null, setAccounts, setCurrencies, setCategories, setSubcategories)
-      .finally(() => {
-        setLoading(false)
-      })
-
+    if (submit) {
+      setLoading(true)
+      updateData(null, setAccounts, setCurrencies, setCategories, setSubcategories)
+        .finally(() => {
+          submit ? setAlert(true) : null
+          setTimeout(() => {
+            submit ? setAlert(false) : null
+          }, 5000)
+          setLoading(false)
+        })
+    }
   }, [submit])
+
+  useEffect(() => {
+
+    setSubmit(false)
+
+  }, [loading])
 
   return (
     <>
@@ -304,7 +387,7 @@ const CreateModifyForm = ({ action }) => {
             </>
           )}
           <div className="buttonContainer">
-            <Button
+            {!submitLoading && <Button
               className="createModifyButton"
               type="submit"
               variant="contained"
@@ -312,18 +395,19 @@ const CreateModifyForm = ({ action }) => {
               disabled={isButtonDisabled}
             >
               {setFormAction ? 'Create' : 'Modify'}
-            </Button>
-            {!setFormAction && <Button
-              className="createModifyButton"
-              onClick={handleDelete}
-              variant="contained"
-              color="error"
-              disabled={!walletItem || !registry ? true : false}
-            >
-              Delete
             </Button>}
+            {submitLoading && <LoadingButton
+              className="createModifyButton"
+              variant="contained"
+              loading
+            >
+              Loading
+            </LoadingButton>}
+            {!setFormAction && <ConfirmationModal submitLoading={submitLoading} handleDelete={handleDelete} walletItem={walletItem} registry={registry} />}
+
           </div>
         </form>
+        {alert && <SubmitAlert error={error} errorText={errorText} />}
       </Container>}
     </>
   )

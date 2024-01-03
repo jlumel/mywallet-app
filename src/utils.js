@@ -9,9 +9,9 @@ export const fetchAPI = async (method, url, body) => {
 
   try {
     const response = await instance[method](url, body)
-    return response.data
+    return response
   } catch (error) {
-    return null
+    return error
   }
 }
 
@@ -23,7 +23,7 @@ export const updateSession = async (setIsLogged, setUsername) => {
 
     const response = await fetchAPI('post', '/api/user', null)
     setIsLogged(true)
-    setUsername(response.username)
+    setUsername(response.data.username)
     return Promise.resolve()
 
   } catch (error) {
@@ -38,25 +38,25 @@ export const updateData = async (setTransactions, setAccounts, setCurrencies, se
 
   try {
     if (setTransactions) {
-      const transactions = await fetchAPI('get', '/api/transactions', null)
-      setTransactions(transactions)
+      const response = await fetchAPI('get', '/api/transactions', null)
+      setTransactions(response.data)
     }
     if (setAccounts) {
-      const accounts = await fetchAPI('get', '/api/accounts', null)
-      setAccounts(accounts)
+      const response = await fetchAPI('get', '/api/accounts', null)
+      setAccounts(response.data)
     }
     if (setCurrencies) {
-      const currencies = await fetchAPI('get', '/api/currencies', null)
-      setCurrencies(currencies)
+      const response = await fetchAPI('get', '/api/currencies', null)
+      setCurrencies(response.data)
     }
     if (setCategories) {
-      const categories = await fetchAPI('get', '/api/categories', null)
-      setCategories(categories)
+      const response = await fetchAPI('get', '/api/categories', null)
+      setCategories(response.data)
     }
     if (setSubcategories) {
 
-      const subcategories = await fetchAPI('get', '/api/subcategories', null)
-      setSubcategories(subcategories)
+      const response = await fetchAPI('get', '/api/subcategories', null)
+      setSubcategories(response.data)
     }
   } catch (err) {
     return err

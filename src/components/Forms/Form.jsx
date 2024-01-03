@@ -32,10 +32,10 @@ const Form = ({ type }) => {
             case 'Log In':
                 setLoading(true)
                 fetchAPI('post', '/user/login', formData)
-                    .then(data => {
-                        if (data.username) {
+                    .then(res => {
+                        if (res.data.username) {
                             setIsLogged(true)
-                            setUsername(data.username)
+                            setUsername(res.data.username)
                             setLoading(false)
                             navigate('/')
                         } else {
@@ -69,7 +69,7 @@ const Form = ({ type }) => {
                 setLoading(true)
                     fetchAPI('put', '/api/user/password', formData)
                         .then(res => {
-                            if (res) {
+                            if (res.data) {
                                 setLoading(false)
                                 setSuccess(true)
                             } else {

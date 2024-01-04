@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useUserContext } from '../../context/userContext'
-import { Container, FormControl, InputLabel, Select, MenuItem, Button, TextField } from '@mui/material'
+import { Container, FormControl, InputLabel, Select, MenuItem, Button, TextField, Box } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { fetchAPI, updateData } from '../../utils'
 import Loader from '../../components/Loader'
@@ -23,9 +23,9 @@ const CreateModifyForm = ({ action }) => {
   }
   )
 
-  const [walletItem, setWalletItem] = useState("")
-
   const [loading, setLoading] = useState(false)
+
+  const [walletItem, setWalletItem] = useState("")
 
   const [submit, setSubmit] = useState(false)
 
@@ -83,11 +83,16 @@ const CreateModifyForm = ({ action }) => {
       case 'subcategory':
 
         return subcategories
+
+      default:
+        return []
     }
   }
 
   const handleChange = prop => event => {
-    setFormData({ ...formData, [prop]: event.target.value })
+    !setFormAction && walletItem == "subcategory" ? setRegistry("") : null
+    setFormData({ ...formData, [prop]: event.target.value ? event.target.value : "" })
+
   }
 
   const handleWalletItemChange = event => {
@@ -99,16 +104,28 @@ const CreateModifyForm = ({ action }) => {
       symbol: ""
     })
     setWalletItem(event.target.value)
+    setRegistry("")
   }
 
   const handleRegistryChange = event => {
-    setFormData({
-      name: "",
-      acronym: "",
-      currencyAcronym: "",
-      categoryName: "",
-      symbol: ""
-    })
+
+    if (walletItem == "subcategory") {
+      setFormData({
+        ...formData,
+        name: "",
+        acronym: "",
+        symbol: ""
+      })
+    } else {
+      setFormData({
+        name: "",
+        acronym: "",
+        currencyAcronym: "",
+        categoryName: "",
+        symbol: ""
+      })
+    }
+
     setRegistry(event.target.value)
   }
 
@@ -122,7 +139,6 @@ const CreateModifyForm = ({ action }) => {
         setSubmitLoading(true)
         fetchAPI('post', `/api/${parsedWalletItem}`, formData)
           .then(res => {
-            console.log(res)
             if (!res.data) {
               setErrorText(res.response.data.message)
               setError(true)
@@ -133,20 +149,17 @@ const CreateModifyForm = ({ action }) => {
             setSubmitLoading(false)
             setFormData(
               {
+                ...formData,
                 name: "",
                 acronym: "",
-                currencyAcronym: "",
-                categoryName: "",
                 symbol: ""
               }
             )
-            setWalletItem("")
             setSubmit(true)
           })
           .catch(err => {
             setError(true)
             setSubmitLoading(false)
-            console.log(err)
             setErrorText("An error has ocurred")
             setSubmit(true)
             return err
@@ -158,7 +171,6 @@ const CreateModifyForm = ({ action }) => {
         const id = selectedRegistry._id
         fetchAPI('put', `/api/${parsedWalletItem}/${id}`, formData)
           .then(res => {
-            console.log(res)
             if (!res.data) {
               setErrorText(res.response.data.message)
               setError(true)
@@ -169,20 +181,18 @@ const CreateModifyForm = ({ action }) => {
             setSubmitLoading(false)
             setFormData(
               {
+                ...formData,
                 name: "",
                 acronym: "",
-                currencyAcronym: "",
-                categoryName: "",
                 symbol: ""
               }
             )
-            setWalletItem("")
             setSubmit(true)
+            setRegistry("")
           })
           .catch(err => {
             setError(true)
             setSubmitLoading(false)
-            console.log(err)
             setErrorText("An error has ocurred")
             setSubmit(true)
             return err
@@ -198,9 +208,8 @@ const CreateModifyForm = ({ action }) => {
     const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
     const id = selectedRegistry._id
     setSubmitLoading(true)
-    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?acronym=${registry}`)
+    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?${walletItem == "currency" ? "acronym" : "name"}=${registry}`)
       .then(res => {
-        console.log(res)
         if (!res.data) {
           setErrorText(res.response.data.message)
           setError(true)
@@ -210,17 +219,17 @@ const CreateModifyForm = ({ action }) => {
         }
         setSubmitLoading(false)
         setFormData({
+          ...formData,
           name: "",
           acronym: "",
-          currencyAcronym: "",
-          categoryName: "",
           symbol: ""
         })
-        setWalletItem("")
         setSubmit(true)
+        setRegistry("")
       })
       .catch(err => {
         setError(true)
+        setErrorText("An error has ocurred")
         setSubmitLoading(false)
         setSubmit(true)
         return err
@@ -248,166 +257,197 @@ const CreateModifyForm = ({ action }) => {
   }, [loading])
 
   return (
+
     <>
       {loading ? <Loader /> : <Container>
-        <form onSubmit={handleFormSubmit}>
-          <FormControl fullWidth margin="normal">
-            <InputLabel htmlFor="walletItem">Select a Wallet Item to {action}{!setFormAction ? " or delete" : ""}</InputLabel>
-            <Select
-              id="walletItem"
-              value={walletItem}
-              label={`Select a Wallet Item to ${action}${!setFormAction ? " or delete" : ""}`}
-              onChange={handleWalletItemChange}
-            >
-              <MenuItem value="currency">Currency</MenuItem>
-              <MenuItem value="account">Account</MenuItem>
-              <MenuItem value="category">Category</MenuItem>
-              <MenuItem value="subcategory">Subcategory</MenuItem>
-            </Select>
-          </FormControl>
-
-          {!setFormAction && walletItem ? <FormControl fullWidth margin="normal">
-            <InputLabel htmlFor="registry">{parseRegistry(walletItem).length ? `Select a${walletItem == 'account' ? "n" : ""} ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}</InputLabel>
-            <Select
-              id="registry"
-              value={registry}
-              label={parseRegistry(walletItem).length ? `Select a ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}
-              onChange={handleRegistryChange}
-              disabled={!parseRegistry(walletItem).length}
-              required={true}
-            >
-              {
-                parseRegistry(walletItem).length ? parseRegistry(walletItem).map(item =>
-                  <MenuItem key={item._id} value={walletItem == 'currency' ? item.acronym : item.name}>{walletItem == 'currency' ? item.acronym : item.name}</MenuItem>
-                ) : <MenuItem selected value={`No ${parseWalletItem(walletItem)} found`}>No {parseWalletItem(walletItem)} found</MenuItem>
-              }
-            </Select>
-          </FormControl> : null}
-
-          {walletItem === 'account' && (
-            <>
-              <TextField
-                label="Name"
-                value={formData.name}
-                onChange={handleChange('name')}
-                fullWidth
-                margin="normal"
-                required={setFormAction}
-              />
-              <FormControl fullWidth margin="normal">
-                <InputLabel htmlFor="currency">Currency</InputLabel>
-                <Select
-                  id="currency"
-                  value={formData.currencyAcronym}
-                  onChange={handleChange('currencyAcronym')}
-                  label="Currency"
-                  fullWidth
-                  required={setFormAction}
-                  disabled={currencies.length ? false : true}
-                >
-                  {currencies.length ? currencies.map(currency => (
-
-                    <MenuItem key={currency._id} value={currency.acronym}>{currency.name}</MenuItem>
-                  )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
-                </Select>
-              </FormControl>
-            </>
-          )}
-
-          {walletItem === 'currency' && (
-            <>
-              <TextField
-                label="Name"
-                value={formData.name}
-                onChange={handleChange('name')}
-                fullWidth
-                margin="normal"
-                required={setFormAction}
-              />
-              <TextField
-                label="Acronym"
-                value={formData.acronym}
-                onChange={handleChange('acronym')}
-                fullWidth
-                margin="normal"
-                required={setFormAction}
-              />
-              <TextField
-                label="Symbol"
-                value={formData.symbol}
-                onChange={handleChange('symbol')}
-                fullWidth
-                margin="normal"
-                required={setFormAction}
-              />
-            </>
-          )}
-
-          {walletItem === 'category' && (
-            <>
-              <TextField
-                label="Name"
-                value={formData.name}
-                onChange={handleChange('name')}
-                fullWidth
-                margin="normal"
-                required={setFormAction}
-              />
-            </>
-          )}
-
-          {walletItem === 'subcategory' && (
-            <>
-              <FormControl fullWidth margin="normal">
-                <InputLabel htmlFor="categoryName">Category Name</InputLabel>
-                <Select
-                  id="categoryName"
-                  value={formData.categoryName}
-                  onChange={handleChange('categoryName')}
-                  label="Category Name"
-                  fullWidth
-                  required={setFormAction}
-                  disabled={categories.length ? false : true}
-                >
-                  {categories.length ? categories.map(category => (
-
-                    <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
-                  )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
-                </Select>
-              </FormControl>
-
-              <TextField
-                label="Name"
-                value={formData.name}
-                onChange={handleChange('name')}
-                fullWidth
-                margin="normal"
-                required={setFormAction}
-              />
-            </>
-          )}
-          <div className="buttonContainer">
-            {!submitLoading && <Button
-              className="createModifyButton"
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isButtonDisabled}
-            >
-              {setFormAction ? 'Create' : 'Modify'}
-            </Button>}
-            {submitLoading && <LoadingButton
-              className="createModifyButton"
-              variant="contained"
-              loading
-            >
-              Loading
-            </LoadingButton>}
-            {!setFormAction && <ConfirmationModal submitLoading={submitLoading} handleDelete={handleDelete} walletItem={walletItem} registry={registry} />}
-
-          </div>
-        </form>
         {alert && <SubmitAlert error={error} errorText={errorText} />}
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <form onSubmit={handleFormSubmit}>
+            <FormControl fullWidth margin="normal">
+              <InputLabel htmlFor="walletItem">Select a Wallet Item to {action}{!setFormAction ? " or delete" : ""}</InputLabel>
+              <Select
+                id="walletItem"
+                value={walletItem}
+                label={`Select a Wallet Item to ${action}${!setFormAction ? " or delete" : ""}`}
+                onChange={handleWalletItemChange}
+              >
+                <MenuItem value="currency">Currency</MenuItem>
+                <MenuItem value="account">Account</MenuItem>
+                <MenuItem value="category">Category</MenuItem>
+                <MenuItem value="subcategory">Subcategory</MenuItem>
+              </Select>
+            </FormControl>
+
+            {!setFormAction && walletItem && walletItem != "subcategory" ? <FormControl fullWidth margin="normal">
+              <InputLabel htmlFor="registry">{parseRegistry(walletItem).length ? `Select a${walletItem == 'account' ? "n" : ""} ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}</InputLabel>
+              <Select
+                id="registry"
+                value={registry}
+                label={parseRegistry(walletItem).length ? `Select a ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}
+                onChange={handleRegistryChange}
+                disabled={!parseRegistry(walletItem).length}
+                required={true}
+              >
+                {
+                  parseRegistry(walletItem).length ? parseRegistry(walletItem).map(item =>
+                    <MenuItem key={item._id} value={walletItem == 'currency' ? item.acronym : item.name}>{walletItem == 'currency' ? item.acronym : item.name}</MenuItem>
+                  ) : <MenuItem selected value={`No ${parseWalletItem(walletItem)} found`}>No {parseWalletItem(walletItem)} found</MenuItem>
+                }
+              </Select>
+            </FormControl> : null}
+
+            {walletItem === 'account' && (
+              <>
+                <TextField
+                  label="Name"
+                  value={formData.name}
+                  onChange={handleChange('name')}
+                  fullWidth
+                  margin="normal"
+                  required={setFormAction}
+                />
+                <FormControl fullWidth margin="normal">
+                  <InputLabel htmlFor="currency">Currency</InputLabel>
+                  <Select
+                    id="currency"
+                    value={formData.currencyAcronym}
+                    onChange={handleChange('currencyAcronym')}
+                    label="Currency"
+                    fullWidth
+                    required={setFormAction}
+                    disabled={currencies.length ? false : true}
+                  >
+                    {currencies.length ? currencies.map(currency => (
+
+                      <MenuItem key={currency._id} value={currency.acronym}>{currency.name}</MenuItem>
+                    )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
+                  </Select>
+                </FormControl>
+              </>
+            )}
+
+            {walletItem === 'currency' && (
+              <>
+                <TextField
+                  label="Name"
+                  value={formData.name}
+                  onChange={handleChange('name')}
+                  fullWidth
+                  margin="normal"
+                  required={setFormAction}
+                />
+                <TextField
+                  label="Acronym"
+                  value={formData.acronym}
+                  onChange={handleChange('acronym')}
+                  fullWidth
+                  margin="normal"
+                  required={setFormAction}
+                />
+                <TextField
+                  label="Symbol"
+                  value={formData.symbol}
+                  onChange={handleChange('symbol')}
+                  fullWidth
+                  margin="normal"
+                  required={setFormAction}
+                />
+              </>
+            )}
+
+            {walletItem === 'category' && (
+              <>
+                <TextField
+                  label="Name"
+                  value={formData.name}
+                  onChange={handleChange('name')}
+                  fullWidth
+                  margin="normal"
+                  required={setFormAction}
+                />
+              </>
+            )}
+
+            {walletItem === 'subcategory' && (
+              <>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel htmlFor="categoryName">Category Name</InputLabel>
+                  <Select
+                    id="categoryName"
+                    value={formData.categoryName}
+                    onChange={handleChange('categoryName')}
+                    label="Category Name"
+                    fullWidth
+                    required={setFormAction}
+                    disabled={categories.length ? false : true}
+                  >
+                    {categories.length ? categories.map(category => (
+
+                      <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
+                    )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
+                  </Select>
+                </FormControl>
+
+                {!setFormAction ? <FormControl fullWidth margin="normal">
+                  <InputLabel htmlFor="registry">{parseRegistry("subcategory").find(item => item.categoryName === formData.categoryName)
+                    ? "Select a subcategory to modify or delete"
+                    : "No subcategories found"
+                  }</InputLabel>
+                  <Select
+                    id="registry"
+                    value={registry}
+                    label={parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName) ? "Select a subcategory to modify or delete" : "No subcategories found"}
+                    onChange={handleRegistryChange}
+                    disabled={!parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName)}
+                    required={true}
+                  >
+                    {
+                      parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName) ? parseRegistry("subcategory").map(item =>
+                        item.categoryName == formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
+                      ) : <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>
+                    }
+                  </Select>
+                </FormControl> : null}
+
+                <TextField
+                  label="Name"
+                  value={formData.name}
+                  onChange={handleChange('name')}
+                  fullWidth
+                  margin="normal"
+                  required={setFormAction}
+                />
+              </>
+            )}
+            <div className="buttonContainer">
+              {!submitLoading && <Button
+                className="createModifyButton"
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isButtonDisabled}
+              >
+                {setFormAction ? 'Create' : 'Modify'}
+              </Button>}
+              {submitLoading && <LoadingButton
+                className="createModifyButton"
+                variant="contained"
+                loading
+              >
+                Loading
+              </LoadingButton>}
+              {!setFormAction && <ConfirmationModal submitLoading={submitLoading} handleDelete={handleDelete} walletItem={walletItem} registry={registry} />}
+
+            </div>
+          </form>
+        </Box>
       </Container>}
     </>
   )

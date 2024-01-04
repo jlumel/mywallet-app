@@ -1,10 +1,13 @@
-import {Form} from "../../components/Forms"
+import { Form } from "../../components/Forms"
+import PageTitle from "../../components/PageTitle"
 
 const Login = () => {
 
     return (
-
-        <Form type="Log In" />
+        <>
+            <PageTitle text={"Log In"} />
+            <Form type="Log In" />
+        </>
 
     )
 }

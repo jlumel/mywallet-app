@@ -28,7 +28,7 @@ const NavBar = () => {
     const [userIcon, setUserIcon] = useState("")
 
     useEffect(() => {
-        if (isLogged == true) {
+        if (isLogged) {
             setPages(['Menu', 'Transactions', 'Accounts', 'Wallet Items'])
             setUserIcon("")
         } else {

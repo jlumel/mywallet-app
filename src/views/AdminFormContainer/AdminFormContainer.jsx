@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom'
 
 const AdminFormContainer = () => {
 
-    const {action} = useParams()
+    const { action } = useParams()
 
     const { setIsLogged, setUsername } = useUserContext()
 
@@ -29,14 +29,10 @@ const AdminFormContainer = () => {
     return (
         <>
             {loading ? <Loader /> :
-
-                <Container>
-
+                <>
                     <PageTitle text="Wallet Items" />
-
-                    <CreateModifyForm action={action}/>
-
-                </Container>}
+                    <CreateModifyForm action={action} />
+                </>}
         </>
     )
 }

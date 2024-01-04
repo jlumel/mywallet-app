@@ -1,10 +1,14 @@
-import {Form} from "../../components/Forms"
+import { Form } from "../../components/Forms"
+import PageTitle from '../../components/PageTitle'
 
 const Register = () => {
-    
+
 
     return (
-        <Form type="Register"/>
+        <>
+            <PageTitle text="Register" />
+            <Form type="Register" />
+        </>
     )
 }
 

@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import TableCell, { tableCellClasses } from "@mui/material/TableCell"
 import { useState, useEffect } from "react"
 import { useUserContext } from '../../context/userContext'
-import Loader from '../Loader'
+import Loader from "../Loader"
 
 const TransactionsList = () => {
 
@@ -74,9 +74,9 @@ const TransactionsList = () => {
     }, [transactions])
 
     return (
-        <>
-            {loading ? (<Loader />) : (<Container>
 
+        <>
+            {loading ? <Loader /> : <Container>
                 <Box sx={{
                     marginTop: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                 }}>
@@ -112,7 +112,7 @@ const TransactionsList = () => {
                     <Pagination count={10} color="primary" />
                 </Box>
 
-            </Container>)}
+            </Container>}
         </>
     )
 }

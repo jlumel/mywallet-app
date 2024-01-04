@@ -4,6 +4,7 @@ import { fetchAPI, updateSession } from '../../utils'
 import { TextField, FormControlLabel, Checkbox, Button, Container, Box } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import Loader from '../Loader'
+import SubmitAlert from '../SubmitAlert'
 
 const Form = ({ type }) => {
 
@@ -19,11 +20,23 @@ const Form = ({ type }) => {
         showPassword: false
     })
 
-    const [success, setSuccess] = useState(null)
+    const [loading, setLoading] = useState(false)
+
+    const [errorPass, setErrorPass] = useState(false)
+
+    const [errorPass2, setErrorPass2] = useState(false)
+
+    const [submit, setSubmit] = useState(false)
+
+    const [alert, setAlert] = useState(false)
 
     const [error, setError] = useState(false)
 
-    const [loading, setLoading] = useState(false)
+    const [errorText, setErrorText] = useState("")
+
+    const isButtonDisabled = type == "Log In" && (!formData.username || !formData.password) ||
+        type == "Register" && (!formData.username || formData.password.length < 4 || !formData.password2 || formData.password !== formData.password2) ||
+        type == "Change pasword" && formData.newPassword.length < 4
 
     const handleSubmit = event => {
         event.preventDefault()
@@ -33,6 +46,13 @@ const Form = ({ type }) => {
                 setLoading(true)
                 fetchAPI('post', '/user/login', formData)
                     .then(res => {
+                        if (!res.data) {
+                            setErrorText(res.response.data.message)
+                            setError(true)
+                        } else {
+                            setError(false)
+                            setErrorText("")
+                        }
                         if (res.data.username) {
                             setIsLogged(true)
                             setUsername(res.data.username)
@@ -41,11 +61,23 @@ const Form = ({ type }) => {
                         } else {
                             setLoading(false)
                         }
+                        setSubmit(true)
                     })
                     .catch(err => {
                         setLoading(false)
                         setError(true)
+                        setSubmit(true)
                         return err
+                    })
+                    .finally(() => {
+                        setErrorPass(false)
+                        setFormData({
+                            username: '',
+                            password: '',
+                            password2: '',
+                            newPassword: '',
+                            showPassword: false
+                        })
                     })
 
                 break;
@@ -54,41 +86,79 @@ const Form = ({ type }) => {
                 setLoading(true)
                 fetchAPI('post', '/user/register', formData)
                     .then(res => {
+                        if (!res.data) {
+                            setErrorText(res.response.data.message)
+                            setError(true)
+                        } else {
+                            setError(false)
+                            setErrorText("")
+                            navigate('/login')
+                        }
                         setLoading(false)
-                        navigate('/login')
+                        setSubmit(true)
                     })
                     .catch(err => {
                         setLoading(false)
                         setError(true)
+                        setErrorText("An error has ocurred")
+                        setSubmit(true)
                         return err
+                    })
+                    .finally(() => {
+                        setErrorPass(false)
+                        setErrorPass2(false)
+                        setFormData({
+                            username: '',
+                            password: '',
+                            password2: '',
+                            newPassword: '',
+                            showPassword: false
+                        })
                     })
 
                 break;
 
             case 'Change password':
                 setLoading(true)
-                    fetchAPI('put', '/api/user/password', formData)
-                        .then(res => {
-                            if (res.data) {
-                                setLoading(false)
-                                setSuccess(true)
-                            } else {
-                                setLoading(false)
-                                setError(true)
-                            }
-                        })
-                        .catch(err => {
-                            setLoading(false)
+                fetchAPI('put', '/api/user/password', formData)
+                    .then(res => {
+                        if (!res.data) {
+                            setErrorText(res.response.data.message)
                             setError(true)
-                            return err
+                        } else {
+                            setError(false)
+                            setErrorText("")
+                        }
+                        setLoading(false)
+                        setSubmit(true)
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        setError(true)
+                        setErrorText("An error has ocurred")
+                        setSubmit(true)
+                        return err
+                    })
+                    .finally(() => {
+                        setErrorPass(false)
+                        setFormData({
+                            username: '',
+                            password: '',
+                            password2: '',
+                            newPassword: '',
+                            showPassword: false
                         })
+                    })
 
                 break;
         }
     }
 
     const handleChange = prop => event => {
-        setFormData({ ...formData, [prop]: event.currentTarget.value });
+        setFormData({ ...formData, [prop]: event.currentTarget.value })
+        prop == "password2" && formData.password !== formData.password2 ? setErrorPass2(true) : null
+        prop == "password" && formData.password.length < 4 ? setErrorPass(true) : null
+        prop == "newPassword" && formData.newPassword.length < 4 ? setErrorPass(true) : null
     }
 
     const handleCheckboxChange = () => {
@@ -99,15 +169,28 @@ const Form = ({ type }) => {
 
         setLoading(true)
         updateSession(setIsLogged, setIsLogged)
-        .finally(()=> {
-            setLoading(false)
-        })
+            .finally(() => {
+                submit ? setAlert(true) : null
+                setTimeout(() => {
+                    submit ? setAlert(false) : null
+                }, 5000)
+                setLoading(false)
+                setLoading(false)
+            })
 
-    }, [])
+    }, [submit])
+
+    useEffect(() => {
+
+        setSubmit(false)
+
+    }, [loading])
 
     return (
+
         <>
-            {loading ? <Loader /> : <Container component="main" maxWidth="xs">
+            {loading ? <Loader /> : <Container>
+                {alert && <SubmitAlert error={error} errorText={errorText} />}
                 <Box
                     sx={{
                         marginTop: 8,
@@ -116,7 +199,7 @@ const Form = ({ type }) => {
                         alignItems: 'center',
                     }}
                 >
-                    {!success ? <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         {type != 'Change password' ? <TextField
                             margin="normal"
                             required
@@ -125,7 +208,6 @@ const Form = ({ type }) => {
                             label="Username"
                             name="username"
                             autoComplete="username"
-                            error={error}
                             autoFocus
                             value={formData.username}
                             onChange={handleChange('username')}
@@ -134,7 +216,8 @@ const Form = ({ type }) => {
                             margin="normal"
                             required
                             fullWidth
-                            error={error}
+                            error={type == "Register" && formData.password.length < 4 && errorPass}
+                            helperText={type == "Register" && formData.password.length < 4 && errorPass && "Password must be at least 4 caracters long"}
                             name="password"
                             label="Password"
                             type={formData.showPassword ? 'text' : 'password'}
@@ -147,7 +230,8 @@ const Form = ({ type }) => {
                             margin="normal"
                             required
                             fullWidth
-                            error={error}
+                            error={type == "Change password" && formData.newPassword.length < 4 && errorPass}
+                            helperText={type == "Change password" && formData.newPassword.length < 4 && errorPass && "Password must be at least 4 caracters long"}
                             name="newPassword"
                             label="New password"
                             type={formData.showPassword ? 'text' : 'password'}
@@ -160,7 +244,8 @@ const Form = ({ type }) => {
                             required
                             type="password"
                             fullWidth
-                            error={error}
+                            error={formData.password !== formData.password2 && errorPass2}
+                            helperText={formData.password !== formData.password2 && errorPass2 && "Passwords do not match"}
                             name="password2"
                             label="Repeat password"
                             id="password2"
@@ -171,10 +256,10 @@ const Form = ({ type }) => {
                             control={<Checkbox checked={formData.showPassword} onChange={handleCheckboxChange} color="primary" />}
                             label="Show Password"
                         />
-                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                        <Button disabled={isButtonDisabled} type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                             {type}
                         </Button>
-                    </form> : <h2>Password changed successfully!</h2>}
+                    </form>
                 </Box>
             </Container>}
         </>

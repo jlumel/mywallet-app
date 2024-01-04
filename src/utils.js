@@ -21,7 +21,7 @@ export const updateSession = async (setIsLogged, setUsername) => {
 
   try {
 
-    const response = await fetchAPI('post', '/api/user', null)
+    const response = await fetchAPI('get', '/api/user', null)
     setIsLogged(true)
     setUsername(response.data.username)
     return Promise.resolve()

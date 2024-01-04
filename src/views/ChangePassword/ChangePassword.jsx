@@ -1,8 +1,9 @@
-import {Form} from "../../components/Forms"
+import { Form } from "../../components/Forms"
 import { useUserContext } from "../../context/userContext"
 import Loader from '../../components/Loader'
 import { useState, useEffect } from "react"
 import { updateSession } from "../../utils"
+import PageTitle from '../../components/PageTitle'
 
 const ChangePassword = () => {
 
@@ -24,7 +25,7 @@ const ChangePassword = () => {
 
     return (
         <>
-            {loading ? <Loader /> : <Form type="Change password" />}
+            {loading ? <Loader /> : <><PageTitle text={"Change password"} /><Form type="Change password" /></>}
         </>
     )
 }

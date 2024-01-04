@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { updateSession } from '../../utils'
 import Loader from '../../components/Loader'
 import { useUserContext } from "../../context/userContext"
-import { Container } from "@mui/material"
 import { CreateModifyForm } from "../../components/Forms"
 import { useParams } from 'react-router-dom'
 

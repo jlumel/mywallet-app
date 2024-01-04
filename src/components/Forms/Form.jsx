@@ -189,8 +189,8 @@ const Form = ({ type }) => {
     return (
 
         <>
-            {loading ? <Loader /> : <Container>
-                {alert && <SubmitAlert error={error} errorText={errorText} />}
+            {loading ? <Loader /> : <Container maxWidth="xs">
+                <SubmitAlert alert={alert} error={error} errorText={errorText} />
                 <Box
                     sx={{
                         marginTop: 8,

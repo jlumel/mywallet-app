@@ -4,8 +4,11 @@ import { useUserContext } from "../../context/userContext"
 import { updateData, fetchAPI } from "../../utils"
 import { Link } from 'react-router-dom'
 import Loader from '../Loader'
+import { useNavigate } from "react-router-dom"
 
 const AccountsList = () => {
+
+    const navigate = useNavigate()
 
     const { accounts, currencies, setAccounts, setCurrencies } = useUserContext()
 
@@ -70,7 +73,7 @@ const AccountsList = () => {
                                 }
                             }}>
                                 {accounts.map(account =>
-                                    <Paper key={account._id} sx={{ width: '16.5rem', height: '14rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+                                    <Paper onClick={()=> navigate(`/transactions?account=${account.name}`)} key={account._id} sx={{ width: '17rem', height: '14rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
                                         <h2>{account.name}</h2>
                                         <h4>Balance: <span style={{ color: 'blue' }}>{currencies.find(currency => currency.acronym == account.currencyAcronym).symbol}{account.balance}</span></h4>
                                     </Paper>)}
@@ -82,7 +85,7 @@ const AccountsList = () => {
                                 }
                             }}>
                                 {totals.map(total =>
-                                    <Paper key={total._id} sx={{ margin: '0 1rem 1rem 0', width: '16rem', height: '14rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+                                    <Paper key={total._id} sx={{ margin: '0 1rem 1rem 0', width: '15rem', height: '14rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
                                         <h2>Total {total._id}</h2>
                                         <h4>Balance: <span style={{ color: 'blue' }}>{currencies.find(currency => currency.acronym == total._id).symbol}{total.count}</span></h4>
                                     </Paper>)}

@@ -244,7 +244,7 @@ const CreateModifyForm = ({ action }) => {
           submit ? setAlert(true) : null
           setTimeout(() => {
             submit ? setAlert(false) : null
-          }, 5000)
+          }, 6000)
           setLoading(false)
         })
     }
@@ -259,14 +259,14 @@ const CreateModifyForm = ({ action }) => {
   return (
 
     <>
-      {loading ? <Loader /> : <Container>
-        {alert && <SubmitAlert error={error} errorText={errorText} />}
+      {loading ? <Loader /> : <Container maxWidth="xs">
+        <SubmitAlert alert={alert} error={error} errorText={errorText} />
         <Box
           sx={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <form onSubmit={handleFormSubmit}>

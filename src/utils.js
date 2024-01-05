@@ -34,29 +34,29 @@ export const updateSession = async (setIsLogged, setUsername) => {
   }
 }
 
-export const updateData = async (setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories) => {
+export const updateData = async (setters) => {
 
   try {
-    if (setTransactions) {
+    if (setters.setTransactions) {
       const response = await fetchAPI('get', '/api/transactions', null)
-      setTransactions(response.data)
+      setters.setTransactions(response.data)
     }
-    if (setAccounts) {
+    if (setters.setAccounts) {
       const response = await fetchAPI('get', '/api/accounts', null)
-      setAccounts(response.data)
+      setters.setAccounts(response.data)
     }
-    if (setCurrencies) {
+    if (setters.setCurrencies) {
       const response = await fetchAPI('get', '/api/currencies', null)
-      setCurrencies(response.data)
+      setters.setCurrencies(response.data)
     }
-    if (setCategories) {
+    if (setters.setCategories) {
       const response = await fetchAPI('get', '/api/categories', null)
-      setCategories(response.data)
+      setters.setCategories(response.data)
     }
-    if (setSubcategories) {
+    if (setters.setSubcategories) {
 
       const response = await fetchAPI('get', '/api/subcategories', null)
-      setSubcategories(response.data)
+      setters.setSubcategories(response.data)
     }
   } catch (err) {
     return err

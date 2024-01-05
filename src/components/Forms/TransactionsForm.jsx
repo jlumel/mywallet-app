@@ -1,5 +1,267 @@
-const TransactionsForm = ()=> {
+import { useEffect, useState } from 'react'
+import { Button, Modal, TextField, Box, Typography, FormControl, InputLabel, Select, MenuItem, Fab } from '@mui/material'
+import { styled } from '@mui/system'
+import { useUserContext } from '../../context/userContext'
+import { updateData, fetchAPI } from '../../utils'
+import Loader from '../Loader'
+import EditIcon from '@mui/icons-material/Edit'
 
+
+const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
+
+    const { currencies, accounts, categories, subcategories, setCurrencies, setAccounts, setCategories, setSubcategories } = useUserContext()
+
+    const [formData, setFormData] = useState({
+        type: "",
+        currencyAcronym: "",
+        amount: "",
+        accountName: "",
+        categoryName: "",
+        subcategoryName: "",
+        description: ""
+    })
+
+    const [loading, setLoading] = useState(false)
+
+    const [open, setOpen] = useState(false)
+
+    const [errorAmount, setErrorAmount] = useState(false)
+
+    const isButtonDisabled = !formData.type || !formData.currencyAcronym || !formData.amount || isNaN(formData.amount) || !formData.accountName || !formData.categoryName
+
+    const handleClose = () => {
+        setOpen(false)
+        setAlert(false)
+    }
+
+    const handleOpen = () => {
+        setOpen(true)
+    }
+
+    const handleChange = prop => event => {
+
+        let updatedFormData = { ...formData }
+
+        if (prop === "currencyAcronym") {
+            updatedFormData = { ...updatedFormData, accountName: "" }
+        } else if (prop === "categoryName") {
+            updatedFormData = { ...updatedFormData, subcategoryName: "" }
+        }
+
+        updatedFormData = {
+            ...updatedFormData,
+            [prop]: event.target.value ? event.target.value : "",
+        }
+
+        setFormData(updatedFormData)
+
+        prop == "amount" && isNaN(event.target.value) ? setErrorAmount(true) : null
+
+    }
+
+    const handleSubmit = event => {
+        event.preventDefault()
+
+        fetchAPI('post', `/api/transactions`, formData)
+            .then(res => {
+                console.log(res)
+                if (!res.data) {
+                    setAlert(true)
+                    setErrorText(res.response.data.message)
+                    setError(true)
+                } else {
+                    setAlert(true)
+                    setError(false)
+                    setErrorText("")
+                    setSubmit(true)
+                }
+                setFormData(
+                    {
+                        type: "",
+                        currencyAcronym: "",
+                        amount: "",
+                        accountName: "",
+                        categoryName: "",
+                        subcategoryName: "",
+                        description: ""
+                    }
+                )
+            })
+            .catch(err => {
+                setError(true)
+                setErrorText("An error has ocurred")
+                return err
+            })
+
+        handleClose()
+    }
+
+    const StyledModal = styled(Modal)`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .MuiBackdrop-root {
+        background: none;
+      }
+    `
+
+    const StyledPaper = styled('div')(({ theme }) => ({
+        backgroundColor: theme.palette.background.paper,
+        border: '1px solid #000',
+        boxShadow: theme.shadows[5],
+        borderRadius: 7,
+        padding: theme.spacing(2, 4, 3),
+        width: "20rem",
+        height: "42rem"
+    }))
+
+    useEffect(() => {
+
+        if (open) {
+            setLoading(true)
+            updateData({ setCurrencies, setAccounts, setCategories, setSubcategories })
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
+
+    }, [open])
+
+    return (
+
+        <>
+
+            <Box sx={{ '& > :not(style)': { m: 1 }, display: 'flex', justifyContent: 'flex-end', mt: '1rem' }}>
+                <Fab onClick={handleOpen} color="primary" aria-label="add">
+                    <EditIcon />
+                </Fab>
+            </Box>
+
+            <StyledModal open={open} onClose={handleClose}>
+                <StyledPaper>
+
+                    {loading ? <Loader /> : <form onSubmit={handleSubmit}>
+                        <Typography textAlign="center" variant="h4" id="simple-modal-title">Add transaction</Typography>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel htmlFor="type">Type</InputLabel>
+                            <Select
+                                required={true}
+                                id="type"
+                                value={formData.type}
+                                label="Type"
+                                onChange={handleChange("type")}
+                                name="type"
+                            >
+                                <MenuItem value="debit">Debit</MenuItem>
+                                <MenuItem value="credit">Credit</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel htmlFor="currencyAcronym">Currency</InputLabel>
+                            <Select
+                                required={true}
+                                id="currencyAcronym"
+                                value={formData.currencyAcronym}
+                                label="Currency"
+                                onChange={handleChange("currencyAcronym")}
+                                name="currencyAcronym"
+                                disabled={currencies.length ? false : true}
+                            >
+                                {currencies.length ? currencies.map(currency => <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym}</MenuItem>)
+                                    : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
+
+
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel htmlFor="accountName">Account</InputLabel>
+                            <Select
+                                required={true}
+                                id="accountName"
+                                value={formData.accountName}
+                                label="Account"
+                                onChange={handleChange("accountName")}
+                                name="accountName"
+                                disabled={accounts.length ? false : true}
+                            >
+                                {accounts.length ? accounts.map(account =>
+                                    formData.currencyAcronym == account.currencyAcronym && <MenuItem key={account._id} value={account.name}>{account.name}</MenuItem>)
+                                    : <MenuItem selected value="No accounts found">No accounts found</MenuItem>}
+
+
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel htmlFor="categoryName">Category</InputLabel>
+                            <Select
+                                required={true}
+                                id="categoryName"
+                                value={formData.categoryName}
+                                label="Category"
+                                onChange={handleChange("categoryName")}
+                                name="categoryName"
+                                disabled={categories.length ? false : true}
+                            >
+                                {categories.length ? categories.map(category => <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>)
+                                    : <MenuItem selected value="No categories found">No categories found</MenuItem>}
+
+
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel htmlFor="subcategoryName">Subcategory</InputLabel>
+                            <Select
+                                id="subcategoryName"
+                                value={formData.subcategoryName}
+                                label="Subcategory"
+                                onChange={handleChange("subcategoryName")}
+                                name="subcategoryName"
+                                disabled={subcategories.length ? false : true}
+                            >
+                                {subcategories.length ? subcategories.map(subcategory =>
+                                    formData.categoryName == subcategory.categoryName && <MenuItem key={subcategory._id} value={subcategory.name}>{subcategory.name}</MenuItem>)
+                                    : <MenuItem selected value="No subcategories found">No subcategories found</MenuItem>}
+
+
+                            </Select>
+                        </FormControl>
+
+                        <TextField
+                            required={true}
+                            label="Amount"
+                            name="amount"
+                            value={formData.amount}
+                            onChange={handleChange("amount")}
+                            fullWidth
+                            margin="normal"
+                            error={isNaN(formData.amount) && errorAmount}
+                            helperText={isNaN(formData.amount) && errorAmount && "Type only numbers"}
+                        />
+
+                        <TextField
+
+                            label="Description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange("description")}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
+                            <Button disabled={isButtonDisabled} type="submit" variant="contained" color="primary">
+                                Submit
+                            </Button>
+                        </Box>
+                    </form>}
+                </StyledPaper>
+            </StyledModal>
+        </>
+    )
 }
 
 export default TransactionsForm

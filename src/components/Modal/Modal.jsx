@@ -53,7 +53,7 @@ const ConfirmationModal = ({ walletItem, registry, handleDelete, submitLoading }
                 </Box>
             </Modal>
         </div>
-    );
+    )
 }
 
 export default ConfirmationModal

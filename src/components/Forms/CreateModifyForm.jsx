@@ -239,7 +239,7 @@ const CreateModifyForm = ({ action }) => {
   useEffect(() => {
     if (submit) {
       setLoading(true)
-      updateData(null, setAccounts, setCurrencies, setCategories, setSubcategories)
+      updateData({setAccounts, setCurrencies, setCategories, setSubcategories})
         .finally(() => {
           submit ? setAlert(true) : null
           setTimeout(() => {

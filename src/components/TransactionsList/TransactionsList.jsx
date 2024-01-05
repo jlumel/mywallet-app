@@ -4,13 +4,25 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell"
 import { useState, useEffect } from "react"
 import { useUserContext } from '../../context/userContext'
 import Loader from "../Loader"
-import TransactionsButtons from "../TransactionsButtons"
+import { updateData } from "../../utils"
+import TransactionsForm from "../Forms/TransactionsForm"
+import SubmitAlert from "../SubmitAlert"
 
 const TransactionsList = () => {
 
-    const { transactions } = useUserContext()
+    const { transactions, currencies, setTransactions, setCurrencies } = useUserContext()
+
+    const [rows, setRows] = useState([])
 
     const [loading, setLoading] = useState(false)
+
+    const [submit, setSubmit] = useState(false)
+
+    const [alert, setAlert] = useState(false)
+
+    const [error, setError] = useState(false)
+
+    const [errorText, setErrorText] = useState("")
 
     const handleDetail = (event, id) => {
         console.log(id)
@@ -48,34 +60,34 @@ const TransactionsList = () => {
         cursor: 'pointer'
     }))
 
-    function createData(type, amount, category, subcategory, account, id) {
-        return { type, amount, category, subcategory, account, id }
-    }
-
-    const rows = [
-        createData('Debit', '-$159', 'Services', 'Edesur', 'Dollars', '12'),
-        createData('Debit', '-$237', 'Services', 'Fibertel', 'Dollars', '85'),
-        createData('Credit', '$262', 'Salary', 'DH', 'Pesos', '6541'),
-        createData('Debit', '-$305', 'Delivery', 'La Segunda', 'Pesos', '491'),
-        createData('Debit', '-$356', 'Commute', 'Train', 'Dollars', '51341'),
-        createData('Debit', '-$159', 'Services', 'Edesur', 'Dollars', '1'),
-        createData('Debit', '-$237', 'Services', 'Fibertel', 'Dollars', '8'),
-        createData('Credit', '$262', 'Salary', 'DH', 'Pesos', '654')
-    ]
+    const createData = (id, type, currencyAcronym, amount, category, subcategory) => ({ id, type, currencyAcronym, amount, category, subcategory })
 
     useEffect(() => {
 
-        if (transactions.length) {
+        setLoading(true)
+        updateData({ setTransactions, setCurrencies })
+            .finally(() => {
+                setLoading(false)
+                if (submit) {
+                    setTimeout(() => {
+                        submit ? setAlert(false) : null
+                    }, 6000)
+                }
+            })
 
-            setLoading(false)
-        }
+    }, [submit])
+
+    useEffect(() => {
+
+        transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName)))
 
     }, [transactions])
 
     return (
 
         <>
-            {loading ? <Loader /> : <Container style={{width: '65%'}}>
+            {loading ? <Loader /> : <Container style={{ width: '80%' }}>
+                <SubmitAlert alert={alert} error={error} errorText={errorText} />
                 <Box sx={{
                     marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                 }}>
@@ -86,27 +98,27 @@ const TransactionsList = () => {
                                 <TableRow>
                                     <StyledTableCell align="center">Amount</StyledTableCell>
                                     <StyledTableCell align="center">Category</StyledTableCell>
-                                    <StyledTableCell align="center">Subctaegory</StyledTableCell>
+                                    <StyledTableCell align="center">Subcategory</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row) => (
-                                    <StyledTableRow style={{backgroundColor: row.type == 'Debit' ? '#f44336' : '#4caf50'}} key={row.id} onClick={event => handleDetail(event, row.id)}>
-                                        <StyledTableCell align="center">{row.amount}</StyledTableCell>
+                                {rows.map(row => (
+                                    <StyledTableRow style={{ backgroundColor: row.type == 'Debit' ? '#f44336' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
+                                        <StyledTableCell align="center">{currencies.find(currency => currency.acronym == row.currencyAcronym).symbol}{row.amount}</StyledTableCell>
                                         <StyledTableCell align="center">{row.category}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.subcategory}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
                         </Table>
                         <Box sx={{
-                    marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
-                }}>
-                    <Pagination count={10} color="primary" />
-                </Box>
+                            marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
+                        }}>
+                            <Pagination count={10} color="primary" />
+                        </Box>
                     </TableContainer>
                 </Box>
-                <TransactionsButtons />
+                <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
             </Container>}
         </>
     )

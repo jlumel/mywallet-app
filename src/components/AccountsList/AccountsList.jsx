@@ -20,7 +20,7 @@ const AccountsList = () => {
 
     useEffect(() => {
         setLoading(true)
-        updateData(null, setAccounts, setCurrencies, null, null)
+        updateData({setAccounts, setCurrencies})
             .then(() => {
                 fetchAPI('post', '/api/accounts/totals')
                     .then(res => {

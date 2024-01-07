@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Box, Button, Typography, Modal } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
 
 const style = {
     position: 'absolute',
@@ -18,18 +17,22 @@ const style = {
     flexDirection: 'column',
 }
 
-const ConfirmationModal = ({ walletItem, registry, handleDelete, submitLoading }) => {
+const ConfirmationModal = ({ isButtonDisabled, handleDelete }) => {
+
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     return (
-        <div className="buttonContainer">
+        <>
             <Button
                 variant="contained"
                 color="error"
-                disabled={!walletItem || !registry ? true : false}
-                className="createModifyButton" onClick={handleOpen}>
+                className="createModifyButton"
+                onClick={handleOpen}
+                disabled={isButtonDisabled}
+                sx={{ width: '40%' }}
+            >
                 Delete
             </Button>
             <Modal
@@ -46,13 +49,12 @@ const ConfirmationModal = ({ walletItem, registry, handleDelete, submitLoading }
                         Are you sure you want to delete this registry?
                     </Typography>
                     <Box>
-                    {!submitLoading && <Button color="error" onClick={handleDelete}>Yes</Button>}
-                        {submitLoading && <LoadingButton loading>Loading</LoadingButton>}
+                        <Button color="error" onClick={handleDelete}>Yes</Button>
                         <Button variant="contained" onClick={handleClose}>No</Button>
                     </Box>
                 </Box>
             </Modal>
-        </div>
+        </>
     )
 }
 

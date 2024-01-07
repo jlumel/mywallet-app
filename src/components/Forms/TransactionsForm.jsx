@@ -64,7 +64,6 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
 
         fetchAPI('post', `/api/transactions`, formData)
             .then(res => {
-                console.log(res)
                 if (!res.data) {
                     setAlert(true)
                     setErrorText(res.response.data.message)

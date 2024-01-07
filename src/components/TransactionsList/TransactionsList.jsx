@@ -7,8 +7,11 @@ import Loader from "../Loader"
 import { updateData } from "../../utils"
 import TransactionsForm from "../Forms/TransactionsForm"
 import SubmitAlert from "../SubmitAlert"
+import { useNavigate } from "react-router-dom"
 
 const TransactionsList = () => {
+
+    const navigate = useNavigate()
 
     const { transactions, currencies, setTransactions, setCurrencies } = useUserContext()
 
@@ -25,7 +28,7 @@ const TransactionsList = () => {
     const [errorText, setErrorText] = useState("")
 
     const handleDetail = (event, id) => {
-        console.log(id)
+        navigate(`/transactions/${id}`)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -103,8 +106,8 @@ const TransactionsList = () => {
                             </TableHead>
                             <TableBody>
                                 {rows.map(row => (
-                                    <StyledTableRow style={{ backgroundColor: row.type == 'Debit' ? '#f44336' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
-                                        <StyledTableCell align="center">{currencies.find(currency => currency.acronym == row.currencyAcronym).symbol}{row.amount}</StyledTableCell>
+                                    <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#f44336' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
+                                        <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies.find(currency => currency.acronym == row.currencyAcronym).symbol}{row.amount}</StyledTableCell>
                                         <StyledTableCell align="center">{row.category}</StyledTableCell>
                                         <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
                                     </StyledTableRow>

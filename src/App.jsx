@@ -13,6 +13,7 @@ import Transactions from './views/Transactions'
 import Accounts from './views/Accounts/Accounts'
 import Admin from './views/Admin'
 import AdminFormContainer from './views/AdminFormContainer'
+import TransactionDetail from './views/TransactionDetail/TransactionDetail'
 
 const theme = createTheme({
   direction: 'rtl',
@@ -48,6 +49,7 @@ function App() {
           {isLogged && <Route path='/accounts' element={<Accounts />} />}
           {isLogged && <Route path='/wallet-items' element={<Admin />} />}
           {isLogged && <Route path='/wallet-items/:action' element={<AdminFormContainer />} />}
+          {isLogged && <Route path='/transactions/:id' element={<TransactionDetail />} />}
         </Routes>
       </ThemeProvider>)}
     </>

@@ -16,11 +16,9 @@ const AccountsList = () => {
 
     const [totals, setTotals] = useState([])
 
-
-
     useEffect(() => {
         setLoading(true)
-        updateData({setAccounts, setCurrencies})
+        updateData({ setAccounts, setCurrencies })
             .then(() => {
                 fetchAPI('post', '/api/accounts/totals')
                     .then(res => {
@@ -45,7 +43,8 @@ const AccountsList = () => {
                 marginTop: 8,
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
+                justifyContent: "center"
             }}>
                 {!accounts.length ? <><Typography variant="h5">You don't have any accounts yet</Typography>
                     <Button
@@ -61,34 +60,45 @@ const AccountsList = () => {
                     <>
                         <Box sx={{
                             display: 'flex',
+                            flexDirection: "column",
+                            justifyContent: 'center',
+                            alignItems: 'center',
                             '& > :not(style)': {
                                 mx: "auto",
                             }
                         }}>
                             <Box sx={{
+                                margin: "auto",
                                 display: 'flex',
                                 flexWrap: "wrap",
+                                justifyContent: "left",
+                                alignItems: 'left',
                                 '& > :not(style)': {
                                     margin: '0 1rem 1rem 0'
                                 }
                             }}>
                                 {accounts.map(account =>
-                                    <Paper onClick={()=> navigate(`/transactions?account=${account.name}`)} key={account._id} sx={{ width: '17rem', height: '14rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+                                    <Paper onClick={() => navigate(`/transactions?accountName=${account.name}`)} key={account._id} sx={{ width: '12rem', height: '12rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
                                         <h2>{account.name}</h2>
-                                        <h4>Balance: <span style={{ color: 'blue' }}>{currencies.find(currency => currency.acronym == account.currencyAcronym).symbol}{account.balance}</span></h4>
-                                    </Paper>)}
+                                        <h4>Balance: <span style={{ color: 'blue' }}>{currencies.length ? currencies.find(currency => currency.acronym == account.currencyAcronym)?.symbol : ""}{totals.totals?.length && totals.totals.find(total => total?._id == account.name)?.total || "0"}</span></h4>
+                                    </Paper>
+                                )}
                             </Box>
-                            <Box x={{
+                            <Box sx={{
                                 display: 'flex',
+                                justifyContent: "center",
+                                alignItems: 'center',
+                                flexWrap: "wrap",
                                 '& > :not(style)': {
                                     margin: '0 1rem 1rem 0'
                                 }
                             }}>
-                                {totals.map(total =>
-                                    <Paper key={total._id} sx={{ margin: '0 1rem 1rem 0', width: '15rem', height: '14rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
-                                        <h2>Total {total._id}</h2>
-                                        <h4>Balance: <span style={{ color: 'blue' }}>{currencies.find(currency => currency.acronym == total._id).symbol}{total.count}</span></h4>
-                                    </Paper>)}
+                                {currencies.map(currency =>
+                                    <Paper onClick={() => navigate(`/transactions?currencyAcronym=${currency.acronym}`)} key={currency._id} sx={{ width: '12rem', height: '12rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+                                        <h2>Total {currency.acronym}</h2>
+                                        <h4>Balance: <span style={{ color: 'blue' }}>{currency.symbol}{totals.totalsByCurrency?.length && totals.totalsByCurrency.find(total => total?._id == currency.acronym)?.total || "0"}</span></h4>
+                                    </Paper>
+                                )}
                             </Box>
                         </Box>
                     </>

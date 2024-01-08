@@ -7,9 +7,9 @@ import Loader from "../Loader"
 import { updateData } from "../../utils"
 import TransactionsForm from "../Forms/TransactionsForm"
 import SubmitAlert from "../SubmitAlert"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, } from "react-router-dom"
 
-const TransactionsList = () => {
+const TransactionsList = ({ query }) => {
 
     const navigate = useNavigate()
 
@@ -82,7 +82,16 @@ const TransactionsList = () => {
 
     useEffect(() => {
 
-        transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName)))
+        if (Object.keys(query).length) {
+            let filteredTransactions
+
+            filteredTransactions = transactions.length ? transactions.filter(transaction => Object.entries(query).every(([key, value]) => transaction[value.key] === value.value)) : []
+
+            filteredTransactions.length && setRows(filteredTransactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName)))
+        } else {
+            transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName)))
+        }
+
 
     }, [transactions])
 

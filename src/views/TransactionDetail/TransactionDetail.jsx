@@ -21,13 +21,10 @@ const TransactionDetail = () => {
     const [transaction, setTransaction] = useState({})
 
     const [formData, setFormData] = useState({
-        accountName: "",
         categoryName: "",
         subcategoryName: "",
-        currencyAcronym: "",
         amount: "",
         description: "",
-        type: ""
     })
 
     const [submit, setSubmit] = useState(false)
@@ -43,8 +40,6 @@ const TransactionDetail = () => {
     const [edit, setEdit] = useState(false)
 
     const toggleEdit = action => {
-
-
 
         if (action == "confirm") {
 
@@ -72,6 +67,10 @@ const TransactionDetail = () => {
     }
 
     const handleChange = prop => event => {
+
+        if (prop == "amount" && event.target.value.includes("-") || event.target.value.includes("+") || isNaN(Number(event.target.value))) {
+            return
+        }
 
         setFormData({ ...formData, [prop]: event.target.value ? event.target.value : "" })
     }
@@ -119,13 +118,11 @@ const TransactionDetail = () => {
         transactions.length && setTransaction(transactions.find(transaction => transaction._id == id))
 
         setFormData({
-            accountName: transaction.accountName,
+
             categoryName: transaction.categoryName,
             subcategoryName: transaction.subcategoryName,
-            currencyAcronym: transaction.currencyAcronym,
             amount: transaction.amount,
             description: transaction.description,
-            type: transaction.type
         })
 
     }, [transactions])
@@ -142,12 +139,7 @@ const TransactionDetail = () => {
                 }}>
                     {edit ?
                         <Paper sx={{ cursor: 'pointer', textAlign: 'center', fontSize: '2rem', width: '50%', margin: 'auto' }}>
-                            <p>Account:
-                                <select name="accountName" id="accountName" value={formData.accountName} onChange={handleChange('accountName')}>
-                                    {accounts.map(account =>
-                                        <option key={account._id} value={account.name}>{account.name}</option>)}
-                                </select>
-                            </p>
+                            <p>Account: {transaction.accountName}</p>
                             <p>Category:
                                 <select name="categoryName" id="categoryName" value={formData.categoryName} onChange={handleChange('categoryName')}>
                                     {categories.map(category =>
@@ -160,19 +152,9 @@ const TransactionDetail = () => {
                                         <option key={subcategory._id} value={subcategory.name}>{subcategory.name}</option>)}
                                 </select>
                             </p>
-                            <p>Currency:
-                                <select name="currencyAcronym" id="currencyAcronym" value={formData.currencyAcronym} onChange={handleChange('currencyAcronym')}>
-                                    {currencies.map(currency =>
-                                        <option key={currency._id} value={currency.acronym}>{currency.acronym}</option>)}
-                                </select>
-                            </p>
-                            <p>Type:
-                                <select name="type" id="type" value={formData.type} onChange={handleChange('type')}>
-                                    <option value="debit">Debit</option>
-                                    <option value="credit">Credit</option>
-                                </select>
-                            </p>
-                            <p>Amount: {formData.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == formData.currencyAcronym)?.symbol}<input type="text" value={formData.amount} onChange={handleChange('amount')} /></p>
+                            <p>Currency: {transaction.currencyAcronym}</p>
+                            <p>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
+                            <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}<input type="text" value={formData.amount} onChange={handleChange('amount')} /></p>
                             <p>Description: <input type="text" value={formData.description} onChange={handleChange('description')} /></p>
                             <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                         </Paper>

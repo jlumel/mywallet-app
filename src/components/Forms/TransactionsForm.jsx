@@ -61,7 +61,6 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
 
     const handleSubmit = event => {
         event.preventDefault()
-
         fetchAPI('post', `/api/transactions`, formData)
             .then(res => {
                 if (!res.data) {
@@ -72,7 +71,6 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
                     setAlert(true)
                     setError(false)
                     setErrorText("")
-                    setSubmit(true)
                 }
                 setFormData(
                     {
@@ -85,10 +83,12 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
                         description: ""
                     }
                 )
+                setSubmit(true)
             })
             .catch(err => {
                 setError(true)
                 setErrorText("An error has ocurred")
+                setSubmit(true)
                 return err
             })
 
@@ -130,7 +130,7 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
 
         <>
 
-            <Box sx={{ '& > :not(style)': { m: 1 }, display: 'flex', justifyContent: 'flex-end', mt: '1rem' }}>
+            <Box sx={{ '& > :not(style)': { mt: 1, mr:1 }, display: 'flex', justifyContent: 'flex-end' }}>
                 <Fab onClick={handleOpen} color="primary" aria-label="add">
                     <EditIcon />
                 </Fab>

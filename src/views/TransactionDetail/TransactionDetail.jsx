@@ -68,11 +68,14 @@ const TransactionDetail = () => {
 
     const handleChange = prop => event => {
 
-        if (prop == "amount" && event.target.value.includes("-") || event.target.value.includes("+") || isNaN(Number(event.target.value))) {
+        setFormData({ ...formData, [prop]: event.target.value ? event.target.value : "" })
+    }
+
+    const handleAmountChange = event => {
+        if (event.target.value.includes("-") || event.target.value.includes("+") || isNaN(Number(event.target.value))) {
             return
         }
-
-        setFormData({ ...formData, [prop]: event.target.value ? event.target.value : "" })
+        setFormData({ ...formData, amount: event.target.value ? event.target.value : "" })
     }
 
     const handleDelete = () => {
@@ -154,7 +157,7 @@ const TransactionDetail = () => {
                             </p>
                             <p>Currency: {transaction.currencyAcronym}</p>
                             <p>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
-                            <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}<input type="text" value={formData.amount} onChange={handleChange('amount')} /></p>
+                            <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}<input type="text" value={formData.amount} onChange={handleAmountChange} /></p>
                             <p>Description: <input type="text" value={formData.description} onChange={handleChange('description')} /></p>
                             <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                         </Paper>

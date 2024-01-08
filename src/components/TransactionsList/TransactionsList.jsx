@@ -11,11 +11,17 @@ import { useNavigate, } from "react-router-dom"
 
 const TransactionsList = ({ query }) => {
 
+    const ROWS_PER_PAGE = 8
+
     const navigate = useNavigate()
 
     const { transactions, currencies, setTransactions, setCurrencies } = useUserContext()
 
     const [rows, setRows] = useState([])
+
+    const [page, setPage] = useState(1)
+
+    const [pageCount, setPageCount] = useState(0)
 
     const [loading, setLoading] = useState(false)
 
@@ -29,6 +35,10 @@ const TransactionsList = ({ query }) => {
 
     const handleDetail = (event, id) => {
         navigate(`/transactions/${id}`)
+    }
+
+    const handlePagination = (event, value) => {
+        setPage(value)
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -63,7 +73,11 @@ const TransactionsList = ({ query }) => {
         cursor: 'pointer'
     }))
 
-    const createData = (id, type, currencyAcronym, amount, category, subcategory) => ({ id, type, currencyAcronym, amount, category, subcategory })
+    const startIndex = (page - 1) * ROWS_PER_PAGE
+
+    const endIndex = startIndex + ROWS_PER_PAGE
+
+    const createData = (id, type, currencyAcronym, amount, category, subcategory, account) => ({ id, type, currencyAcronym, amount, category, subcategory, account })
 
     useEffect(() => {
 
@@ -87,13 +101,26 @@ const TransactionsList = ({ query }) => {
 
             filteredTransactions = transactions.length ? transactions.filter(transaction => Object.entries(query).every(([key, value]) => transaction[value.key] === value.value)) : []
 
-            filteredTransactions.length && setRows(filteredTransactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName)))
+            filteredTransactions.length && setRows(filteredTransactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
         } else {
-            transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName)))
+            transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
         }
 
 
     }, [transactions])
+
+    useEffect(() => {
+
+        if (rows.length) {
+
+            if (Math.floor(rows.length / ROWS_PER_PAGE) < rows.length / 8) {
+                setPageCount(Math.floor(rows.length / ROWS_PER_PAGE) + 1)
+            } else {
+                setPageCount(Math.floor(rows.length / ROWS_PER_PAGE))
+            }
+        }
+
+    }, [rows])
 
     return (
 
@@ -104,33 +131,35 @@ const TransactionsList = ({ query }) => {
                     marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                 }}>
 
-                    <TableContainer component={Paper}>
-                        <Table aria-label="customized table">
+                    <TableContainer sx={{ height: '62.3vh'}} component={Paper}>
+                        <Table sx={{marginBottom: '0'}} aria-label="transactions list">
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell align="center">Amount</StyledTableCell>
                                     <StyledTableCell align="center">Category</StyledTableCell>
                                     <StyledTableCell align="center">Subcategory</StyledTableCell>
+                                    <StyledTableCell align="center">Account</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map(row => (
+                                {rows.slice(startIndex, endIndex).map(row => (
                                     <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#f44336' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
                                         <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies.find(currency => currency.acronym == row.currencyAcronym).symbol}{row.amount}</StyledTableCell>
                                         <StyledTableCell align="center">{row.category}</StyledTableCell>
                                         <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.account}</StyledTableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
                         </Table>
-                        <Box sx={{
-                            marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
-                        }}>
-                            <Pagination count={10} color="primary" />
-                        </Box>
                     </TableContainer>
+                        <Box sx={{
+                           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
+                        }}>
+                            <Pagination sx={{margin: 'auto 17.5rem auto auto'}} count={pageCount} color="primary" page={page} onChange={handlePagination} />
+                            <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
+                        </Box>
                 </Box>
-                <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
             </Container>}
         </>
     )

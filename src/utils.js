@@ -21,7 +21,7 @@ export const updateSession = async (setIsLogged, setUsername) => {
 
   try {
 
-    const response = await fetchAPI('get', '/api/user', null)
+    const response = await fetchAPI('get', '/api/user')
     setIsLogged(true)
     setUsername(response.data.username)
     return Promise.resolve()
@@ -38,24 +38,24 @@ export const updateData = async (setters) => {
 
   try {
     if (setters.setTransactions) {
-      const response = await fetchAPI('get', '/api/transactions', null)
-      setters.setTransactions(response.data)
+      const response = await fetchAPI('get', '/api/transactions')
+      setters.setTransactions((response.data).reverse())
     }
     if (setters.setAccounts) {
-      const response = await fetchAPI('get', '/api/accounts', null)
+      const response = await fetchAPI('get', '/api/accounts')
       setters.setAccounts(response.data)
     }
     if (setters.setCurrencies) {
-      const response = await fetchAPI('get', '/api/currencies', null)
+      const response = await fetchAPI('get', '/api/currencies')
       setters.setCurrencies(response.data)
     }
     if (setters.setCategories) {
-      const response = await fetchAPI('get', '/api/categories', null)
+      const response = await fetchAPI('get', '/api/categories')
       setters.setCategories(response.data)
     }
     if (setters.setSubcategories) {
 
-      const response = await fetchAPI('get', '/api/subcategories', null)
+      const response = await fetchAPI('get', '/api/subcategories')
       setters.setSubcategories(response.data)
     }
   } catch (err) {

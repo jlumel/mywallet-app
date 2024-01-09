@@ -1,4 +1,4 @@
-import { Container, Box, Pagination, Table, TableBody, TableContainer, TableHead, TableRow, Paper } from "@mui/material"
+import { Container, Box, Pagination, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Chip } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import TableCell, { tableCellClasses } from "@mui/material/TableCell"
 import { useState, useEffect } from "react"
@@ -7,21 +7,24 @@ import Loader from "../Loader"
 import { updateData } from "../../utils"
 import TransactionsForm from "../Forms/TransactionsForm"
 import SubmitAlert from "../SubmitAlert"
-import { useNavigate, } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import FilterMenu from "../FilterMenu/FilterMenu"
 
-const TransactionsList = ({ query }) => {
+const TransactionsList = () => {
 
     const ROWS_PER_PAGE = 8
 
     const navigate = useNavigate()
 
-    const { transactions, currencies, setTransactions, setCurrencies } = useUserContext()
+    const { transactions, currencies, query, setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
 
     const [rows, setRows] = useState([])
 
     const [page, setPage] = useState(1)
 
     const [pageCount, setPageCount] = useState(0)
+
+    const [chipData, setChipData] = useState([])
 
     const [loading, setLoading] = useState(false)
 
@@ -39,6 +42,20 @@ const TransactionsList = ({ query }) => {
 
     const handlePagination = (event, value) => {
         setPage(value)
+    }
+
+    const handleDeleteChip = key => () => {
+
+        setChipData(chipData.filter(chip => chip.key !== key))
+
+        setQuery(query.filter(query => query.key != key))
+
+        key == 'accountName' && setAccountFilter({ active: false, param: { key: "accountName", value: "" } })
+
+        key == 'currencyName' && setCurrencyFilter({ active: false, param: { key: "currencyName", value: "" } })
+
+        key == 'categoryName' && setCategoryFilter({ active: false, param: { key: "categoryName", value: "" } })
+
     }
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -79,10 +96,14 @@ const TransactionsList = ({ query }) => {
 
     const createData = (id, type, currencyAcronym, amount, category, subcategory, account) => ({ id, type, currencyAcronym, amount, category, subcategory, account })
 
+    const ListItem = styled('li')(({ theme }) => ({
+        margin: theme.spacing(0.5),
+    }))
+
     useEffect(() => {
 
         setLoading(true)
-        updateData({ setTransactions, setCurrencies })
+        updateData({ setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories })
             .finally(() => {
                 setLoading(false)
                 if (submit) {
@@ -96,18 +117,24 @@ const TransactionsList = ({ query }) => {
 
     useEffect(() => {
 
+        console.log(query)
+
         if (Object.keys(query).length) {
+
+            setChipData(query.map(item => ({ key: `${item.key}`, label: `${item.key}:${item.value}` })))
+
             let filteredTransactions
 
             filteredTransactions = transactions.length ? transactions.filter(transaction => Object.entries(query).every(([key, value]) => transaction[value.key] === value.value)) : []
-
-            filteredTransactions.length && setRows(filteredTransactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
+            console.log(filteredTransactions)
+            setRows(filteredTransactions?.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
         } else {
+            setChipData([])
             transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
         }
 
 
-    }, [transactions])
+    }, [transactions, query])
 
     useEffect(() => {
 
@@ -126,13 +153,40 @@ const TransactionsList = ({ query }) => {
 
         <>
             {loading ? <Loader /> : <Container style={{ width: '80%' }}>
+                <ul
+                    style={{
+                        position: 'absolute',
+                        top: 145,
+                        left: 0,
+                        right: 0,
+                        zIndex: 3,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexWrap: 'wrap',
+                        listStyle: 'none',
+                        margin: 'auto'
+                    }}
+                >
+                    {chipData.map(data => {
+
+                        return (
+                            <ListItem key={data.key}>
+                                <Chip
+                                    label={data.label}
+                                    onDelete={handleDeleteChip(data.key)}
+                                />
+                            </ListItem>
+                        )
+                    })}
+                </ul>
                 <SubmitAlert alert={alert} error={error} errorText={errorText} />
+                <FilterMenu />
                 <Box sx={{
                     marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                 }}>
 
-                    <TableContainer sx={{ height: '62.3vh'}} component={Paper}>
-                        <Table sx={{marginBottom: '0'}} aria-label="transactions list">
+                    <TableContainer sx={{ height: '62.3vh' }} component={Paper}>
+                        <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell align="center">Amount</StyledTableCell>
@@ -143,7 +197,7 @@ const TransactionsList = ({ query }) => {
                             </TableHead>
                             <TableBody>
                                 {rows.slice(startIndex, endIndex).map(row => (
-                                    <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#f44336' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
+                                    <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#ef5350' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
                                         <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies.find(currency => currency.acronym == row.currencyAcronym).symbol}{row.amount}</StyledTableCell>
                                         <StyledTableCell align="center">{row.category}</StyledTableCell>
                                         <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
@@ -153,12 +207,12 @@ const TransactionsList = ({ query }) => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                        <Box sx={{
-                           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
-                        }}>
-                            <Pagination sx={{margin: 'auto 17.5rem auto auto'}} count={pageCount} color="primary" page={page} onChange={handlePagination} />
-                            <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
-                        </Box>
+                    <Box sx={{
+                        width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
+                    }}>
+                        <Pagination sx={{ margin: 'auto 17.5rem auto auto' }} count={pageCount} color="primary" page={page} onChange={handlePagination} />
+                        <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
+                    </Box>
                 </Box>
             </Container>}
         </>

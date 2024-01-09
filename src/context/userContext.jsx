@@ -21,15 +21,22 @@ const UserProvider = ({ children }) => {
 
     const [subcategories, setSubcategories] = useState([])
 
+    const [query, setQuery] = useState([])
+
+    const [accountFilter, setAccountFilter] = useState({ active: false, param: { key: "accountName", value: "" } })
+    const [currencyFilter, setCurrencyFilter] = useState({ active: false, param: { key: "currencyAcronym", value: "" } })
+    const [categoryFilter, setCategoryFilter] = useState({ active: false, param: { key: "categoryName", value: "" } })
+
     useEffect(() => {
         updateSession(setIsLogged, setUsername)
     }, [])
 
     useEffect(() => {
-        isLogged && updateData({setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories})
+        isLogged && updateData({ setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories })
     }, [isLogged])
 
-    return <UserContext.Provider value={{ username, isLogged, transactions, accounts, currencies, categories, subcategories, setIsLogged, setUsername, setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories }}>
+    return <UserContext.Provider value={{ 
+        username, isLogged, transactions, accounts, currencies, categories, subcategories, query, accountFilter, currencyFilter, categoryFilter, setIsLogged, setUsername, setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter}}>
 
         {children}
 

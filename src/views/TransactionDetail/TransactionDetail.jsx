@@ -14,7 +14,7 @@ const TransactionDetail = () => {
 
     const { id } = useParams()
 
-    const { transactions, currencies, accounts, categories, subcategories, setTransactions, setCurrencies, setCategories, setSubcategories, setAccounts } = useUserContext()
+    const { transactions, currencies, categories, subcategories, setTransactions, setCurrencies, setCategories, setSubcategories } = useUserContext()
 
     const [loading, setLoading] = useState(false)
 
@@ -72,7 +72,7 @@ const TransactionDetail = () => {
     }
 
     const handleAmountChange = event => {
-        if (event.target.value.includes("-") || event.target.value.includes("+") || isNaN(Number(event.target.value))) {
+        if (event.target.value.includes("-") || event.target.value.includes("+") || isNaN(event.target.value)) {
             return
         }
         setFormData({ ...formData, amount: event.target.value ? event.target.value : "" })
@@ -103,7 +103,7 @@ const TransactionDetail = () => {
     useEffect(() => {
 
         setLoading(true)
-        updateData({ setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories })
+        updateData({ setTransactions, setCurrencies, setCategories, setSubcategories })
             .finally(() => {
                 submit ? setAlert(true) : null
                 setTimeout(() => {

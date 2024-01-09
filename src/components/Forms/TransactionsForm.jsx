@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Modal, TextField, Box, Typography, FormControl, InputLabel, Select, MenuItem, Fab } from '@mui/material'
 import { styled } from '@mui/system'
 import { useUserContext } from '../../context/userContext'
-import { updateData, fetchAPI } from '../../utils'
-import Loader from '../Loader'
+import { fetchAPI } from '../../utils'
 import EditIcon from '@mui/icons-material/Edit'
-
 
 const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
 
-    const { currencies, accounts, categories, subcategories, setCurrencies, setAccounts, setCategories, setSubcategories } = useUserContext()
+    const { currencies, accounts, categories, subcategories } = useUserContext()
 
     const [formData, setFormData] = useState({
         type: "",
@@ -20,8 +18,6 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
         subcategoryName: "",
         description: ""
     })
-
-    const [loading, setLoading] = useState(false)
 
     const [open, setOpen] = useState(false)
 
@@ -114,18 +110,6 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
         height: "42rem"
     }))
 
-    useEffect(() => {
-
-        if (open) {
-            setLoading(true)
-            updateData({ setCurrencies, setAccounts, setCategories, setSubcategories })
-                .finally(() => {
-                    setLoading(false)
-                })
-        }
-
-    }, [open])
-
     return (
 
         <>
@@ -139,8 +123,8 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
             <StyledModal open={open} onClose={handleClose}>
                 <StyledPaper>
 
-                    {loading ? <Loader /> : <form onSubmit={handleSubmit}>
-                        <Typography textAlign="center" variant="h4" id="simple-modal-title">Add transaction</Typography>
+                    <form onSubmit={handleSubmit}>
+                        <Typography textAlign="center" variant="h4">Add transaction</Typography>
 
                         <FormControl fullWidth margin="normal">
                             <InputLabel htmlFor="type">Type</InputLabel>
@@ -253,10 +237,10 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
                         />
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
                             <Button disabled={isButtonDisabled} type="submit" variant="contained" color="primary">
-                                Submit
+                                Add
                             </Button>
                         </Box>
-                    </form>}
+                    </form>
                 </StyledPaper>
             </StyledModal>
         </>

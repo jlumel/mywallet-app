@@ -15,7 +15,7 @@ import './NavBar.css'
 import { useUserContext } from '../../context/userContext';
 import { capitalizeFirstLetter, fetchAPI } from '../../utils';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../../assets.logo.ico'
+import logo from '../../assets/logo.ico'
 
 const NavBar = () => {
 

@@ -212,7 +212,7 @@ const NavBar = () => {
                     <Box className={userIcon} sx={{ flexGrow: 0 }}>
                         <Tooltip className={userIcon} title={username}>
                             <IconButton className={userIcon} onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt={capitalizeFirstLetter(username)} src="/static/images/avatar/2.jpg" />
+                                <Avatar alt={username && capitalizeFirstLetter(username)} src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip>
                         <Menu

@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from "axios"
 
 export const fetchAPI = async (method, url, body) => {
 
   const instance = axios.create({
-    baseURL: 'https://cs50-final-project-back-production.up.railway.app/',
+    baseURL: 'http://localhost:8080',
     withCredentials: true
   })
 

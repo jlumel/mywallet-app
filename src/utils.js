@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchAPI = async (method, url, body) => {
 
   const instance = axios.create({
-    baseURL: 'https://my-wallet-api-ten.vercel.app',
+    baseURL: 'https://my-wallet-api-one.vercel.app/',
     withCredentials: true
   })
 

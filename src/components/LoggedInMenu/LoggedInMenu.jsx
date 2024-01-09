@@ -7,6 +7,7 @@ import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded'
 import { useNavigate } from "react-router-dom"
 import './LoggedInMenu.css'
 import PageTitle from '../PageTitle'
+import logo from '../../assets/logo.ico'
 
 const LoggedInMenu = () => {
 
@@ -60,7 +61,7 @@ const LoggedInMenu = () => {
                         <Item className="items" onClick={handleMenu}><PostAddRoundedIcon fontSize="large" /><Typography fontWeight="bold">Wallet Items</Typography></Item>
                     </Grid>
                     <Grid item xs={6}>
-                        <Item className="logoItem"><img className="logoMenu" src="/src/assets/logo.ico" alt="my wallet" /></Item>
+                        <Item className="logoItem"><img className="logoMenu" src={logo} alt="my wallet" /></Item>
                     </Grid>
                 </Grid>
 

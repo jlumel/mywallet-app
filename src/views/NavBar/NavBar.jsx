@@ -15,6 +15,7 @@ import './NavBar.css'
 import { useUserContext } from '../../context/userContext';
 import { capitalizeFirstLetter, fetchAPI } from '../../utils';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../../assets.logo.ico'
 
 const NavBar = () => {
 
@@ -107,7 +108,7 @@ const NavBar = () => {
         <AppBar position="static">
             <Container maxWidth="x3">
                 <Toolbar disableGutters>
-                    <img src="/src/assets/logo.ico" alt="logo" className="logo" />
+                    <img src={logo} alt="logo" className="logo" />
                     <Typography
                         variant="h6"
                         noWrap
@@ -171,7 +172,7 @@ const NavBar = () => {
                             )}
                         </Menu>
                     </Box>
-                    <img src="/src/assets/logo.ico" alt="logo" className="logoMobile" />
+                    <img src={logo} alt="logo" className="logoMobile" />
                     <Typography
                         variant="h5"
                         noWrap

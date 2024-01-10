@@ -117,8 +117,6 @@ const TransactionsList = () => {
 
     useEffect(() => {
 
-        console.log(query)
-
         if (Object.keys(query).length) {
 
             setChipData(query.map(item => ({ key: `${item.key}`, label: `${item.key}:${item.value}` })))
@@ -126,7 +124,7 @@ const TransactionsList = () => {
             let filteredTransactions
 
             filteredTransactions = transactions.length ? transactions.filter(transaction => Object.entries(query).every(([key, value]) => transaction[value.key] === value.value)) : []
-            console.log(filteredTransactions)
+
             setRows(filteredTransactions?.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
         } else {
             setChipData([])

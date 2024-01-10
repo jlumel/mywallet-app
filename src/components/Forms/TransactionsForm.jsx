@@ -5,25 +5,21 @@ import { useUserContext } from '../../context/userContext'
 import { fetchAPI } from '../../utils'
 import EditIcon from '@mui/icons-material/Edit'
 
-const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
+const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
 
     const { currencies, accounts, categories, subcategories } = useUserContext()
 
     const [formData, setFormData] = useState({
         type: "",
         currencyAcronym: "",
-        amount: "",
         accountName: "",
         categoryName: "",
         subcategoryName: "",
-        description: ""
     })
 
     const [open, setOpen] = useState(false)
 
     const [errorAmount, setErrorAmount] = useState(false)
-
-    const isButtonDisabled = !formData.type || !formData.currencyAcronym || !formData.amount || isNaN(formData.amount) || !formData.accountName || !formData.categoryName
 
     const handleClose = () => {
         setOpen(false)
@@ -50,45 +46,49 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
         }
 
         setFormData(updatedFormData)
-
-        prop == "amount" && isNaN(event.target.value) ? setErrorAmount(true) : null
-
     }
 
     const handleSubmit = event => {
-        event.preventDefault()
-        fetchAPI('post', `/api/transactions`, formData)
-            .then(res => {
-                if (!res.data) {
-                    setAlert(true)
-                    setErrorText(res.response.data.message)
-                    setError(true)
-                } else {
-                    setAlert(true)
-                    setError(false)
-                    setErrorText("")
-                }
-                setFormData(
-                    {
-                        type: "",
-                        currencyAcronym: "",
-                        amount: "",
-                        accountName: "",
-                        categoryName: "",
-                        subcategoryName: "",
-                        description: ""
-                    }
-                )
-                setSubmit(true)
-            })
-            .catch(err => {
-                setError(true)
-                setErrorText("An error has ocurred")
-                setSubmit(true)
-                return err
-            })
 
-        handleClose()
+        event.preventDefault()
+
+        if (isNaN(event.target.amount.value)) {
+            setErrorAmount(true)
+        } else {
+
+            setErrorAmount(false)
+
+            fetchAPI('post', `/api/transactions`, { ...formData, amount: event.target.amount.value, description: event.target.description.value })
+                .then(res => {
+                    if (!res.data) {
+                        setAlert(true)
+                        setErrorText(res.response.data.message)
+                        setError(true)
+                    } else {
+                        setAlert(true)
+                        setError(false)
+                        setErrorText("")
+                    }
+                    setFormData(
+                        {
+                            type: "",
+                            currencyAcronym: "",
+                            accountName: "",
+                            categoryName: "",
+                            subcategoryName: "",
+                        }
+                    )
+                    setSubmit(true)
+                })
+                .catch(err => {
+                    setError(true)
+                    setErrorText("An error has ocurred")
+                    setSubmit(true)
+                    return err
+                })
+
+            handleClose()
+        }
     }
 
     const StyledModal = styled(Modal)`
@@ -114,7 +114,7 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
 
         <>
 
-            <Box sx={{ '& > :not(style)': { mt: 1, mr:1 }, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ '& > :not(style)': { mt: 1, mr: 1 }, display: 'flex', justifyContent: 'flex-end' }}>
                 <Fab onClick={handleOpen} color="primary" aria-label="add">
                     <EditIcon />
                 </Fab>
@@ -218,25 +218,21 @@ const TransactionsForm = ({setAlert, setError, setErrorText, setSubmit}) => {
                             required={true}
                             label="Amount"
                             name="amount"
-                            value={formData.amount}
-                            onChange={handleChange("amount")}
                             fullWidth
                             margin="normal"
-                            error={isNaN(formData.amount) && errorAmount}
-                            helperText={isNaN(formData.amount) && errorAmount && "Type only numbers"}
+                            error={errorAmount}
+                            helperText={errorAmount && "Type only numbers"}
                         />
 
                         <TextField
 
                             label="Description"
                             name="description"
-                            value={formData.description}
-                            onChange={handleChange("description")}
                             fullWidth
                             margin="normal"
                         />
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
-                            <Button disabled={isButtonDisabled} type="submit" variant="contained" color="primary">
+                            <Button type="submit" variant="contained" color="primary">
                                 Add
                             </Button>
                         </Box>

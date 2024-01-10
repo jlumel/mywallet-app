@@ -3,7 +3,7 @@ import axios from "axios"
 export const fetchAPI = async (method, url, body) => {
 
   const instance = axios.create({
-    baseURL: 'https://my-wallet-api-hm10.onrender.com',
+    baseURL: 'http://localhost:8080',
     withCredentials: true
   })
 

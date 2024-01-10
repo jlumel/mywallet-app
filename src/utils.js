@@ -3,7 +3,7 @@ import axios from "axios"
 export const fetchAPI = async (method, url, body, token) => {
 
   const instance = axios.create({
-    baseURL: import.meta.env.VITE_DEV_ENVIRONMENT == "true" ? 'http://localhost:8080' : 'https://my-wallet-api-hm10.onrender.com',
+    baseURL: import.meta.env.VITE_DEV_ENVIRONMENT == "true" ? 'http://localhost:8080' : 'https://mywalletapi.lumel.dev',
     headers: {
       'Authorization': `Bearer ${token}`
     },

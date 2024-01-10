@@ -10,7 +10,7 @@ const CreateModifyForm = ({ action }) => {
 
   const setFormAction = action === 'create'
 
-  const { currencies, accounts, categories, subcategories, setCurrencies, setAccounts, setCategories, setSubcategories } = useUserContext()
+  const { token, currencies, accounts, categories, subcategories, setCurrencies, setAccounts, setCategories, setSubcategories } = useUserContext()
 
   const [formData, setFormData] = useState({
     name: "",
@@ -134,7 +134,7 @@ const CreateModifyForm = ({ action }) => {
 
     switch (action) {
       case 'create':
-        fetchAPI('post', `/api/${parsedWalletItem}`, formData)
+        fetchAPI('post', `/api/${parsedWalletItem}`, formData, token)
           .then(res => {
             if (!res.data) {
               setErrorText(res.response.data.message)
@@ -163,7 +163,7 @@ const CreateModifyForm = ({ action }) => {
       case 'modify':
         const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
         const id = selectedRegistry._id
-        fetchAPI('put', `/api/${parsedWalletItem}/${id}`, formData)
+        fetchAPI('put', `/api/${parsedWalletItem}/${id}`, formData, token)
           .then(res => {
             if (!res.data) {
               setErrorText(res.response.data.message)
@@ -193,13 +193,14 @@ const CreateModifyForm = ({ action }) => {
   }
 
   const handleDelete = event => {
+    
     event.preventDefault()
 
     const parsedWalletItem = parseWalletItem(walletItem)
 
     const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
     const id = selectedRegistry._id
-    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?${walletItem == "currency" ? "acronym" : "name"}=${registry}`)
+    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?${walletItem == "currency" ? "acronym" : "name"}=${registry}`, null, token)
       .then(res => {
         if (!res.data) {
           setErrorText(res.response.data.message)
@@ -228,7 +229,7 @@ const CreateModifyForm = ({ action }) => {
   useEffect(() => {
     if (submit) {
       setLoading(true)
-      updateData({ setAccounts, setCurrencies, setCategories, setSubcategories })
+      updateData({ setAccounts, setCurrencies, setCategories, setSubcategories }, token)
         .finally(() => {
           submit ? setAlert(true) : null
           setTimeout(() => {

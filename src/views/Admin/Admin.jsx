@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom"
 
 const Admin = () => {
 
-    const { setIsLogged, setUsername } = useUserContext()
+    const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(false)
 
@@ -54,9 +54,11 @@ const Admin = () => {
 
     useEffect(() => {
 
+        !isLogged && navigate('/')
+
         setLoading(true)
 
-        updateSession(setIsLogged, setUsername)
+        updateSession(setIsLogged, setUsername, token, setToken)
             .finally(() => {
                 setLoading(false)
             })

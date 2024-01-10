@@ -21,7 +21,7 @@ const NavBar = () => {
 
     const navigate = useNavigate()
 
-    const { isLogged, username, setIsLogged, setUsername } = useUserContext()
+    const { isLogged, username, token, setIsLogged, setUsername, setToken } = useUserContext()
 
     const settings = ['Change Password', 'Logout'];
 
@@ -85,15 +85,17 @@ const NavBar = () => {
 
     const logout = () => {
 
-        fetchAPI('post', '/api/user/logout', null)
+        fetchAPI('post', '/api/user/logout', null, token)
             .then(res => {
                 setIsLogged(false)
                 setUsername("")
+                setToken("")
+                localStorage.clear()
                 handleCloseUserMenu('Logout')
                 navigate('/')
             })
             .catch(err => {
-                console.log("Error trying to logout")
+                return err
             })
     }
 

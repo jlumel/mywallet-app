@@ -10,7 +10,7 @@ const Form = ({ type }) => {
 
     const navigate = useNavigate()
 
-    const { setUsername, setIsLogged } = useUserContext()
+    const { token, setUsername, setIsLogged, setToken } = useUserContext()
 
     const [formData, setFormData] = useState({
         username: '',
@@ -56,6 +56,8 @@ const Form = ({ type }) => {
                         if (res.data.username) {
                             setIsLogged(true)
                             setUsername(res.data.username)
+                            setToken(res.data.token)
+                            localStorage.setItem('token', res.data.token)
                             setLoading(false)
                             navigate('/')
                         } else {
@@ -120,7 +122,7 @@ const Form = ({ type }) => {
 
             case 'Change password':
                 setLoading(true)
-                fetchAPI('put', '/api/user/password', formData)
+                fetchAPI('put', '/api/user/password', formData, token)
                     .then(res => {
                         if (!res.data) {
                             setErrorText(res.response.data.message)
@@ -168,7 +170,7 @@ const Form = ({ type }) => {
     useEffect(() => {
 
         setLoading(true)
-        updateSession(setIsLogged, setIsLogged)
+        updateSession(setIsLogged, setIsLogged, token, setToken)
             .finally(() => {
                 submit ? setAlert(true) : null
                 setTimeout(() => {

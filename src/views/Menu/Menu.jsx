@@ -8,7 +8,7 @@ import { updateSession } from "../../utils"
 
 const Menu = () => {
 
-    const { isLogged, setIsLogged, setUsername } = useUserContext()
+    const { token, isLogged, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(true)
 
@@ -16,7 +16,7 @@ const Menu = () => {
 
         setLoading(true)
 
-        updateSession(setIsLogged, setUsername)
+        updateSession(setIsLogged, setUsername, token, setToken)
             .finally(() => {
                 setLoading(false)
             })

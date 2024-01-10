@@ -16,7 +16,7 @@ const TransactionsList = () => {
 
     const navigate = useNavigate()
 
-    const { transactions, currencies, query, setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
+    const { token, transactions, currencies, query, setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
 
     const [rows, setRows] = useState([])
 
@@ -103,7 +103,7 @@ const TransactionsList = () => {
     useEffect(() => {
 
         setLoading(true)
-        updateData({ setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories })
+        updateData({ setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories }, token)
             .finally(() => {
                 setLoading(false)
                 if (submit) {

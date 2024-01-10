@@ -4,19 +4,24 @@ import Loader from '../../components/Loader'
 import { useState, useEffect } from "react"
 import { updateSession } from "../../utils"
 import PageTitle from '../../components/PageTitle'
+import { useNavigate } from "react-router"
 
 const ChangePassword = () => {
 
-    const { setIsLogged, setUsername } = useUserContext()
+    const navigate = useNavigate()
+
+    const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState()
 
 
     useEffect(() => {
 
+        !isLogged && navigate('/')
+
         setLoading(true)
 
-        updateSession(setIsLogged, setUsername)
+        updateSession(setIsLogged, setUsername, token, setToken)
             .finally(() => {
                 setLoading(false)
             })

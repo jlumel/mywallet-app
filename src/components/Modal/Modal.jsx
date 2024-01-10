@@ -19,9 +19,14 @@ const style = {
 
 const ConfirmationModal = ({ isButtonDisabled, handleDelete }) => {
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [open, setOpen] = useState(false)
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+
+    const handleDeleteClose = event => {
+        handleDelete(event)
+        setOpen(false)
+    }
 
     return (
         <>
@@ -49,7 +54,7 @@ const ConfirmationModal = ({ isButtonDisabled, handleDelete }) => {
                         Are you sure you want to delete this registry?
                     </Typography>
                     <Box>
-                        <Button color="error" onClick={handleDelete}>Yes</Button>
+                        <Button color="error" onClick={handleDeleteClose}>Yes</Button>
                         <Button variant="contained" onClick={handleClose}>No</Button>
                     </Box>
                 </Box>

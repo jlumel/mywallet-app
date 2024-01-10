@@ -5,11 +5,13 @@ export const UserContext = React.createContext([])
 
 export const useUserContext = () => useContext(UserContext)
 
-const UserProvider = ({ children }) => {
+const UserProvider = ({ children, defaultToken }) => {
 
     const [username, setUsername] = useState("")
 
     const [isLogged, setIsLogged] = useState(false)
+
+    const [token, setToken] = useState(defaultToken)
 
     const [transactions, setTransactions] = useState([])
 
@@ -28,15 +30,15 @@ const UserProvider = ({ children }) => {
     const [categoryFilter, setCategoryFilter] = useState({ active: false, param: { key: "categoryName", value: "" } })
 
     useEffect(() => {
-        updateSession(setIsLogged, setUsername)
+        updateSession(setIsLogged, setUsername, token, setToken)
     }, [])
 
     useEffect(() => {
-        isLogged && updateData({ setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories })
+        isLogged && updateData({ setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories }, token)
     }, [isLogged])
 
     return <UserContext.Provider value={{ 
-        username, isLogged, transactions, accounts, currencies, categories, subcategories, query, accountFilter, currencyFilter, categoryFilter, setIsLogged, setUsername, setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter}}>
+        username, isLogged, token, transactions, accounts, currencies, categories, subcategories, query, accountFilter, currencyFilter, categoryFilter, setIsLogged, setUsername, setToken, setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter}}>
 
         {children}
 

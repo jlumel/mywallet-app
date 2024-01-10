@@ -4,19 +4,23 @@ import { updateSession } from '../../utils'
 import Loader from '../../components/Loader'
 import { useUserContext } from "../../context/userContext"
 import AccountsList from "../../components/AccountsList/AccountsList"
-import { Container } from "@mui/material"
+import { useNavigate } from "react-router"
 
 const Accounts = () => {
 
-    const { setIsLogged, setUsername } = useUserContext()
+    const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(false)
 
+    const navigate = useNavigate()
+
     useEffect(() => {
+
+        !isLogged && navigate('/')
 
         setLoading(true)
 
-        updateSession(setIsLogged, setUsername)
+        updateSession(setIsLogged, setUsername, token, setToken)
             .finally(() => {
                 setLoading(false)
             })

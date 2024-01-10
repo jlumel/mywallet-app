@@ -1,5 +1,5 @@
 import { Switch, Box, Typography, FormControlLabel, FormGroup, Select, MenuItem } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useUserContext } from "../../context/userContext"
 
 const FilterMenu = () => {

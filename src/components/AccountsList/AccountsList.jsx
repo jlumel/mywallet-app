@@ -10,22 +10,22 @@ const AccountsList = () => {
 
     const navigate = useNavigate()
 
-    const { accounts, currencies, setAccounts, setCurrencies, setQuery } = useUserContext()
+    const { token, accounts, currencies, setAccounts, setCurrencies, setAccountFilter } = useUserContext()
 
     const [loading, setLoading] = useState(false)
 
     const [totals, setTotals] = useState([])
 
     const handleClick = query => {
-        setQuery([query])
+        setAccountFilter({ active: true, param: { key: "accountName", value: query.value } })
         navigate('/transactions')
     }
 
     useEffect(() => {
         setLoading(true)
-        updateData({ setAccounts, setCurrencies })
+        updateData({ setAccounts, setCurrencies }, token)
             .then(() => {
-                fetchAPI('post', '/api/accounts/totals')
+                fetchAPI('post', '/api/accounts/totals', null, token)
                     .then(res => {
                         if (res.data) {
                             setTotals(res.data)

@@ -14,7 +14,7 @@ const TransactionDetail = () => {
 
     const { id } = useParams()
 
-    const { transactions, currencies, categories, subcategories, setTransactions, setCurrencies, setCategories, setSubcategories } = useUserContext()
+    const { isLogged, token, transactions, currencies, categories, subcategories, setTransactions, setCurrencies, setCategories, setSubcategories } = useUserContext()
 
     const [loading, setLoading] = useState(false)
 
@@ -43,7 +43,7 @@ const TransactionDetail = () => {
 
         if (action == "confirm") {
 
-            fetchAPI('put', `/api/transactions/${id}`, formData)
+            fetchAPI('put', `/api/transactions/${id}`, formData, token)
                 .then(res => {
                     if (!res.data) {
                         setErrorText(res.response.data.message)
@@ -80,17 +80,19 @@ const TransactionDetail = () => {
 
     const handleDelete = () => {
 
-        fetchAPI('delete', `/api/transactions/${id}`)
+        fetchAPI('delete', `/api/transactions/${id}`, null, token)
             .then(res => {
                 if (!res.data) {
                     setErrorText(res.response.data.message)
                     setError(true)
+                    setSubmit(true)
                 } else {
                     setError(false)
                     setErrorText("")
                     setDeleted(true)
+                    setSubmit(true)
+                    navigate()
                 }
-                setSubmit(true)
             })
             .catch(err => {
                 setError(true)
@@ -102,18 +104,25 @@ const TransactionDetail = () => {
 
     useEffect(() => {
 
+        !isLogged && navigate('/')
+
         setLoading(true)
-        updateData({ setTransactions, setCurrencies, setCategories, setSubcategories })
+        updateData({ setTransactions, setCurrencies, setCategories, setSubcategories }, token)
             .finally(() => {
-                submit ? setAlert(true) : null
-                setTimeout(() => {
-                    submit ? setAlert(false) : null
-                    if (deleted) {
-                        navigate('/transactions')
-                    }
-                }, 6000)
                 setLoading(false)
             })
+    }, [])
+
+    useEffect(() => {
+
+        submit ? setAlert(true) : null
+        setTimeout(() => {
+            submit ? setAlert(false) : null
+            if (deleted) {
+                navigate('/transactions')
+            }
+        }, 6000)
+
     }, [submit])
 
     useEffect(() => {
@@ -151,8 +160,9 @@ const TransactionDetail = () => {
                             </p>
                             <p>Subcategory:
                                 <select name="subcategoryName" id="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
-                                    {subcategories.map(subcategory =>
-                                        <option key={subcategory._id} value={subcategory.name}>{subcategory.name}</option>)}
+                                    {subcategories.find(item => item.categoryName == formData.categoryName) ? subcategories.map(item =>
+                                        item.categoryName == formData.categoryName && <option key={item._id} value={item.name}>{item.name}</option>
+                                    ) : <option selected value={`No subcategories found`}>No subcategories found</option>}
                                 </select>
                             </p>
                             <p>Currency: {transaction.currencyAcronym}</p>
@@ -164,11 +174,11 @@ const TransactionDetail = () => {
                         :
                         <Paper sx={{ cursor: 'pointer', textAlign: 'center', fontSize: '2rem', width: '50%', margin: 'auto' }}>
                             <p>Account: {transaction.accountName}</p>
-                            <p>Category: {transaction.categoryName}</p>
-                            {transaction.subcategoryName ? <p>Subcategory: {transaction.subcategoryName}</p> : <p>Subcategory: -</p>}
+                            <p>Category: {formData.categoryName}</p>
+                            {formData.subcategoryName ? <p>Subcategory: {formData.subcategoryName}</p> : <p>Subcategory: -</p>}
                             <p>Currency: {transaction.currencyAcronym}</p>
                             <p>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
-                            <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{transaction.amount}</p>
+                            <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{formData.amount}</p>
                             <p>Description: {transaction.description || "-"}</p>
                             <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                         </Paper>}

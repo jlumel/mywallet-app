@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit'
 
 const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
 
-    const { currencies, accounts, categories, subcategories } = useUserContext()
+    const { token, currencies, accounts, categories, subcategories } = useUserContext()
 
     const [formData, setFormData] = useState({
         type: "",
@@ -58,7 +58,7 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
 
             setErrorAmount(false)
 
-            fetchAPI('post', `/api/transactions`, { ...formData, amount: event.target.amount.value, description: event.target.description.value })
+            fetchAPI('post', `/api/transactions`, { ...formData, amount: event.target.amount.value, description: event.target.description.value }, token)
                 .then(res => {
                     if (!res.data) {
                         setAlert(true)

@@ -1,8 +1,21 @@
 import { Container, Box } from "@mui/material"
 import TransactionsList from "../../components/TransactionsList"
 import PageTitle from "../../components/PageTitle/PageTitle"
+import { useUserContext } from "../../context/userContext"
+import { useNavigate } from "react-router"
+import { useEffect } from "react"
 
 const Transactions = () => {
+
+    const { isLogged } = useUserContext()
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+
+        !isLogged && navigate('/')
+
+    }, [])
 
     return (
         <Container>

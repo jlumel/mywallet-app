@@ -21,7 +21,7 @@ const theme = createTheme({
 
 function App() {
 
-  const { isLogged, setIsLogged, setUsername } = useUserContext()
+  const { isLogged, token, setIsLogged, setUsername, setToken } = useUserContext()
 
   const [loading, setLoading] = useState(true)
 
@@ -29,7 +29,7 @@ function App() {
 
     setLoading(true)
 
-    updateSession(setIsLogged, setUsername)
+    updateSession(setIsLogged, setUsername, token, setToken)
       .finally(() => {
         setLoading(false)
       })
@@ -44,12 +44,13 @@ function App() {
           <Route path='/' element={<Menu />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          {isLogged && <Route path='/change-password' element={<ChangePassword />} />}
-          {isLogged && <Route path='/transactions' element={<Transactions />} />}
-          {isLogged && <Route path='/accounts' element={<Accounts />} />}
-          {isLogged && <Route path='/wallet-items' element={<Admin />} />}
-          {isLogged && <Route path='/wallet-items/:action' element={<AdminFormContainer />} />}
-          {isLogged && <Route path='/transactions/:id' element={<TransactionDetail />} />}
+          <Route path='/change-password' element={<ChangePassword />} />
+          <Route path='/transactions' element={<Transactions />} />
+          <Route path='/accounts' element={<Accounts />} />
+          <Route path='/wallet-items' element={<Admin />} />
+          <Route path='/wallet-items/:action' element={<AdminFormContainer />} />
+          <Route path='/transactions/:id' element={<TransactionDetail />} />
+          <Route path='*' element={<Menu />} />
         </Routes>
       </ThemeProvider>)}
     </>

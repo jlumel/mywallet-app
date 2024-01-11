@@ -1,4 +1,4 @@
-import { Typography, Container, Box, styled } from "@mui/material";
+import { Typography, Container, Box, styled } from "@mui/material"
 
 const ResponsiveTypography = styled(Typography)(({ theme }) => ({
     [theme.breakpoints.down('sm')]: {
@@ -18,7 +18,7 @@ const PageTitle = ({ text }) => {
                 <ResponsiveTypography marginTop="2rem" variant="h4">{text}</ResponsiveTypography>
             </Box>
         </Container>
-    );
-};
+    )
+}
 
 export default PageTitle

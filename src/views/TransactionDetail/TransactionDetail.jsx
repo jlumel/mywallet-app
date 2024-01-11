@@ -1,4 +1,4 @@
-import { Container, Box, Paper, Button } from "@mui/material"
+import { Container, Box, Paper, Button, Select, MenuItem, TextField } from "@mui/material"
 import { useParams } from "react-router-dom"
 import { useUserContext } from '../../context/userContext'
 import { useEffect, useState } from "react"
@@ -151,24 +151,34 @@ const TransactionDetail = () => {
                 }}>
                     {edit ?
                         <Paper sx={{ cursor: 'pointer', textAlign: 'center', fontSize: '2rem', width: '50%', margin: 'auto' }}>
-                            <p>Account: {transaction.accountName}</p>
-                            <p>Category:
-                                <select name="categoryName" id="categoryName" value={formData.categoryName} onChange={handleChange('categoryName')}>
+                            <p style={{ marginBottom: '0' }}>Account: {transaction.accountName}</p>
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <p style={{ marginBottom: '0' }}>Category:
+                                </p>
+                                <Select sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="categoryName" value={formData.categoryName} onChange={handleChange('categoryName')}>
                                     {categories.map(category =>
-                                        <option key={category._id} value={category.name}>{category.name}</option>)}
-                                </select>
-                            </p>
-                            <p>Subcategory:
-                                <select name="subcategoryName" id="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
+                                        <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>)}
+                                </Select>
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <p style={{ marginBottom: '0' }}>Subcategory:
+                                </p>
+                                <Select sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
                                     {subcategories.find(item => item.categoryName == formData.categoryName) ? subcategories.map(item =>
-                                        item.categoryName == formData.categoryName && <option key={item._id} value={item.name}>{item.name}</option>
-                                    ) : <option selected value={`No subcategories found`}>No subcategories found</option>}
-                                </select>
-                            </p>
+                                        item.categoryName == formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
+                                    ) : <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>}
+                                </Select>
+                            </Box>
                             <p>Currency: {transaction.currencyAcronym}</p>
-                            <p>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
-                            <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}<input type="text" value={formData.amount} onChange={handleAmountChange} /></p>
-                            <p>Description: <input type="text" value={formData.description} onChange={handleChange('description')} /></p>
+                            <p style={{ marginBottom: '0' }}>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <p style={{ marginBottom: '0' }}>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
+                                <TextField sx={{ '& .MuiInputBase-root': { padding: '0' }, width: '10rem', height: '1.7rem', margin: '2.5rem 0 auto' }} type="text" value={formData.amount} onChange={handleAmountChange} />
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <p style={{ marginBottom: '0' }}>Description: </p>
+                                <TextField sx={{ '& .MuiInputBase-root': { padding: '0' }, width: '8.7rem', height: '1.7rem', margin: '2.5rem 0 auto' }} type="text" value={formData.description} onChange={handleChange('description')} />
+                            </Box>
                             <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                         </Paper>
                         :

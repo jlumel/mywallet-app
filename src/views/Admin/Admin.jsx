@@ -49,7 +49,7 @@ const Admin = () => {
     }))
 
     const handleMenu = event => {
-        navigate(`/wallet-items/${event.currentTarget.innerText.split(/\s+/)[0].toLowerCase()}`)
+        navigate(`/wallet-items/${event.target.innerText.split(/\s+/)[0].toLowerCase()}`)
     }
 
     useEffect(() => {

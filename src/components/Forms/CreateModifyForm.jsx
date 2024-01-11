@@ -159,7 +159,7 @@ const CreateModifyForm = ({ action }) => {
             setSubmit(true)
             return err
           })
-        break;
+        break
       case 'modify':
         const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
         const id = selectedRegistry._id

@@ -82,7 +82,7 @@ const Form = ({ type }) => {
                         })
                     })
 
-                break;
+                break
 
             case 'Register':
                 setLoading(true)
@@ -118,7 +118,7 @@ const Form = ({ type }) => {
                         })
                     })
 
-                break;
+                break
 
             case 'Change password':
                 setLoading(true)
@@ -152,12 +152,12 @@ const Form = ({ type }) => {
                         })
                     })
 
-                break;
+                break
         }
     }
 
     const handleChange = prop => event => {
-        setFormData({ ...formData, [prop]: event.currentTarget.value })
+        setFormData({ ...formData, [prop]: event.target.value })
         prop == "password2" && formData.password !== formData.password2 ? setErrorPass2(true) : null
         prop == "password" && formData.password.length < 4 ? setErrorPass(true) : null
         prop == "newPassword" && formData.newPassword.length < 4 ? setErrorPass(true) : null
@@ -206,7 +206,6 @@ const Form = ({ type }) => {
                             margin="normal"
                             required
                             fullWidth
-                            id="username"
                             label="Username"
                             name="username"
                             autoComplete="username"
@@ -223,7 +222,6 @@ const Form = ({ type }) => {
                             name="password"
                             label="Password"
                             type={formData.showPassword ? 'text' : 'password'}
-                            id="password"
                             autoComplete="current-password"
                             value={formData.password}
                             onChange={handleChange("password")}
@@ -237,7 +235,6 @@ const Form = ({ type }) => {
                             name="newPassword"
                             label="New password"
                             type={formData.showPassword ? 'text' : 'password'}
-                            id="newPassword"
                             value={formData.newPassword}
                             onChange={handleChange("newPassword")}
                         /> : null}
@@ -250,7 +247,6 @@ const Form = ({ type }) => {
                             helperText={formData.password !== formData.password2 && errorPass2 && "Passwords do not match"}
                             name="password2"
                             label="Repeat password"
-                            id="password2"
                             value={formData.password2}
                             onChange={handleChange('password2')}
                         />}
@@ -265,7 +261,7 @@ const Form = ({ type }) => {
                 </Box>
             </Container>}
         </>
-    );
+    )
 
 
 }

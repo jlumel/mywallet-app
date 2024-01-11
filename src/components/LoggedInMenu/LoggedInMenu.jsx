@@ -26,19 +26,19 @@ const LoggedInMenu = () => {
 
     const handleMenu = event => {
 
-        switch (event.currentTarget.innerText) {
+        switch (event.target.innerText) {
 
             case 'Transactions':
                 navigate('/transactions')
-                break;
+                break
 
             case 'Accounts':
                 navigate('/accounts')
-                break;
+                break
 
             case 'Wallet Items':
                 navigate('/wallet-items')
-                break;
+                break
         }
     }
 

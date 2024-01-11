@@ -16,12 +16,12 @@ import AdminFormContainer from './views/AdminFormContainer'
 import TransactionDetail from './views/TransactionDetail/TransactionDetail'
 
 const theme = createTheme({
-  direction: 'rtl',
-});
+  direction: 'ltr',
+})
 
 function App() {
 
-  const { isLogged, token, setIsLogged, setUsername, setToken } = useUserContext()
+  const { token, setIsLogged, setUsername, setToken } = useUserContext()
 
   const [loading, setLoading] = useState(true)
 

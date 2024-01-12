@@ -52,7 +52,16 @@ export const updateData = async (setters, token) => {
     }
     if (setters.setCurrencies) {
       const response = await fetchAPI('get', '/api/currencies', null, token)
-      setters.setCurrencies(response.data)
+      setters.setCurrencies(response.data.sort((a, b) => {
+        if (a.acronym < b.acronym) {
+          return -1
+        }
+        if (a.acronym > b.acronym) {
+          return 1
+        }
+        return 0
+      })
+      )
     }
     if (setters.setCategories) {
       const response = await fetchAPI('get', '/api/categories', null, token)

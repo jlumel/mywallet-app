@@ -1,4 +1,4 @@
-import { Container, Box, Pagination, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Chip, Typography, Button } from "@mui/material"
+import { Container, Box, Pagination, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Chip } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import TableCell, { tableCellClasses } from "@mui/material/TableCell"
 import { useState, useEffect } from "react"
@@ -7,7 +7,7 @@ import Loader from "../Loader"
 import { updateData } from "../../utils"
 import TransactionsForm from "../Forms/TransactionsForm"
 import SubmitAlert from "../SubmitAlert"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import FilterMenu from "../FilterMenu/FilterMenu"
 
 const TransactionsList = () => {
@@ -16,7 +16,7 @@ const TransactionsList = () => {
 
     const navigate = useNavigate()
 
-    const { token, transactions, accounts, categories, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
+    const { token, transactions, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
 
     const [rows, setRows] = useState([])
 
@@ -151,84 +151,69 @@ const TransactionsList = () => {
 
         <>
             {loading ? <Loader /> : <Container style={{ width: '80%' }}>
-                {accounts && categories ?
-                    <>
-                        <ul
-                            style={{
-                                position: 'absolute',
-                                top: 145,
-                                left: 0,
-                                right: 0,
-                                zIndex: 3,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                flexWrap: 'wrap',
-                                listStyle: 'none',
-                                margin: 'auto'
-                            }}
-                        >
-                            {chipData.map(data => {
+                <>
+                    <ul
+                        style={{
+                            position: 'absolute',
+                            top: 145,
+                            left: 0,
+                            right: 0,
+                            zIndex: 3,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexWrap: 'wrap',
+                            listStyle: 'none',
+                            margin: 'auto'
+                        }}
+                    >
+                        {chipData.map(data => {
 
-                                return (
-                                    <ListItem key={data.key}>
-                                        <Chip
-                                            label={data.label}
-                                            onDelete={handleDeleteChip(data.key)}
-                                        />
-                                    </ListItem>
-                                )
-                            })}
-                        </ul>
-                        <SubmitAlert alert={alert} error={error} errorText={errorText} />
-                        <FilterMenu />
+                            return (
+                                <ListItem key={data.key}>
+                                    <Chip
+                                        label={data.label}
+                                        onDelete={handleDeleteChip(data.key)}
+                                    />
+                                </ListItem>
+                            )
+                        })}
+                    </ul>
+                    <SubmitAlert alert={alert} error={error} errorText={errorText} />
+                    <FilterMenu />
+                    <Box sx={{
+                        marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
+                    }}>
+
+                        <TableContainer sx={{ height: '62.3vh' }} component={Paper}>
+                            <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
+                                <TableHead>
+                                    <TableRow>
+                                        <StyledTableCell align="center">Amount</StyledTableCell>
+                                        <StyledTableCell align="center">Category</StyledTableCell>
+                                        <StyledTableCell align="center">Subcategory</StyledTableCell>
+                                        <StyledTableCell align="center">Account</StyledTableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.slice(startIndex, endIndex).map(row => (
+                                        <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#ef5350' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
+                                            <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies?.find(currency => currency.acronym == row.currencyAcronym)?.symbol}{row.amount}</StyledTableCell>
+                                            <StyledTableCell align="center">{row.category}</StyledTableCell>
+                                            <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
+                                            <StyledTableCell align="center">{row.account}</StyledTableCell>
+                                        </StyledTableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                         <Box sx={{
-                            marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
+                            width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
-
-                            <TableContainer sx={{ height: '62.3vh' }} component={Paper}>
-                                <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
-                                    <TableHead>
-                                        <TableRow>
-                                            <StyledTableCell align="center">Amount</StyledTableCell>
-                                            <StyledTableCell align="center">Category</StyledTableCell>
-                                            <StyledTableCell align="center">Subcategory</StyledTableCell>
-                                            <StyledTableCell align="center">Account</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.slice(startIndex, endIndex).map(row => (
-                                            <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#ef5350' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
-                                                <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies?.find(currency => currency.acronym == row.currencyAcronym)?.symbol}{row.amount}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.category}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
-                                                <StyledTableCell align="center">{row.account}</StyledTableCell>
-                                            </StyledTableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <Box sx={{
-                                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
-                            }}>
-                                <Pagination sx={{ margin: 'auto 17.5rem auto auto' }} count={pageCount} color="primary" page={page} onChange={handlePagination} />
-                                <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
-                            </Box>
+                            <Pagination sx={{ margin: 'auto 17.5rem auto auto' }} count={pageCount} color="primary" page={page} onChange={handlePagination} />
+                            <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
                         </Box>
-                    </>
-                    :
-                    <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 8}}>
-                        <Typography sx={{textAlign: 'center'}} variant="h5">To create a transaction you need to have at least one account and one category</Typography>
-                        <Button
-                            component={Link}
-                            to="/wallet-items/create"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 2, mb: 2, width: '20rem' }}
-                        >
-                            Manage your Wallet Items
-                        </Button>
                     </Box>
-                }
+                </>
             </Container>}
         </>
     )

@@ -10,14 +10,12 @@ const CreateModifyForm = ({ action }) => {
 
   const setFormAction = action === 'create'
 
-  const { token, currencies, accounts, categories, subcategories, setCurrencies, setAccounts, setCategories, setSubcategories } = useUserContext()
+  const { token, currencies, accounts, categories, subcategories, setAccounts, setCategories, setSubcategories } = useUserContext()
 
   const [formData, setFormData] = useState({
     name: "",
-    acronym: "",
     currencyAcronym: "",
-    categoryName: "",
-    symbol: ""
+    categoryName: ""
   }
   )
 
@@ -37,12 +35,10 @@ const CreateModifyForm = ({ action }) => {
 
   const isButtonDisabled =
     !walletItem || setFormAction && (
-      (walletItem == 'currency' && (!formData.name || !formData.acronym || !formData.symbol)) ||
       (walletItem == 'account' && (!formData.name || !formData.currencyAcronym)) ||
       (walletItem == 'category' && (!formData.name)) ||
       (walletItem == 'subcategory' && (!formData.name || !formData.categoryName))) ||
     !setFormAction && (
-      (walletItem == 'currency' && (!formData.name && !formData.acronym && !formData.symbol)) ||
       (walletItem == 'account' && (!formData.name && !formData.currencyAcronym)) ||
       (walletItem == 'category' && (!formData.name)) ||
       (walletItem == 'subcategory' && (!formData.name && !formData.categoryName))
@@ -53,8 +49,6 @@ const CreateModifyForm = ({ action }) => {
   const parseWalletItem = walletItem => {
 
     switch (walletItem) {
-      case 'currency':
-        return 'currencies'
       case 'account':
         return 'accounts'
 
@@ -70,8 +64,6 @@ const CreateModifyForm = ({ action }) => {
   const parseRegistry = walletItem => {
 
     switch (walletItem) {
-      case 'currency':
-        return currencies
       case 'account':
         return accounts
 
@@ -96,10 +88,8 @@ const CreateModifyForm = ({ action }) => {
   const handleWalletItemChange = event => {
     setFormData({
       name: "",
-      acronym: "",
       currencyAcronym: "",
-      categoryName: "",
-      symbol: ""
+      categoryName: ""
     })
     setWalletItem(event.target.value)
     setRegistry("")
@@ -111,16 +101,12 @@ const CreateModifyForm = ({ action }) => {
       setFormData({
         ...formData,
         name: "",
-        acronym: "",
-        symbol: ""
       })
     } else {
       setFormData({
         name: "",
-        acronym: "",
         currencyAcronym: "",
-        categoryName: "",
-        symbol: ""
+        categoryName: ""
       })
     }
 
@@ -146,9 +132,7 @@ const CreateModifyForm = ({ action }) => {
             setFormData(
               {
                 ...formData,
-                name: "",
-                acronym: "",
-                symbol: ""
+                name: ""
               }
             )
             setSubmit(true)
@@ -175,9 +159,7 @@ const CreateModifyForm = ({ action }) => {
             setFormData(
               {
                 ...formData,
-                name: "",
-                acronym: "",
-                symbol: ""
+                name: ""
               }
             )
             setSubmit(true)
@@ -198,9 +180,9 @@ const CreateModifyForm = ({ action }) => {
 
     const parsedWalletItem = parseWalletItem(walletItem)
 
-    const selectedRegistry = parseRegistry(walletItem).find(item => item[walletItem == "currency" ? "acronym" : "name"] == registry)
+    const selectedRegistry = parseRegistry(walletItem).find(item => item.name == registry)
     const id = selectedRegistry._id
-    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?${walletItem == "currency" ? "acronym" : "name"}=${registry}`, null, token)
+    fetchAPI('delete', `/api/${parsedWalletItem}/${id}?name=${registry}`, null, token)
       .then(res => {
         if (!res.data) {
           setErrorText(res.response.data.message)
@@ -229,7 +211,7 @@ const CreateModifyForm = ({ action }) => {
   useEffect(() => {
     if (submit) {
       setLoading(true)
-      updateData({ setAccounts, setCurrencies, setCategories, setSubcategories }, token)
+      updateData({ setAccounts, setCategories, setSubcategories }, token)
         .finally(() => {
           submit ? setAlert(true) : null
           setTimeout(() => {
@@ -269,7 +251,6 @@ const CreateModifyForm = ({ action }) => {
                 label={`Select a Wallet Item to ${action}${!setFormAction ? " or delete" : ""}`}
                 onChange={handleWalletItemChange}
               >
-                <MenuItem value="currency">Currency</MenuItem>
                 <MenuItem value="account">Account</MenuItem>
                 <MenuItem value="category">Category</MenuItem>
                 <MenuItem value="subcategory">Subcategory</MenuItem>
@@ -288,7 +269,7 @@ const CreateModifyForm = ({ action }) => {
               >
                 {
                   parseRegistry(walletItem).length ? parseRegistry(walletItem).map(item =>
-                    <MenuItem key={item._id} value={walletItem == 'currency' ? item.acronym : item.name}>{walletItem == 'currency' ? item.acronym : item.name}</MenuItem>
+                    <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
                   ) : <MenuItem selected value={`No ${parseWalletItem(walletItem)} found`}>No {parseWalletItem(walletItem)} found</MenuItem>
                 }
               </Select>
@@ -321,35 +302,6 @@ const CreateModifyForm = ({ action }) => {
                     )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
                   </Select>
                 </FormControl>
-              </>
-            )}
-
-            {walletItem === 'currency' && (
-              <>
-                <TextField
-                  label="Name"
-                  value={formData.name}
-                  onChange={handleChange('name')}
-                  fullWidth
-                  margin="normal"
-                  required={setFormAction}
-                />
-                <TextField
-                  label="Acronym"
-                  value={formData.acronym}
-                  onChange={handleChange('acronym')}
-                  fullWidth
-                  margin="normal"
-                  required={setFormAction}
-                />
-                <TextField
-                  label="Symbol"
-                  value={formData.symbol}
-                  onChange={handleChange('symbol')}
-                  fullWidth
-                  margin="normal"
-                  required={setFormAction}
-                />
               </>
             )}
 

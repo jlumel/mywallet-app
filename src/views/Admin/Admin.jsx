@@ -82,13 +82,13 @@ const Admin = () => {
                             <Grid item xs={6}>
                                 <Item onClick={handleMenu}>
                                     <CreateNewFolderRoundedIcon fontSize="large" />
-                                    <Typography fontWeight="bold">Create<span>(Accounts, categories, subcategories and currencies)</span></Typography>
+                                    <Typography fontWeight="bold">Create<span>(Accounts, categories and subcategories)</span></Typography>
                                 </Item>
                             </Grid>
                             <Grid item xs={6}>
                                 <Item onClick={handleMenu}>
                                     <BorderColorRoundedIcon fontSize="large" />
-                                    <Typography fontWeight="bold">Modify<span>(Accounts, categories, subcategories and currencies)</span> </Typography>
+                                    <Typography fontWeight="bold">Modify<span>(Accounts, categories and subcategories)</span> </Typography>
                                 </Item>
                             </Grid>
                         </Grid>

@@ -14,7 +14,7 @@ const TransactionDetail = () => {
 
     const { id } = useParams()
 
-    const { isLogged, token, transactions, currencies, categories, subcategories, setTransactions, setCurrencies, setCategories, setSubcategories } = useUserContext()
+    const { isLogged, token, transactions, currencies, categories, subcategories, setTransactions, setCategories, setSubcategories } = useUserContext()
 
     const [loading, setLoading] = useState(false)
 
@@ -107,7 +107,7 @@ const TransactionDetail = () => {
         !isLogged && navigate('/')
 
         setLoading(true)
-        updateData({ setTransactions, setCurrencies, setCategories, setSubcategories }, token)
+        updateData({ setTransactions, setCategories, setSubcategories }, token)
             .finally(() => {
                 setLoading(false)
             })
@@ -173,11 +173,11 @@ const TransactionDetail = () => {
                             <p style={{ marginBottom: '0' }}>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
                             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                 <p style={{ marginBottom: '0' }}>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
-                                <TextField sx={{ '& .MuiInputBase-root': { padding: '0' }, width: '10rem', height: '1.7rem', margin: '2.5rem 0 auto' }} type="text" value={formData.amount} onChange={handleAmountChange} />
+                                <TextField sx={{ width: '10rem', margin: '1.5rem 0 auto' }} type="text" value={formData.amount} onChange={handleAmountChange} />
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                 <p style={{ marginBottom: '0' }}>Description: </p>
-                                <TextField sx={{ '& .MuiInputBase-root': { padding: '0' }, width: '8.7rem', height: '1.7rem', margin: '2.5rem 0 auto' }} type="text" value={formData.description} onChange={handleChange('description')} />
+                                <TextField sx={{ width: '8.7rem', margin: '1.5rem 0 auto' }} type="text" value={formData.description} onChange={handleChange('description')} />
                             </Box>
                             <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                         </Paper>

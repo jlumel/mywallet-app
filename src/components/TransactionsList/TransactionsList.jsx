@@ -16,7 +16,7 @@ const TransactionsList = () => {
 
     const navigate = useNavigate()
 
-    const { token, transactions, accounts, categories, currencies, query, setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
+    const { token, transactions, accounts, categories, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
 
     const [rows, setRows] = useState([])
 
@@ -52,7 +52,7 @@ const TransactionsList = () => {
 
         key == 'accountName' && setAccountFilter({ active: false, param: { key: "accountName", value: "" } })
 
-        key == 'currencyName' && setCurrencyFilter({ active: false, param: { key: "currencyName", value: "" } })
+        key == 'currencyAcronym' && setCurrencyFilter({ active: false, param: { key: "currencyAcronym", value: "" } })
 
         key == 'categoryName' && setCategoryFilter({ active: false, param: { key: "categoryName", value: "" } })
 
@@ -103,7 +103,7 @@ const TransactionsList = () => {
     useEffect(() => {
 
         setLoading(true)
-        updateData({ setTransactions, setCurrencies, setAccounts, setCategories, setSubcategories }, token)
+        updateData({ setTransactions, setAccounts, setCategories, setSubcategories }, token)
             .finally(() => {
                 setLoading(false)
                 if (submit) {
@@ -151,7 +151,7 @@ const TransactionsList = () => {
 
         <>
             {loading ? <Loader /> : <Container style={{ width: '80%' }}>
-                {!accounts || !categories || !currencies ?
+                {accounts && categories ?
                     <>
                         <ul
                             style={{
@@ -198,7 +198,7 @@ const TransactionsList = () => {
                                     <TableBody>
                                         {rows.slice(startIndex, endIndex).map(row => (
                                             <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#ef5350' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
-                                                <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies.find(currency => currency.acronym == row.currencyAcronym).symbol}{row.amount}</StyledTableCell>
+                                                <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies?.find(currency => currency.acronym == row.currencyAcronym)?.symbol}{row.amount}</StyledTableCell>
                                                 <StyledTableCell align="center">{row.category}</StyledTableCell>
                                                 <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
                                                 <StyledTableCell align="center">{row.account}</StyledTableCell>
@@ -217,7 +217,7 @@ const TransactionsList = () => {
                     </>
                     :
                     <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 8}}>
-                        <Typography sx={{textAlign: 'center'}} variant="h5">To start creating transactions you have to create at least one account, one category and one currency</Typography>
+                        <Typography sx={{textAlign: 'center'}} variant="h5">To create a transaction you need to have at least one account and one category</Typography>
                         <Button
                             component={Link}
                             to="/wallet-items/create"

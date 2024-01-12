@@ -7,7 +7,9 @@ import EditIcon from '@mui/icons-material/Edit'
 
 const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
 
-    const { token, currencies, accounts, categories, subcategories } = useUserContext()
+    const uniqueCurrencies = new Set()
+
+    const { token, accounts, currencies, categories, subcategories } = useUserContext()
 
     const [formData, setFormData] = useState({
         type: "",
@@ -150,10 +152,24 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                                 label="Currency"
                                 onChange={handleChange("currencyAcronym")}
                                 name="currencyAcronym"
-                                disabled={currencies.length ? false : true}
+                                disabled={accounts.length ? false : true}
                             >
-                                {currencies.length ? currencies.map(currency => <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym}</MenuItem>)
-                                    : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
+                                {
+                                    accounts.length
+                                        ?
+                                        accounts.map(account => {
+
+                                            const matchingCurrency = currencies.find(currency => account.currencyAcronym == currency.acronym)
+                                            if (matchingCurrency && !uniqueCurrencies.has(matchingCurrency.acronym)) {
+                                                uniqueCurrencies.add(matchingCurrency.acronym)
+
+                                                return <MenuItem key={account.currencyAcronym} value={account.currencyAcronym}>{account.currencyAcronym}</MenuItem>
+                                            }
+                                            return null
+                                        })
+                                        :
+                                        <MenuItem selected value="No currencies found">No currencies found</MenuItem>
+                                }
 
 
                             </Select>

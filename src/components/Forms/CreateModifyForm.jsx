@@ -44,7 +44,7 @@ const CreateModifyForm = ({ action }) => {
       (walletItem == 'subcategory' && (!formData.name && !formData.categoryName))
     )
 
-    const isDeleteButtonDisabled = !walletItem || !registry
+  const isDeleteButtonDisabled = !walletItem || !registry
 
   const parseWalletItem = walletItem => {
 
@@ -80,7 +80,7 @@ const CreateModifyForm = ({ action }) => {
   }
 
   const handleChange = prop => event => {
-    !setFormAction && walletItem == "subcategory" ? setRegistry("") : null
+    !setFormAction && walletItem == "subcategory" && setRegistry("")
     setFormData({ ...formData, [prop]: event.target.value ? event.target.value : "" })
 
   }
@@ -175,7 +175,7 @@ const CreateModifyForm = ({ action }) => {
   }
 
   const handleDelete = event => {
-    
+
     event.preventDefault()
 
     const parsedWalletItem = parseWalletItem(walletItem)
@@ -213,10 +213,10 @@ const CreateModifyForm = ({ action }) => {
       setLoading(true)
       updateData({ setAccounts, setCategories, setSubcategories }, token)
         .finally(() => {
-          submit ? setAlert(true) : null
+          submit && setAlert(true)
           setTimeout(() => {
-            submit ? setAlert(false) : null
-          }, 4000)
+            submit && setAlert(false)
+          }, 3000)
           setLoading(false)
         })
     }
@@ -239,10 +239,10 @@ const CreateModifyForm = ({ action }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-      
+
           }}
         >
-          <form style={{width: '100%'}} onSubmit={handleFormSubmit}>
+          <form style={{ width: '100%' }} onSubmit={handleFormSubmit}>
             <FormControl fullWidth margin="normal">
               <InputLabel htmlFor="walletItem">Select a Wallet Item to {action}{!setFormAction ? " or delete" : ""}</InputLabel>
               <Select
@@ -257,7 +257,7 @@ const CreateModifyForm = ({ action }) => {
               </Select>
             </FormControl>
 
-            {!setFormAction && walletItem && walletItem != "subcategory" ? <FormControl fullWidth margin="normal">
+            {!setFormAction && walletItem && walletItem != "subcategory" && <FormControl fullWidth margin="normal">
               <InputLabel htmlFor="registry">{parseRegistry(walletItem).length ? `Select a${walletItem == 'account' ? "n" : ""} ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}</InputLabel>
               <Select
                 id="registry"
@@ -273,7 +273,7 @@ const CreateModifyForm = ({ action }) => {
                   ) : <MenuItem selected value={`No ${parseWalletItem(walletItem)} found`}>No {parseWalletItem(walletItem)} found</MenuItem>
                 }
               </Select>
-            </FormControl> : null}
+            </FormControl>}
 
             {walletItem === 'account' && (
               <>
@@ -298,7 +298,7 @@ const CreateModifyForm = ({ action }) => {
                   >
                     {currencies.length ? currencies.map(currency => (
 
-                      <MenuItem key={currency._id} value={currency.acronym}>{currency.name}</MenuItem>
+                      <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym} - {currency.name}</MenuItem>
                     )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
                   </Select>
                 </FormControl>
@@ -338,7 +338,7 @@ const CreateModifyForm = ({ action }) => {
                   </Select>
                 </FormControl>
 
-                {!setFormAction ? <FormControl fullWidth margin="normal">
+                {!setFormAction && <FormControl fullWidth margin="normal">
                   <InputLabel htmlFor="registry">{parseRegistry("subcategory").find(item => item.categoryName === formData.categoryName)
                     ? "Select a subcategory to modify or delete"
                     : "No subcategories found"
@@ -357,7 +357,7 @@ const CreateModifyForm = ({ action }) => {
                       ) : <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>
                     }
                   </Select>
-                </FormControl> : null}
+                </FormControl>}
 
                 <TextField
                   label="Name"
@@ -369,13 +369,13 @@ const CreateModifyForm = ({ action }) => {
                 />
               </>
             )}
-           <Box sx={{ margin: '2rem auto', display: 'flex', justifyContent: 'space-around', width: '50%' }}>
+            <Box sx={{ margin: '2rem auto', display: 'flex', justifyContent: 'space-around', width: '50%' }}>
               <Button
                 className="createModifyButton"
                 type="submit"
                 variant="contained"
                 color="primary"
-                sx={{width: '40%'}}
+                sx={{ width: '40%' }}
                 disabled={isButtonDisabled}
               >
                 {setFormAction ? 'Create' : 'Modify'}

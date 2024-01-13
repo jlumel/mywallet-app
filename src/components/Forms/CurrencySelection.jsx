@@ -59,7 +59,7 @@ const CurrencySelection = () => {
             if (alert) {
                 setTimeout(() => {
                     setAlert(false)
-                }, 4000)
+                }, 3000)
             } else {
                 setLoading(true)
                 updateData({ setAccounts, setCategories, setSubcategories }, token)
@@ -90,7 +90,7 @@ const CurrencySelection = () => {
                         fullWidth
                         onChange={handleChange}
                     >
-                        {currencies.map(currency => <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym}</MenuItem>)}
+                        {currencies.map(currency => <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym} - {currency.name}</MenuItem>)}
                     </Select>
                 </FormControl>
                 <Button disabled={!formData.currencyAcronym} type="submit" variant="contained">Continue</Button>

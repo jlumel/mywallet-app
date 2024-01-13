@@ -8,6 +8,7 @@ import './LoggedInMenu.css'
 import PageTitle from '../PageTitle'
 import logo from '../../assets/logo.ico'
 import { useUserContext } from "../../context/userContext"
+import { capitalizeFirstLetter } from "../../utils"
 
 const LoggedInMenu = () => {
 
@@ -26,39 +27,31 @@ const LoggedInMenu = () => {
 
     const handleMenu = event => {
 
-        switch (event.target.innerText) {
-
-            case 'Transactions':
-                navigate('/transactions')
-                break
-
-            case 'Accounts':
-                navigate('/accounts')
-                break
-
-            case 'Wallet Items':
-                navigate('/wallet-items')
-                break
+        if (event.target.tagName.toLowerCase() === 'path') {
+            const dataId = event.target.parentNode.getAttribute('data-id')
+            navigate(`${dataId}`)
+        } else {
+            navigate(`${event.target.dataset.id}`)
         }
     }
 
     return (
         <Container>
 
-            <PageTitle text={'Welcome ' + username} />
+            <PageTitle text={`Welcome ${capitalizeFirstLetter(username)}`} />
 
             <Box sx={{
                 height: '75vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
             }}>
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 2, md: 2 }}>
                     <Grid item xs={6}>
-                        <Item className="items" onClick={handleMenu}><ListAltRoundedIcon fontSize="large" /><Typography fontWeight="bold">Transactions</Typography></Item>
+                        <Item data-id="transactions" onClick={handleMenu}><ListAltRoundedIcon data-id="transactions" fontSize="large" /><Typography data-id="transactions" fontWeight="bold">Transactions</Typography></Item>
                     </Grid>
                     <Grid item xs={6}>
-                        <Item className="items" onClick={handleMenu}><AccountBalanceWalletRoundedIcon fontSize="large" /><Typography fontWeight="bold">Accounts</Typography></Item>
+                        <Item data-id="accounts" onClick={handleMenu}><AccountBalanceWalletRoundedIcon titleAccess="accounts" data-id="accounts" fontSize="large" /><Typography data-id="accounts" fontWeight="bold">Accounts</Typography></Item>
                     </Grid>
                     <Grid item xs={6}>
-                        <Item className="items" onClick={handleMenu}><PostAddRoundedIcon fontSize="large" /><Typography fontWeight="bold">Wallet Items</Typography></Item>
+                        <Item data-id="wallet-items" onClick={handleMenu}><PostAddRoundedIcon data-id="wallet-items" fontSize="large" /><Typography data-id="wallet-items" fontWeight="bold">Wallet Items</Typography></Item>
                     </Grid>
                     <Grid item xs={6}>
                         <Item className="logoItem"><img className="logoMenu" src={logo} alt="my wallet" /></Item>

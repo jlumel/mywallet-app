@@ -158,9 +158,9 @@ const Form = ({ type }) => {
 
     const handleChange = prop => event => {
         setFormData({ ...formData, [prop]: event.target.value })
-        prop == "password2" && formData.password !== formData.password2 ? setErrorPass2(true) : null
-        prop == "password" && formData.password.length < 4 ? setErrorPass(true) : null
-        prop == "newPassword" && formData.newPassword.length < 4 ? setErrorPass(true) : null
+        prop == "password2" && formData.password !== formData.password2 && setErrorPass2(true)
+        prop == "password" && formData.password.length < 4 && setErrorPass(true)
+        prop == "newPassword" && formData.newPassword.length < 4 && setErrorPass(true)
     }
 
     const handleCheckboxChange = () => {
@@ -172,10 +172,10 @@ const Form = ({ type }) => {
         setLoading(true)
         updateSession(setIsLogged, setIsLogged, token, setToken)
             .finally(() => {
-                submit ? setAlert(true) : null
+                submit && setAlert(true)
                 setTimeout(() => {
-                    submit ? setAlert(false) : null
-                }, 4000)
+                    submit && setAlert(false)
+                }, 3000)
                 setLoading(false)
                 setLoading(false)
             })
@@ -202,7 +202,7 @@ const Form = ({ type }) => {
                     }}
                 >
                     <form onSubmit={handleSubmit}>
-                        {type != 'Change password' ? <TextField
+                        {type != 'Change password' && <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -212,8 +212,8 @@ const Form = ({ type }) => {
                             autoFocus
                             value={formData.username}
                             onChange={handleChange('username')}
-                        /> : null}
-                        {type != "Change password" ? <TextField
+                        />}
+                        {type != "Change password" && <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -225,8 +225,8 @@ const Form = ({ type }) => {
                             autoComplete="current-password"
                             value={formData.password}
                             onChange={handleChange("password")}
-                        /> : null}
-                        {type == "Change password" ? <TextField
+                        />}
+                        {type == "Change password" && <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -237,7 +237,7 @@ const Form = ({ type }) => {
                             type={formData.showPassword ? 'text' : 'password'}
                             value={formData.newPassword}
                             onChange={handleChange("newPassword")}
-                        /> : null}
+                        />}
                         {type == 'Register' && <TextField
                             margin="normal"
                             required

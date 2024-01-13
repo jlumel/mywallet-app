@@ -108,8 +108,8 @@ const TransactionsList = () => {
                 setLoading(false)
                 if (submit) {
                     setTimeout(() => {
-                        submit ? setAlert(false) : null
-                    }, 4000)
+                        submit && setAlert(false)
+                    }, 3000)
                 }
             })
 

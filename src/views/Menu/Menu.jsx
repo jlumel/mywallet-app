@@ -4,12 +4,12 @@ import { useUserContext } from "../../context/userContext"
 import { useState } from "react"
 import Loader from "../../components/Loader"
 import { useEffect } from "react"
-import { updateSession } from "../../utils"
+import { updateData, updateSession } from "../../utils"
 import { CurrencySelection } from '../../components/Forms'
 
 const Menu = () => {
 
-    const { token, isLogged, setToken, setIsLogged, setUsername } = useUserContext()
+    const { token, isLogged, accounts, setToken, setIsLogged, setUsername, setAccounts } = useUserContext()
 
     const [loading, setLoading] = useState(true)
 
@@ -19,14 +19,16 @@ const Menu = () => {
 
         updateSession(setIsLogged, setUsername, token, setToken)
             .finally(() => {
-                setLoading(false)
+                updateData({ setAccounts }, token)
+                    .finally(() => {
+                        setLoading(false)
+                    })
             })
-
     }, [])
 
     return (
         <>
-            {loading ? <Loader /> : (isLogged ? <LoggedInMenu /> : <LoggedOutMenu />)}
+            {loading ? <Loader /> : (isLogged ? accounts.length ? <LoggedInMenu /> : <CurrencySelection /> : <LoggedOutMenu />)}
         </>
     )
 }

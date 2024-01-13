@@ -34,7 +34,7 @@ const UserProvider = ({ children, defaultToken }) => {
     }, [])
 
     useEffect(() => {
-        isLogged && updateData({ setTransactions, setAccounts, setCurrencies, setCategories, setSubcategories }, token)
+        isLogged && updateData({ setTransactions, setCurrencies, setCategories, setSubcategories }, token)
     }, [isLogged])
 
     return <UserContext.Provider value={{ 

@@ -216,7 +216,7 @@ const CreateModifyForm = ({ action }) => {
           submit ? setAlert(true) : null
           setTimeout(() => {
             submit ? setAlert(false) : null
-          }, 6000)
+          }, 4000)
           setLoading(false)
         })
     }

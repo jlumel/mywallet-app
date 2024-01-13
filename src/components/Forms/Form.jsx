@@ -175,7 +175,7 @@ const Form = ({ type }) => {
                 submit ? setAlert(true) : null
                 setTimeout(() => {
                     submit ? setAlert(false) : null
-                }, 5000)
+                }, 4000)
                 setLoading(false)
                 setLoading(false)
             })

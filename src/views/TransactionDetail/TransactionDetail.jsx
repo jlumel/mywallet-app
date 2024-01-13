@@ -121,7 +121,7 @@ const TransactionDetail = () => {
             if (deleted) {
                 navigate('/transactions')
             }
-        }, 6000)
+        }, 4000)
 
     }, [submit])
 

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { useUserContext } from '../../context/userContext'
 import Loader from "../Loader"
 import { updateData } from "../../utils"
-import TransactionsForm from "../Forms/TransactionsForm"
+import { TransactionsForm } from "../Forms"
 import SubmitAlert from "../SubmitAlert"
 import { useNavigate } from "react-router-dom"
 import FilterMenu from "../FilterMenu/FilterMenu"
@@ -109,7 +109,7 @@ const TransactionsList = () => {
                 if (submit) {
                     setTimeout(() => {
                         submit ? setAlert(false) : null
-                    }, 6000)
+                    }, 4000)
                 }
             })
 

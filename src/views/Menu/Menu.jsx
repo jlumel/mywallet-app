@@ -5,6 +5,7 @@ import { useState } from "react"
 import Loader from "../../components/Loader"
 import { useEffect } from "react"
 import { updateSession } from "../../utils"
+import { CurrencySelection } from '../../components/Forms'
 
 const Menu = () => {
 
@@ -25,7 +26,7 @@ const Menu = () => {
 
     return (
         <>
-            {loading ? <Loader /> :(isLogged ? <LoggedInMenu /> : <LoggedOutMenu />)}
+            {loading ? <Loader /> : (isLogged ? <LoggedInMenu /> : <LoggedOutMenu />)}
         </>
     )
 }

@@ -105,7 +105,12 @@ const LoggedInMenu = () => {
                         setLoading(false)
                     })
             }
-
+        } else {
+            setLoading(true)
+            setTimeout(() => {
+                setLoading(false)
+            }, 2000)
+            
         }
 
     }, [submit])

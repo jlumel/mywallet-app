@@ -61,11 +61,9 @@ const CurrencySelection = () => {
                     setAlert(false)
                 }, 3000)
             } else {
-                setLoading(true)
                 updateData({ setAccounts, setCategories, setSubcategories }, token)
                     .then(res => {
                         navigate('/')
-                        setLoading(false)
                     })
             }
         }

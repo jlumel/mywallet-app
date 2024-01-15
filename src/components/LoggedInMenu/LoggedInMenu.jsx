@@ -29,9 +29,9 @@ const LoggedInMenu = () => {
 
         if (event.target.tagName.toLowerCase() === 'path') {
             const dataId = event.target.parentNode.getAttribute('data-id')
-            navigate(`${dataId}`)
+            navigate(`/${dataId}`)
         } else {
-            navigate(`${event.target.dataset.id}`)
+            navigate(`/${event.target.dataset.id}`)
         }
     }
 

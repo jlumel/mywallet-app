@@ -62,19 +62,25 @@ const TransactionsList = () => {
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: '#78909c',
             color: theme.palette.common.white,
-            [theme.breakpoints.down('sm')]: {
+            [theme.breakpoints.down('md')]: {
                 fontSize: '0.9rem',
             },
-            [theme.breakpoints.up('sm')]: {
+            [theme.breakpoints.down('lg')]: {
+                fontSize: '1rem',
+            },
+            [theme.breakpoints.up('lg')]: {
                 fontSize: '1.2rem',
             }
         },
         [`&.${tableCellClasses.body}`]: {
             fontSize: '1.1rem',
-            [theme.breakpoints.down('sm')]: {
+            [theme.breakpoints.down('md')]: {
                 fontSize: '0.8rem',
             },
-            [theme.breakpoints.up('sm')]: {
+            [theme.breakpoints.down('lg')]: {
+                fontSize: '0.9rem',
+            },
+            [theme.breakpoints.up('lg')]: {
                 fontSize: '1.1rem',
             }
         }
@@ -106,12 +112,21 @@ const TransactionsList = () => {
         updateData({ setTransactions, setAccounts, setCategories, setSubcategories }, token)
             .finally(() => {
                 setLoading(false)
-                if (submit) {
+            })
+
+    }, [])
+
+    useEffect(() => {
+
+        if (submit) {
+            updateData({ setTransactions }, token)
+                .finally(() => {
                     setTimeout(() => {
                         submit && setAlert(false)
                     }, 3000)
                 }
-            })
+                )
+        }
 
     }, [submit])
 
@@ -150,7 +165,7 @@ const TransactionsList = () => {
     return (
 
         <>
-            {loading ? <Loader /> : <Container style={{ width: '80%' }}>
+            {loading ? <Loader /> : <Container sx={{width: "80%"}}>
                 <>
                     <ul
                         style={{
@@ -184,7 +199,7 @@ const TransactionsList = () => {
                         marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                     }}>
 
-                        <TableContainer sx={{ height: '62.3vh' }} component={Paper}>
+                        <TableContainer component={Paper}>
                             <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                                 <TableHead>
                                     <TableRow>
@@ -209,7 +224,7 @@ const TransactionsList = () => {
                         <Box sx={{
                             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
-                            <Pagination sx={{ margin: 'auto 17.5rem auto auto' }} count={pageCount} color="primary" page={page} onChange={handlePagination} />
+                            <Pagination sx={{margin: 'auto 24rem auto auto'}} count={pageCount} color="primary" page={page} onChange={handlePagination} />
                             <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
                         </Box>
                     </Box>

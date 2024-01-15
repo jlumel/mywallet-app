@@ -1,10 +1,10 @@
 import { Typography, Container, Box, styled } from "@mui/material"
 
 const ResponsiveTypography = styled(Typography)(({ theme }) => ({
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
         fontSize: '1.5rem',
     },
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
         fontSize: '2rem',
     },
 }))

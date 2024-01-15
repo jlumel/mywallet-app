@@ -49,7 +49,13 @@ const Admin = () => {
     }))
 
     const handleMenu = event => {
-        navigate(`/wallet-items/${event.target.innerText.split(/\s+/)[0].toLowerCase()}`)
+
+        if (event.target.tagName.toLowerCase() === 'path') {
+            const dataId = event.target.parentNode.getAttribute('data-id')
+            navigate(`/wallet-items/${dataId}`)
+        } else {
+            navigate(`/wallet-items/${event.target.dataset.id}`)
+        }
     }
 
     useEffect(() => {
@@ -80,15 +86,15 @@ const Admin = () => {
                     }}>
                         <Grid container rowSpacing={2} columnSpacing={{ xs: 2, sm: 2, md: 2 }}>
                             <Grid item xs={6}>
-                                <Item onClick={handleMenu}>
-                                    <CreateNewFolderRoundedIcon fontSize="large" />
-                                    <Typography fontWeight="bold">Create<span>(Accounts, categories and subcategories)</span></Typography>
+                                <Item data-id="create" onClick={handleMenu}>
+                                    <CreateNewFolderRoundedIcon data-id="create" fontSize="large" />
+                                    <Typography data-id="create" fontWeight="bold">Create<span>(Accounts, categories and subcategories)</span></Typography>
                                 </Item>
                             </Grid>
                             <Grid item xs={6}>
-                                <Item onClick={handleMenu}>
-                                    <BorderColorRoundedIcon fontSize="large" />
-                                    <Typography fontWeight="bold">Modify<span>(Accounts, categories and subcategories)</span> </Typography>
+                                <Item data-id="modify" onClick={handleMenu}>
+                                    <BorderColorRoundedIcon data-id="modify" fontSize="large" />
+                                    <Typography data-id="modify" fontWeight="bold">Modify/Delete<span>(Accounts, categories and subcategories)</span> </Typography>
                                 </Item>
                             </Grid>
                         </Grid>

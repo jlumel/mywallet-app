@@ -199,7 +199,7 @@ const TransactionsList = () => {
                         marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                     }}>
 
-                        <TableContainer component={Paper}>
+                        <TableContainer sx={{height: '62.3vh'}} component={Paper}>
                             <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                                 <TableHead>
                                     <TableRow>
@@ -224,7 +224,7 @@ const TransactionsList = () => {
                         <Box sx={{
                             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
-                            <Pagination sx={{margin: 'auto 24rem auto auto'}} count={pageCount} color="primary" page={page} onChange={handlePagination} />
+                            <Pagination sx={{margin: 'auto 17.5rem auto auto'}} count={pageCount} color="primary" page={page} onChange={handlePagination} />
                             <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
                         </Box>
                     </Box>

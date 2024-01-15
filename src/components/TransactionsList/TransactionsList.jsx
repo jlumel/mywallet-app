@@ -10,6 +10,13 @@ import SubmitAlert from "../SubmitAlert"
 import { useNavigate } from "react-router-dom"
 import FilterMenu from "../FilterMenu/FilterMenu"
 
+StyledPagination = styled(Pagination)(({theme})=> ({
+    margin: 'auto 17.5rem auto auto',
+    [theme.breakpoints.down('md')]: {
+        margin: 'auto 24 auto auto'
+    }
+}))
+
 const TransactionsList = () => {
 
     const ROWS_PER_PAGE = 8
@@ -224,7 +231,7 @@ const TransactionsList = () => {
                         <Box sx={{
                             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
-                            <Pagination sx={{margin: 'auto 17.5rem auto auto'}} count={pageCount} color="primary" page={page} onChange={handlePagination} />
+                            <StyledPagination count={pageCount} color="primary" page={page} onChange={handlePagination} />
                             <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
                         </Box>
                     </Box>

@@ -10,7 +10,7 @@ import SubmitAlert from "../SubmitAlert"
 import { useNavigate } from "react-router-dom"
 import FilterMenu from "../FilterMenu/FilterMenu"
 
-StyledPagination = styled(Pagination)(({theme})=> ({
+const StyledPagination = styled(Pagination)(({theme})=> ({
     margin: 'auto 17.5rem auto auto',
     [theme.breakpoints.down('md')]: {
         margin: 'auto 24 auto auto'

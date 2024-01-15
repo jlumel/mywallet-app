@@ -12,8 +12,8 @@ import FilterMenu from "../FilterMenu/FilterMenu"
 
 const StyledPagination = styled(Pagination)(({theme})=> ({
     margin: 'auto 17.5rem auto auto',
-    [theme.breakpoints.down('md')]: {
-        margin: 'auto 24 auto auto'
+    [theme.breakpoints.down('xl')]: {
+        margin: 'auto 20rem auto auto'
     }
 }))
 

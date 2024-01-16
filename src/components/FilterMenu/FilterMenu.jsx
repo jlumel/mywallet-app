@@ -20,6 +20,13 @@ const FilterMenu = () => {
         }
     }))
 
+    const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            flexDirection: 'column'
+        }
+    }))
+
     const StyledSelect = styled(Select)(({ theme }) => ({
         height: '1.5rem',
         width: '7.5rem',
@@ -98,7 +105,7 @@ const FilterMenu = () => {
             <FormGroup>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
-                    <FormControlLabel control={<Switch checked={accountFilter.active} onClick={() => handleToggleFilter("account")} />} label="Account" />
+                    <StyledFormControlLabel control={<Switch checked={accountFilter.active} onClick={() => handleToggleFilter("account")} />} label="Account" />
                     <StyledSelect
                         sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={accountFilter.param.value}
@@ -113,7 +120,7 @@ const FilterMenu = () => {
                     </StyledSelect>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
-                    <FormControlLabel control={<Switch checked={currencyFilter.active} onClick={() => handleToggleFilter("currency")} />} label="Currency" />
+                    <StyledFormControlLabel control={<Switch checked={currencyFilter.active} onClick={() => handleToggleFilter("currency")} />} label="Currency" />
                     <StyledSelect
                         sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={currencyFilter.param.value}
@@ -128,7 +135,7 @@ const FilterMenu = () => {
                     </StyledSelect>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
-                    <FormControlLabel control={<Switch checked={categoryFilter.active} onClick={() => handleToggleFilter("category")} />} label="Category" />
+                    <StyledFormControlLabel control={<Switch checked={categoryFilter.active} onClick={() => handleToggleFilter("category")} />} label="Category" />
                     <StyledSelect
                         sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={categoryFilter.param.value}

@@ -10,28 +10,42 @@ import { useNavigate } from "react-router-dom"
 import './TransactionDetail.css'
 import styled from "@emotion/styled"
 
+const StyledPaper = styled(Paper)(({theme})=> ({
+    [theme.breakpoints.down('xl')]: {
+        height: '60vh',
+        width: '30vw',
+        fontSize: '1.2rem'
+    },
+    [theme.breakpoints.down('md')]: {
+        height: '30vh',
+        width: '70vw',
+        fontSize: '1rem'
+    }
+}))
+
+const StyledSelect = styled(Select)(({theme})=> ({
+    [theme.breakpoints.down('xl')]: {
+        margin: '1.3rem 0 auto',
+        height: '1rem'
+    },
+    [theme.breakpoints.down('xl')]: {
+        margin: '1rem 0 auto',
+        height: '1rem'
+    }
+}))
+
+const StyledTextField = styled(TextField)(({theme})=> ({
+    [theme.breakpoints.down('xl')]: {
+        width: '8rem',
+        margin: '1.1rem 0 auto',
+    },
+    [theme.breakpoints.down('xl')]: {
+        width: '8rem',
+        margin: '0.8rem 0 auto',
+    }
+}))
+
 const TransactionDetail = () => {
-
-    const StyledPaper = styled(Paper)(({theme})=> ({
-        [theme.breakpoints.down('xl')]: {
-            height: '60vh',
-            width: '30vw',
-            fontSize: '1.2rem'
-        }
-    }))
-
-    const StyledSelect = styled(Select)(({theme})=> ({
-        [theme.breakpoints.down('xl')]: {
-            margin: '1.3rem 0 auto'
-        }
-    }))
-
-    const StyledTextField = styled(TextField)(({theme})=> ({
-        [theme.breakpoints.down('xl')]: {
-            width: '8rem',
-            margin: '1.1rem 0 auto',
-        }
-    }))
 
     const navigate = useNavigate()
 
@@ -205,11 +219,11 @@ const TransactionDetail = () => {
                                         <p style={{ marginBottom: '0' }}><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
-                                            <StyledTextField sx={{ width: '10rem', margin: '1.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.amount} onChange={handleAmountChange} />
+                                            <StyledTextField sx={{ width: '10rem', margin: '2.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.amount} onChange={handleAmountChange} />
                                         </Box>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Description: </span></p>
-                                            <StyledTextField sx={{ width: '9.2rem', margin: '1.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.description} onChange={handleChange('description')} />
+                                            <StyledTextField sx={{ width: '12rem', margin: '2.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
                                         <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                                     </StyledPaper>

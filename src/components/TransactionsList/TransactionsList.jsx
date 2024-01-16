@@ -36,7 +36,7 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
         height: '51vh'
     },
     [theme.breakpoints.down('md')]: {
-        height: '65vh'
+        height: '46.5vh'
     }
 }))
 

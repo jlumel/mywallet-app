@@ -7,6 +7,7 @@ import { updateData, fetchAPI, capitalizeFirstLetter } from "../../utils"
 import ConfirmationModal from "../../components/Modal"
 import SubmitAlert from "../../components/SubmitAlert"
 import { useNavigate } from "react-router-dom"
+import './TransactionDetail.css'
 
 const TransactionDetail = () => {
 
@@ -156,18 +157,18 @@ const TransactionDetail = () => {
                                 marginTop: '6rem'
                             }}>
                                 {edit ?
-                                    <Paper sx={{ cursor: 'pointer', textAlign: 'center', fontSize: '2rem', width: '50%', margin: 'auto' }}>
-                                        <p style={{ marginBottom: '0' }}>Account: {transaction.accountName}</p>
-                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <p style={{ marginBottom: '0' }}>Category:
+                                    <Paper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
+                                        <p style={{ marginBottom: '0' }}><span className="titles">Account: </span>{transaction.accountName}</p>
+                                        <Box sx={{ display: 'flex' }}>
+                                            <p style={{ marginBottom: '0' }}><span className="titles">Category: </span>
                                             </p>
                                             <Select sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="categoryName" value={formData.categoryName} onChange={handleChange('categoryName')}>
                                                 {categories.map(category =>
                                                     <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>)}
                                             </Select>
                                         </Box>
-                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <p style={{ marginBottom: '0' }}>Subcategory:
+                                        <Box sx={{ display: 'flex' }}>
+                                            <p style={{ marginBottom: '0' }}><span className="titles">Subcategory: </span>
                                             </p>
                                             <Select sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
                                                 {
@@ -178,28 +179,28 @@ const TransactionDetail = () => {
                                                         <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>}
                                             </Select>
                                         </Box>
-                                        <p>Currency: {transaction.currencyAcronym}</p>
-                                        <p style={{ marginBottom: '0' }}>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
-                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <p style={{ marginBottom: '0' }}>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
+                                        <p><span className="titles">Currency: </span>{transaction.currencyAcronym}</p>
+                                        <p style={{ marginBottom: '0' }}><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
+                                        <Box sx={{ display: 'flex' }}>
+                                            <p style={{ marginBottom: '0' }}><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
                                             <TextField sx={{ width: '10rem', margin: '1.5rem 0 auto' }} type="text" value={formData.amount} onChange={handleAmountChange} />
                                         </Box>
-                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <p style={{ marginBottom: '0' }}>Description: </p>
-                                            <TextField sx={{ width: '8.7rem', margin: '1.5rem 0 auto' }} type="text" value={formData.description} onChange={handleChange('description')} />
+                                        <Box sx={{ display: 'flex' }}>
+                                            <p style={{ marginBottom: '0' }}><span className="titles">Description: </span></p>
+                                            <TextField sx={{ width: '9.2rem', margin: '1.5rem 0 auto' }} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
-                                        <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
+                                        <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                                     </Paper>
                                     :
-                                    <Paper sx={{ cursor: 'pointer', textAlign: 'center', fontSize: '2rem', width: '50%', margin: 'auto' }}>
-                                        <p>Account: {transaction.accountName}</p>
-                                        <p>Category: {formData.categoryName}</p>
-                                        {formData.subcategoryName ? <p>Subcategory: {formData.subcategoryName}</p> : <p>Subcategory: -</p>}
-                                        <p>Currency: {transaction.currencyAcronym}</p>
-                                        <p>Type: {transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
-                                        <p>Amount: {transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{formData.amount}</p>
-                                        <p>Description: {transaction.description || "-"}</p>
-                                        <p>Date: {new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
+                                    <Paper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
+                                        <p><span className="titles">Account: </span>{transaction.accountName}</p>
+                                        <p><span className="titles">Category: </span>{formData.categoryName}</p>
+                                        {formData.subcategoryName ? <p><span className="titles">Subcategory: </span>{formData.subcategoryName}</p> : <p>Subcategory: -</p>}
+                                        <p><span className="titles">Currency: </span>{transaction.currencyAcronym}</p>
+                                        <p><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
+                                        <p><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{formData.amount}</p>
+                                        <p><span className="titles">Description: </span>{transaction.description || "-"}</p>
+                                        <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                                     </Paper>
                                 }
 

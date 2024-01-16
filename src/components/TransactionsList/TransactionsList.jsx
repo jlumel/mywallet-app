@@ -10,16 +10,39 @@ import SubmitAlert from "../SubmitAlert"
 import { useNavigate } from "react-router-dom"
 import FilterMenu from "../FilterMenu/FilterMenu"
 
-const StyledPagination = styled(Pagination)(({theme})=> ({
-    margin: 'auto 17.5rem auto auto',
+const StyledPagination = styled(Pagination)(({ theme }) => ({
+    margin: 'auto 26rem auto auto',
     [theme.breakpoints.down('xl')]: {
         margin: 'auto 20rem auto auto'
+    },
+    [theme.breakpoints.down('md')]: {
+        margin: 'auto'
+    }
+}))
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+    [theme.breakpoints.down('xl')]: {
+        width: '80%'
+    },
+    [theme.breakpoints.down('md')]: {
+        width: '57%'
+    }
+}))
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+    overflow: 'hidden',
+    height: '69.4vh',
+    [theme.breakpoints.down('xl')]: {
+        height: '32vh'
+    },
+    [theme.breakpoints.down('md')]: {
+        height: '65vh'
     }
 }))
 
 const TransactionsList = () => {
 
-    const ROWS_PER_PAGE = 8
+    const ROWS_PER_PAGE = window.innerWidth > 1400 ? 10 : 4
 
     const navigate = useNavigate()
 
@@ -160,7 +183,7 @@ const TransactionsList = () => {
 
         if (rows.length) {
 
-            if (Math.floor(rows.length / ROWS_PER_PAGE) < rows.length / 8) {
+            if (Math.floor(rows.length / ROWS_PER_PAGE) < rows.length / ROWS_PER_PAGE) {
                 setPageCount(Math.floor(rows.length / ROWS_PER_PAGE) + 1)
             } else {
                 setPageCount(Math.floor(rows.length / ROWS_PER_PAGE))
@@ -172,7 +195,7 @@ const TransactionsList = () => {
     return (
 
         <>
-            {loading ? <Loader /> : <Container sx={{width: "80%"}}>
+            {loading ? <Loader /> : <StyledContainer>
                 <>
                     <ul
                         style={{
@@ -206,7 +229,7 @@ const TransactionsList = () => {
                         marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                     }}>
 
-                        <TableContainer sx={{height: '62.3vh'}} component={Paper}>
+                        <StyledTableContainer component={Paper}>
                             <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                                 <TableHead>
                                     <TableRow>
@@ -227,7 +250,7 @@ const TransactionsList = () => {
                                     ))}
                                 </TableBody>
                             </Table>
-                        </TableContainer>
+                        </StyledTableContainer>
                         <Box sx={{
                             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
@@ -236,7 +259,7 @@ const TransactionsList = () => {
                         </Box>
                     </Box>
                 </>
-            </Container>}
+            </StyledContainer>}
         </>
     )
 }

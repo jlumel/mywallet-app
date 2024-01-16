@@ -1,4 +1,5 @@
 import { Switch, Box, Typography, FormControlLabel, FormGroup, Select, MenuItem } from "@mui/material"
+import styled from "@emotion/styled"
 import { useEffect } from "react"
 import { useUserContext } from "../../context/userContext"
 
@@ -6,12 +7,34 @@ const FilterMenu = () => {
 
     const { accounts, currencies, categories, accountFilter, currencyFilter, categoryFilter, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
 
+    const StyledBox = styled(Box)(({ theme }) => ({
+        position: 'absolute',
+        right: '0%',
+        marginTop: 60,
+        width: '15%',
+        [theme.breakpoints.down('xl')]: {
+            width: '14%'
+        },
+        [theme.breakpoints.down('md')]: {
+            width: '24%'
+        }
+    }))
+
+    const StyledSelect = styled(Select)(({ theme }) => ({
+        height: '1.5rem',
+        width: '7.5rem',
+        [theme.breakpoints.down('md')]: {
+            height: '1.3rem',
+            width: '5rem'
+        }
+    }))
+
     const handleToggleFilter = filterType => {
 
         switch (filterType) {
 
             case "account":
-             
+
                 if (accountFilter.active) {
                     setAccountFilter({ active: false, param: { key: "accountName", value: "" } })
                 } else {
@@ -69,14 +92,14 @@ const FilterMenu = () => {
     }, [accountFilter, categoryFilter, currencyFilter])
 
     return (
-        <Box sx={{ position: 'absolute', right: '10%', marginTop: 8 }}>
-            <Typography variant="h6">Filters</Typography>
+        <StyledBox>
+            <Typography sx={{ fontSize: '1.5rem' }} variant="h6">Filters</Typography>
 
             <FormGroup>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
                     <FormControlLabel control={<Switch checked={accountFilter.active} onClick={() => handleToggleFilter("account")} />} label="Account" />
-                    <Select
+                    <StyledSelect
                         sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={accountFilter.param.value}
                         onChange={handleFilterValueChange('account')}
@@ -87,11 +110,11 @@ const FilterMenu = () => {
 
                             <MenuItem key={account._id} value={account.name}>{account.name}</MenuItem>
                         )) : <MenuItem selected value="No accounts found">No accounts found</MenuItem>}
-                    </Select>
+                    </StyledSelect>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
                     <FormControlLabel control={<Switch checked={currencyFilter.active} onClick={() => handleToggleFilter("currency")} />} label="Currency" />
-                    <Select
+                    <StyledSelect
                         sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={currencyFilter.param.value}
                         onChange={handleFilterValueChange('currency')}
@@ -102,11 +125,11 @@ const FilterMenu = () => {
 
                             <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym}</MenuItem>
                         )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
-                    </Select>
+                    </StyledSelect>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
                     <FormControlLabel control={<Switch checked={categoryFilter.active} onClick={() => handleToggleFilter("category")} />} label="Category" />
-                    <Select
+                    <StyledSelect
                         sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={categoryFilter.param.value}
                         onChange={handleFilterValueChange('category')}
@@ -117,10 +140,10 @@ const FilterMenu = () => {
 
                             <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
                         )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
-                    </Select>
+                    </StyledSelect>
                 </Box>
             </FormGroup>
-        </Box>
+        </StyledBox>
     )
 
 }

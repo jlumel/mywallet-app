@@ -8,8 +8,30 @@ import ConfirmationModal from "../../components/Modal"
 import SubmitAlert from "../../components/SubmitAlert"
 import { useNavigate } from "react-router-dom"
 import './TransactionDetail.css'
+import styled from "@emotion/styled"
 
 const TransactionDetail = () => {
+
+    const StyledPaper = styled(Paper)(({theme})=> ({
+        [theme.breakpoints.down('xl')]: {
+            height: '60vh',
+            width: '30vw',
+            fontSize: '1.2rem'
+        }
+    }))
+
+    const StyledSelect = styled(Select)(({theme})=> ({
+        [theme.breakpoints.down('xl')]: {
+            margin: '1.3rem 0 auto'
+        }
+    }))
+
+    const StyledTextField = styled(TextField)(({theme})=> ({
+        [theme.breakpoints.down('xl')]: {
+            width: '8rem',
+            margin: '1.1rem 0 auto',
+        }
+    }))
 
     const navigate = useNavigate()
 
@@ -154,45 +176,45 @@ const TransactionDetail = () => {
                                 display: 'flex',
                                 justifyContent: 'center',
                                 flexDirection: 'column',
-                                marginTop: '6rem'
+                                marginTop: '5rem'
                             }}>
                                 {edit ?
-                                    <Paper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
+                                    <StyledPaper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
                                         <p style={{ marginBottom: '0' }}><span className="titles">Account: </span>{transaction.accountName}</p>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Category: </span>
                                             </p>
-                                            <Select sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="categoryName" value={formData.categoryName} onChange={handleChange('categoryName')}>
+                                            <StyledSelect sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="categoryName" value={formData.categoryName} onChange={handleChange('categoryName')}>
                                                 {categories.map(category =>
                                                     <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>)}
-                                            </Select>
+                                            </StyledSelect>
                                         </Box>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Subcategory: </span>
                                             </p>
-                                            <Select sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
+                                            <StyledSelect sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
                                                 {
                                                     subcategories.find(item => item.categoryName == formData.categoryName) ? subcategories.map(item =>
                                                         item.categoryName == formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
                                                     )
                                                         :
                                                         <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>}
-                                            </Select>
+                                            </StyledSelect>
                                         </Box>
                                         <p><span className="titles">Currency: </span>{transaction.currencyAcronym}</p>
                                         <p style={{ marginBottom: '0' }}><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
-                                            <TextField sx={{ width: '10rem', margin: '1.5rem 0 auto' }} type="text" value={formData.amount} onChange={handleAmountChange} />
+                                            <StyledTextField sx={{ width: '10rem', margin: '1.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.amount} onChange={handleAmountChange} />
                                         </Box>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Description: </span></p>
-                                            <TextField sx={{ width: '9.2rem', margin: '1.5rem 0 auto' }} type="text" value={formData.description} onChange={handleChange('description')} />
+                                            <StyledTextField sx={{ width: '9.2rem', margin: '1.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
                                         <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
-                                    </Paper>
+                                    </StyledPaper>
                                     :
-                                    <Paper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
+                                    <StyledPaper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
                                         <p><span className="titles">Account: </span>{transaction.accountName}</p>
                                         <p><span className="titles">Category: </span>{formData.categoryName}</p>
                                         {formData.subcategoryName ? <p><span className="titles">Subcategory: </span>{formData.subcategoryName}</p> : <p>Subcategory: -</p>}
@@ -201,17 +223,17 @@ const TransactionDetail = () => {
                                         <p><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{formData.amount}</p>
                                         <p><span className="titles">Description: </span>{transaction.description || "-"}</p>
                                         <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
-                                    </Paper>
+                                    </StyledPaper>
                                 }
 
                                 {
-                                    !edit ? <Box sx={{ margin: '2rem auto', display: 'flex', justifyContent: 'space-around', width: '20%' }}>
+                                    !edit ? <Box sx={{ margin: '1.5rem auto 0 auto', display: 'flex', justifyContent: 'space-around', width: '20%' }}>
                                         <Button sx={{ width: '40%' }} disabled={deleted} variant="contained" onClick={toggleEdit}>Edit</Button>
 
                                         <ConfirmationModal isDeleteButtonDisbaled={deleted} handleDelete={handleDelete} />
                                     </Box>
                                         :
-                                        <Box sx={{ margin: '2rem auto', display: 'flex', justifyContent: 'space-around', width: '20%' }}>
+                                        <Box sx={{ margin: '1.5rem auto 0 auto', display: 'flex', justifyContent: 'space-around', width: '20%' }}>
                                             <Button sx={{ width: '40%' }} color="success" variant="contained" onClick={() => toggleEdit('confirm')}>Confirm</Button>
                                             <Button sx={{ width: '40%' }} color="error" variant="contained" onClick={() => toggleEdit('cancel')}>Cancel</Button>
                                         </Box>

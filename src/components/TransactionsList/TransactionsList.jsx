@@ -33,7 +33,7 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     overflow: 'hidden',
     height: '69.4vh',
     [theme.breakpoints.down('xl')]: {
-        height: '32vh'
+        height: '51vh'
     },
     [theme.breakpoints.down('md')]: {
         height: '65vh'

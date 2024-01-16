@@ -1,0 +1,14 @@
+.add-transaction-button {
+    margin-top: 1rem;
+}
+
+@media (max-width: 1399px) {
+    .add-transaction h4 {
+        font-size: 1.3rem;
+    }
+
+    .add-transaction-button {
+        height: 1.5rem;
+        margin-top: 0;
+    }
+}

@@ -28,7 +28,7 @@ const StyledSelect = styled(Select)(({theme})=> ({
         margin: '1.3rem 0 auto',
         height: '1rem'
     },
-    [theme.breakpoints.down('xl')]: {
+    [theme.breakpoints.down('md')]: {
         margin: '1rem 0 auto',
         height: '1rem'
     }
@@ -39,7 +39,7 @@ const StyledTextField = styled(TextField)(({theme})=> ({
         width: '8rem',
         margin: '1.1rem 0 auto',
     },
-    [theme.breakpoints.down('xl')]: {
+    [theme.breakpoints.down('md')]: {
         width: '8rem',
         margin: '0.8rem 0 auto',
     }

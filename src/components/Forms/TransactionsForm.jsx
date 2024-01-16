@@ -4,8 +4,29 @@ import { styled } from '@mui/system'
 import { useUserContext } from '../../context/userContext'
 import { fetchAPI } from '../../utils'
 import EditIcon from '@mui/icons-material/Edit'
+import './TransactionsForm.css'
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+    [theme.breakpoints.down('xl')]: {
+        height: '2.5rem'
+    },
+    [theme.breakpoints.down('md')]: {
+        height: '2.5rem'
+    }
+}))
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+    [theme.breakpoints.down('xl')]: {
+
+    },
+    [theme.breakpoints.down('md')]: {
+
+    }
+}))
 
 const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
+
+    const padding = window.width > 1400 ? '3rem' : '0.5rem'
 
     const uniqueCurrencies = new Set()
 
@@ -109,7 +130,11 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
         borderRadius: 7,
         padding: theme.spacing(2, 4, 3),
         width: "20rem",
-        height: "42rem"
+        height: "42rem",
+        [theme.breakpoints.down('xl')]: {
+            width: '15rem',
+            height: '30rem'
+        }
     }))
 
     return (
@@ -125,12 +150,12 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
             <StyledModal open={open} onClose={handleClose}>
                 <StyledPaper>
 
-                    <form onSubmit={handleSubmit}>
+                    <form className="add-transaction" onSubmit={handleSubmit}>
                         <Typography textAlign="center" variant="h4">Add transaction</Typography>
 
                         <FormControl fullWidth margin="normal">
                             <InputLabel htmlFor="type">Type</InputLabel>
-                            <Select
+                            <StyledSelect
                                 required={true}
                                 id="type"
                                 value={formData.type}
@@ -140,12 +165,12 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                             >
                                 <MenuItem value="debit">Debit</MenuItem>
                                 <MenuItem value="credit">Credit</MenuItem>
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
 
                         <FormControl fullWidth margin="normal">
                             <InputLabel htmlFor="currencyAcronym">Currency</InputLabel>
-                            <Select
+                            <StyledSelect
                                 required={true}
                                 id="currencyAcronym"
                                 value={formData.currencyAcronym}
@@ -172,12 +197,12 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                                 }
 
 
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
 
                         <FormControl fullWidth margin="normal">
                             <InputLabel htmlFor="accountName">Account</InputLabel>
-                            <Select
+                            <StyledSelect
                                 required={true}
                                 id="accountName"
                                 value={formData.accountName}
@@ -191,12 +216,12 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                                     : <MenuItem selected value="No accounts found">No accounts found</MenuItem>}
 
 
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
 
                         <FormControl fullWidth margin="normal">
                             <InputLabel htmlFor="categoryName">Category</InputLabel>
-                            <Select
+                            <StyledSelect
                                 required={true}
                                 id="categoryName"
                                 value={formData.categoryName}
@@ -209,12 +234,12 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                                     : <MenuItem selected value="No categories found">No categories found</MenuItem>}
 
 
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
 
                         <FormControl fullWidth margin="normal">
                             <InputLabel htmlFor="subcategoryName">Subcategory</InputLabel>
-                            <Select
+                            <StyledSelect
                                 id="subcategoryName"
                                 value={formData.subcategoryName}
                                 label="Subcategory"
@@ -227,10 +252,11 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                                     : <MenuItem selected value="No subcategories found">No subcategories found</MenuItem>}
 
 
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
 
-                        <TextField
+                        <StyledTextField
+                            inputProps={{ style: { padding } }}
                             required={true}
                             label="Amount"
                             name="amount"
@@ -240,15 +266,15 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                             helperText={errorAmount && "Type only numbers"}
                         />
 
-                        <TextField
-
+                        <StyledTextField
+                            inputProps={{ style: { padding } }}
                             label="Description"
                             name="description"
                             fullWidth
                             margin="normal"
                         />
-                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: '1rem' }}>
-                            <Button type="submit" variant="contained" color="primary">
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button className='add-transaction-button' type="submit" variant="contained" color="primary">
                                 Add
                             </Button>
                         </Box>

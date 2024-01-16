@@ -154,6 +154,8 @@ const TransactionDetail = () => {
 
         !isLogged && navigate('/')
 
+        document.title = 'My Wallet | Transaction detail'
+
         setLoading(true)
         updateData({ setTransactions, setCategories, setSubcategories }, token)
             .finally(() => {

@@ -19,6 +19,8 @@ const ChangePassword = () => {
 
         !isLogged && navigate('/')
 
+        document.title = 'My Wallet | Change password'
+
         setLoading(true)
 
         updateSession(setIsLogged, setUsername, token, setToken)

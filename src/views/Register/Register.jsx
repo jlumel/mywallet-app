@@ -14,6 +14,8 @@ const Register = () => {
 
         isLogged && navigate('/')
 
+        document.title = 'My Wallet | Register'
+
     }, [isLogged])
 
     return (

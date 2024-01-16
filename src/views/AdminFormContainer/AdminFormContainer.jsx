@@ -21,6 +21,8 @@ const AdminFormContainer = () => {
 
         !isLogged && navigate('/')
 
+        document.title = action == 'create' ? 'My Wallet | Create' : 'My Wallet | Modify'
+
         setLoading(true)
 
         updateSession(setIsLogged, setUsername, token, setToken)

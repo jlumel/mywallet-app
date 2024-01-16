@@ -9,6 +9,8 @@ import { CurrencySelection } from '../../components/Forms'
 
 const Menu = () => {
 
+    document.title = 'My Wallet | Home'
+
     const { token, isLogged, accounts, setToken, setIsLogged, setUsername, setAccounts } = useUserContext()
 
     const [loading, setLoading] = useState(true)

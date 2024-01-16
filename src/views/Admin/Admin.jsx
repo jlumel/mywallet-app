@@ -62,6 +62,8 @@ const Admin = () => {
 
         !isLogged && navigate('/')
 
+        document.title = 'My Wallet | Wallet Items'
+
         setLoading(true)
 
         updateSession(setIsLogged, setUsername, token, setToken)

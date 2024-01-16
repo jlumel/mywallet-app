@@ -15,6 +15,8 @@ const Transactions = () => {
 
         !isLogged && navigate('/')
 
+        document.title = 'My Wallet | Transactions'
+
     }, [])
 
     return (

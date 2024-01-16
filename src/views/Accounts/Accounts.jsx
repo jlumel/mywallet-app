@@ -15,8 +15,10 @@ const Accounts = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-
+        
         !isLogged && navigate('/')
+        
+        document.title = 'My Wallet | Accounts'
 
         setLoading(true)
 

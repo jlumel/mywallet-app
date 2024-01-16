@@ -33,9 +33,14 @@ const CurrencySelection = () => {
         fetchAPI('post', '/api/user/firstLogin', formData, token)
             .then(res => {
                 if (!res.data) {
-                    setAlert(true)
                     setErrorText(res.response.data.message)
                     setError(true)
+                    setAlert(true)
+                    setTimeout(() => {
+                        setAlert(false)
+                    }, 3000)
+                } else {
+                    setSubmit(true)
                 }
 
                 setFormData(
@@ -43,11 +48,14 @@ const CurrencySelection = () => {
                         currencyAcronym: ""
                     }
                 )
-                setSubmit(true)
             })
             .catch(err => {
                 setError(true)
-                setErrorText("An error has ocurred")
+                setErrorText("Internal server error")
+                setAlert(true)
+                setTimeout(() => {
+                    setAlert(false)
+                }, 3000)
                 setSubmit(true)
                 return err
             })
@@ -56,16 +64,10 @@ const CurrencySelection = () => {
     useEffect(() => {
 
         if (submit) {
-            if (alert) {
-                setTimeout(() => {
-                    setAlert(false)
-                }, 3000)
-            } else {
-                updateData({ setAccounts, setCategories, setSubcategories }, token)
-                    .then(res => {
-                        navigate('/')
-                    })
-            }
+            updateData({ setAccounts, setCategories, setSubcategories }, token)
+                .then(res => {
+                    navigate('/')
+                })
         }
 
     }, [submit])

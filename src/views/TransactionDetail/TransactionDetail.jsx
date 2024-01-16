@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom"
 import './TransactionDetail.css'
 import styled from "@emotion/styled"
 
-const StyledPaper = styled(Paper)(({theme})=> ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
     [theme.breakpoints.down('xl')]: {
         height: '60vh',
         width: '30vw',
@@ -23,7 +23,7 @@ const StyledPaper = styled(Paper)(({theme})=> ({
     }
 }))
 
-const StyledSelect = styled(Select)(({theme})=> ({
+const StyledSelect = styled(Select)(({ theme }) => ({
     [theme.breakpoints.down('xl')]: {
         margin: '1.3rem 0 auto',
         height: '1rem'
@@ -34,7 +34,7 @@ const StyledSelect = styled(Select)(({theme})=> ({
     }
 }))
 
-const StyledTextField = styled(TextField)(({theme})=> ({
+const StyledTextField = styled(TextField)(({ theme }) => ({
     [theme.breakpoints.down('xl')]: {
         width: '8rem',
         margin: '1.1rem 0 auto',
@@ -64,8 +64,6 @@ const TransactionDetail = () => {
         description: "",
     })
 
-    const [submit, setSubmit] = useState(false)
-
     const [alert, setAlert] = useState(false)
 
     const [error, setError] = useState(false)
@@ -85,17 +83,23 @@ const TransactionDetail = () => {
                     if (!res.data) {
                         setErrorText(res.response.data.message)
                         setError(true)
+                        setAlert(true)
+                        setTimeout(() => {
+                            setAlert(false)
+                        }, 3000)
                     } else {
                         setError(false)
                         setErrorText("")
                     }
-                    setSubmit(true)
                     setEdit(prev => !prev)
                 })
                 .catch(err => {
                     setError(true)
-                    setErrorText("An error has ocurred")
-                    setSubmit(true)
+                    setErrorText("Internal server error")
+                    setAlert(true)
+                    setTimeout(() => {
+                        setAlert(false)
+                    }, 3000)
                     return err
                 })
         } else {
@@ -122,18 +126,26 @@ const TransactionDetail = () => {
                 if (!res.data) {
                     setErrorText(res.response.data.message)
                     setError(true)
-                    setSubmit(true)
+                    setAlert(true)
+                    setTimeout(() => {
+                        setAlert(false)
+                    }, 3000)
                 } else {
                     setError(false)
                     setErrorText("")
+                    setAlert(true)
                     setDeleted(true)
-                    setSubmit(true)
+                    setTimeout(() => {
+                        setAlert(false)
+                    }, 3000)
                 }
             })
             .catch(err => {
                 setError(true)
-                setErrorText("An error has ocurred")
-                setSubmit(true)
+                setErrorText("Internal server error")
+                setTimeout(() => {
+                    setAlert(false)
+                }, 3000)
                 return err
             })
     }
@@ -151,11 +163,6 @@ const TransactionDetail = () => {
 
     useEffect(() => {
 
-        submit && setAlert(true)
-        setTimeout(() => {
-            submit && setAlert(false)
-        }, 3000)
-
         if (deleted) {
             updateData({ setTransactions }, token)
                 .finally(() => {
@@ -163,7 +170,7 @@ const TransactionDetail = () => {
                 })
         }
 
-    }, [submit])
+    }, [alert])
 
     useEffect(() => {
 
@@ -219,11 +226,11 @@ const TransactionDetail = () => {
                                         <p style={{ marginBottom: '0' }}><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
-                                            <StyledTextField sx={{ width: '10rem', margin: '2.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.amount} onChange={handleAmountChange} />
+                                            <StyledTextField sx={{ width: '10rem', margin: '2.5rem 0 auto' }} inputProps={{ style: { padding: '0 0' } }} type="text" value={formData.amount} onChange={handleAmountChange} />
                                         </Box>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Description: </span></p>
-                                            <StyledTextField sx={{ width: '12rem', margin: '2.5rem 0 auto' }} inputProps={{style: {padding: '0 0'}}} type="text" value={formData.description} onChange={handleChange('description')} />
+                                            <StyledTextField sx={{ width: '12rem', margin: '2.5rem 0 auto' }} inputProps={{ style: { padding: '0 0' } }} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
                                         <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                                     </StyledPaper>

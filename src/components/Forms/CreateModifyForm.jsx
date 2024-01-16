@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useUserContext } from '../../context/userContext'
 import { Container, FormControl, InputLabel, Select, MenuItem, Button, TextField, Box } from '@mui/material'
 import { fetchAPI, updateData } from '../../utils'
-import Loader from '../../components/Loader'
 import ConfirmationModal from '../Modal'
 import SubmitAlert from '../SubmitAlert'
 
@@ -19,11 +18,7 @@ const CreateModifyForm = ({ action }) => {
   }
   )
 
-  const [loading, setLoading] = useState(false)
-
   const [walletItem, setWalletItem] = useState("")
-
-  const [submit, setSubmit] = useState(false)
 
   const [registry, setRegistry] = useState("")
 
@@ -125,22 +120,35 @@ const CreateModifyForm = ({ action }) => {
             if (!res.data) {
               setErrorText(res.response.data.message)
               setError(true)
+              setAlert(true)
+              setTimeout(() => {
+                setAlert(false)
+              }, 3000)
             } else {
               setError(false)
               setErrorText("")
+              setAlert(true)
+              setTimeout(() => {
+                setAlert(false)
+                setErrorText("")
+                setError(false)
+              }, 3000)
             }
             setFormData(
               {
                 ...formData,
-                name: ""
+                name: "",
+                currencyAcronym: ""
               }
             )
-            setSubmit(true)
           })
           .catch(err => {
             setError(true)
-            setErrorText("An error has ocurred")
-            setSubmit(true)
+            setErrorText("Internal server error")
+            setAlert(true)
+            setTimeout(() => {
+              setAlert(false)
+            }, 3000)
             return err
           })
         break
@@ -152,23 +160,34 @@ const CreateModifyForm = ({ action }) => {
             if (!res.data) {
               setErrorText(res.response.data.message)
               setError(true)
+              setAlert(true)
+              setTimeout(() => {
+                setAlert(false)
+              }, 3000)
             } else {
               setError(false)
               setErrorText("")
+              setAlert(true)
+              setTimeout(() => {
+                setAlert(false)
+              }, 3000)
             }
             setFormData(
               {
                 ...formData,
-                name: ""
+                name: "",
+                currencyAcronym: ""
               }
             )
-            setSubmit(true)
             setRegistry("")
           })
           .catch(err => {
             setError(true)
-            setErrorText("An error has ocurred")
-            setSubmit(true)
+            setErrorText("Internal server error")
+            setAlert(true)
+            setTimeout(() => {
+              setAlert(false)
+            }, 3000)
             return err
           })
     }
@@ -187,9 +206,17 @@ const CreateModifyForm = ({ action }) => {
         if (!res.data) {
           setErrorText(res.response.data.message)
           setError(true)
+          setAlert(true)
+          setTimeout(() => {
+            setAlert(false)
+          }, 3000)
         } else {
           setError(false)
           setErrorText("")
+          setAlert(true)
+          setTimeout(() => {
+            setAlert(false)
+          }, 3000)
         }
         setFormData({
           ...formData,
@@ -197,196 +224,181 @@ const CreateModifyForm = ({ action }) => {
           acronym: "",
           symbol: ""
         })
-        setSubmit(true)
         setRegistry("")
       })
       .catch(err => {
         setError(true)
-        setErrorText("An error has ocurred")
-        setSubmit(true)
+        setErrorText("Internal server error")
+        setAlert(true)
+        setTimeout(() => {
+          setAlert(false)
+        }, 3000)
         return err
       })
   }
 
   useEffect(() => {
-    if (submit) {
-      setLoading(true)
-      updateData({ setAccounts, setCategories, setSubcategories }, token)
-        .finally(() => {
-          submit && setAlert(true)
-          setTimeout(() => {
-            submit && setAlert(false)
-          }, 3000)
-          setLoading(false)
-        })
-    }
-  }, [submit])
 
-  useEffect(() => {
-
-    setSubmit(false)
-
-  }, [loading])
+    updateData({ setAccounts, setCategories, setSubcategories }, token)
+  }, [])
 
   return (
 
-    <>
-      {loading ? <Loader /> : <Container maxWidth="xs">
-        <SubmitAlert alert={alert} error={error} errorText={errorText} />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+    <Container maxWidth="xs">
+      <SubmitAlert alert={alert} error={error} errorText={errorText} />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
 
-          }}
-        >
-          <form style={{ width: '100%' }} onSubmit={handleFormSubmit}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel htmlFor="walletItem">Select a Wallet Item to {action}{!setFormAction ? " or delete" : ""}</InputLabel>
-              <Select
-                id="walletItem"
-                value={walletItem}
-                label={`Select a Wallet Item to ${action}${!setFormAction ? " or delete" : ""}`}
-                onChange={handleWalletItemChange}
-              >
-                <MenuItem value="account">Account</MenuItem>
-                <MenuItem value="category">Category</MenuItem>
-                <MenuItem value="subcategory">Subcategory</MenuItem>
-              </Select>
-            </FormControl>
+        }}
+      >
+        <form style={{ width: '100%' }} onSubmit={handleFormSubmit}>
+          <FormControl fullWidth margin="normal">
+            <InputLabel htmlFor="walletItem">Select a Wallet Item to {action}{!setFormAction ? " or delete" : ""}</InputLabel>
+            <Select
+              id="walletItem"
+              value={walletItem}
+              label={`Select a Wallet Item to ${action}${!setFormAction ? " or delete" : ""}`}
+              onChange={handleWalletItemChange}
+            >
+              <MenuItem value="account">Account</MenuItem>
+              <MenuItem value="category">Category</MenuItem>
+              <MenuItem value="subcategory">Subcategory</MenuItem>
+            </Select>
+          </FormControl>
 
-            {!setFormAction && walletItem && walletItem != "subcategory" && <FormControl fullWidth margin="normal">
-              <InputLabel htmlFor="registry">{parseRegistry(walletItem).length ? `Select a${walletItem == 'account' ? "n" : ""} ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}</InputLabel>
-              <Select
-                id="registry"
-                value={registry}
-                label={parseRegistry(walletItem).length ? `Select a ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}
-                onChange={handleRegistryChange}
-                disabled={!parseRegistry(walletItem).length}
-                required={true}
-              >
-                {
-                  parseRegistry(walletItem).length ? parseRegistry(walletItem).map(item =>
-                    <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
-                  ) : <MenuItem selected value={`No ${parseWalletItem(walletItem)} found`}>No {parseWalletItem(walletItem)} found</MenuItem>
-                }
-              </Select>
-            </FormControl>}
+          {!setFormAction && walletItem && walletItem != "subcategory" && <FormControl fullWidth margin="normal">
+            <InputLabel htmlFor="registry">{parseRegistry(walletItem).length ? `Select a${walletItem == 'account' ? "n" : ""} ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}</InputLabel>
+            <Select
+              id="registry"
+              value={registry}
+              label={parseRegistry(walletItem).length ? `Select a ${walletItem} to ${action}${!setFormAction ? " or delete" : ""}` : `No ${parseWalletItem(walletItem)} found`}
+              onChange={handleRegistryChange}
+              disabled={!parseRegistry(walletItem).length}
+              required={true}
+            >
+              {
+                parseRegistry(walletItem).length ? parseRegistry(walletItem).map(item =>
+                  <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
+                ) : <MenuItem selected value={`No ${parseWalletItem(walletItem)} found`}>No {parseWalletItem(walletItem)} found</MenuItem>
+              }
+            </Select>
+          </FormControl>}
 
-            {walletItem === 'account' && (
-              <>
-                <TextField
-                  label="Name"
-                  value={formData.name}
-                  onChange={handleChange('name')}
+          {walletItem === 'account' && (
+            <>
+              <TextField
+                label="Name"
+                value={formData.name}
+                onChange={handleChange('name')}
+                fullWidth
+                margin="normal"
+                required={setFormAction}
+              />
+              <FormControl fullWidth margin="normal">
+                <InputLabel htmlFor="currency">Currency</InputLabel>
+                <Select
+                  id="currency"
+                  value={formData.currencyAcronym}
+                  onChange={handleChange('currencyAcronym')}
+                  label="Currency"
                   fullWidth
-                  margin="normal"
                   required={setFormAction}
-                />
-                <FormControl fullWidth margin="normal">
-                  <InputLabel htmlFor="currency">Currency</InputLabel>
-                  <Select
-                    id="currency"
-                    value={formData.currencyAcronym}
-                    onChange={handleChange('currencyAcronym')}
-                    label="Currency"
-                    fullWidth
-                    required={setFormAction}
-                    disabled={currencies.length ? false : true}
-                  >
-                    {currencies.length ? currencies.map(currency => (
+                  disabled={currencies.length ? false : true}
+                >
+                  {currencies.length ? currencies.map(currency => (
 
-                      <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym} - {currency.name}</MenuItem>
-                    )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
-                  </Select>
-                </FormControl>
-              </>
-            )}
+                    <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym} - {currency.name}</MenuItem>
+                  )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
+                </Select>
+              </FormControl>
+            </>
+          )}
 
-            {walletItem === 'category' && (
-              <>
-                <TextField
-                  label="Name"
-                  value={formData.name}
-                  onChange={handleChange('name')}
+          {walletItem === 'category' && (
+            <>
+              <TextField
+                label="Name"
+                value={formData.name}
+                onChange={handleChange('name')}
+                fullWidth
+                margin="normal"
+                required={setFormAction}
+              />
+            </>
+          )}
+
+          {walletItem === 'subcategory' && (
+            <>
+              <FormControl fullWidth margin="normal">
+                <InputLabel htmlFor="categoryName">Category Name</InputLabel>
+                <Select
+                  id="categoryName"
+                  value={formData.categoryName}
+                  onChange={handleChange('categoryName')}
+                  label="Category Name"
                   fullWidth
-                  margin="normal"
                   required={setFormAction}
-                />
-              </>
-            )}
+                  disabled={categories.length ? false : true}
+                >
+                  {categories.length ? categories.map(category => (
 
-            {walletItem === 'subcategory' && (
-              <>
-                <FormControl fullWidth margin="normal">
-                  <InputLabel htmlFor="categoryName">Category Name</InputLabel>
-                  <Select
-                    id="categoryName"
-                    value={formData.categoryName}
-                    onChange={handleChange('categoryName')}
-                    label="Category Name"
-                    fullWidth
-                    required={setFormAction}
-                    disabled={categories.length ? false : true}
-                  >
-                    {categories.length ? categories.map(category => (
+                    <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
+                  )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
+                </Select>
+              </FormControl>
 
-                      <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
-                    )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
-                  </Select>
-                </FormControl>
+              {!setFormAction && <FormControl fullWidth margin="normal">
+                <InputLabel htmlFor="registry">{parseRegistry("subcategory").find(item => item.categoryName === formData.categoryName)
+                  ? "Select a subcategory to modify or delete"
+                  : "No subcategories found"
+                }</InputLabel>
+                <Select
+                  id="registry"
+                  value={registry}
+                  label={parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName) ? "Select a subcategory to modify or delete" : "No subcategories found"}
+                  onChange={handleRegistryChange}
+                  disabled={!parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName)}
+                  required={true}
+                >
+                  {
+                    parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName) ? parseRegistry("subcategory").map(item =>
+                      item.categoryName == formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
+                    ) : <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>
+                  }
+                </Select>
+              </FormControl>}
 
-                {!setFormAction && <FormControl fullWidth margin="normal">
-                  <InputLabel htmlFor="registry">{parseRegistry("subcategory").find(item => item.categoryName === formData.categoryName)
-                    ? "Select a subcategory to modify or delete"
-                    : "No subcategories found"
-                  }</InputLabel>
-                  <Select
-                    id="registry"
-                    value={registry}
-                    label={parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName) ? "Select a subcategory to modify or delete" : "No subcategories found"}
-                    onChange={handleRegistryChange}
-                    disabled={!parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName)}
-                    required={true}
-                  >
-                    {
-                      parseRegistry("subcategory").find(item => item.categoryName == formData.categoryName) ? parseRegistry("subcategory").map(item =>
-                        item.categoryName == formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
-                      ) : <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>
-                    }
-                  </Select>
-                </FormControl>}
+              <TextField
+                label="Name"
+                value={formData.name}
+                onChange={handleChange('name')}
+                fullWidth
+                margin="normal"
+                required={setFormAction}
+              />
+            </>
+          )}
+          <Box sx={{ margin: '2rem auto', display: 'flex', justifyContent: 'space-around', width: '50%' }}>
+            <Button
+              className="createModifyButton"
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ width: '40%' }}
+              disabled={isButtonDisabled}
+            >
+              {setFormAction ? 'Create' : 'Modify'}
+            </Button>
+            {!setFormAction && <ConfirmationModal isButtonDisabled={isDeleteButtonDisabled} handleDelete={handleDelete} />}
 
-                <TextField
-                  label="Name"
-                  value={formData.name}
-                  onChange={handleChange('name')}
-                  fullWidth
-                  margin="normal"
-                  required={setFormAction}
-                />
-              </>
-            )}
-            <Box sx={{ margin: '2rem auto', display: 'flex', justifyContent: 'space-around', width: '50%' }}>
-              <Button
-                className="createModifyButton"
-                type="submit"
-                variant="contained"
-                color="primary"
-                sx={{ width: '40%' }}
-                disabled={isButtonDisabled}
-              >
-                {setFormAction ? 'Create' : 'Modify'}
-              </Button>
-              {!setFormAction && <ConfirmationModal isButtonDisabled={isDeleteButtonDisabled} handleDelete={handleDelete} />}
-
-            </Box>
-          </form>
-        </Box>
-      </Container>}
-    </>
+          </Box>
+        </form>
+      </Box>
+    </Container>
   )
 }
 

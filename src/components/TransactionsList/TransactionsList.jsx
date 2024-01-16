@@ -58,8 +58,6 @@ const TransactionsList = () => {
 
     const [loading, setLoading] = useState(false)
 
-    const [submit, setSubmit] = useState(false)
-
     const [alert, setAlert] = useState(false)
 
     const [error, setError] = useState(false)
@@ -148,17 +146,11 @@ const TransactionsList = () => {
 
     useEffect(() => {
 
-        if (submit) {
+        if (alert) {
             updateData({ setTransactions }, token)
-                .finally(() => {
-                    setTimeout(() => {
-                        submit && setAlert(false)
-                    }, 3000)
-                }
-                )
         }
 
-    }, [submit])
+    }, [alert])
 
     useEffect(() => {
 
@@ -255,7 +247,7 @@ const TransactionsList = () => {
                             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
                             <StyledPagination count={pageCount} color="primary" page={page} onChange={handlePagination} />
-                            <TransactionsForm setSubmit={setSubmit} setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
+                            <TransactionsForm setAlert={setAlert} setError={setError} setErrorText={setErrorText} />
                         </Box>
                     </Box>
                 </>

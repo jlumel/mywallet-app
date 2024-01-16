@@ -9,24 +9,12 @@ import './TransactionsForm.css'
 const StyledSelect = styled(Select)(({ theme }) => ({
     [theme.breakpoints.down('xl')]: {
         height: '2.5rem'
-    },
-    [theme.breakpoints.down('md')]: {
-        height: '2.5rem'
     }
 }))
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
-    [theme.breakpoints.down('xl')]: {
+const TransactionsForm = ({ setAlert, setError, setErrorText }) => {
 
-    },
-    [theme.breakpoints.down('md')]: {
-
-    }
-}))
-
-const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
-
-    const padding = window.width > 1400 ? '3rem' : '0.5rem'
+    const padding = window.innerWidth > 1545 ? '1rem' : '0.5rem'
 
     const uniqueCurrencies = new Set()
 
@@ -87,10 +75,16 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                         setAlert(true)
                         setErrorText(res.response.data.message)
                         setError(true)
+                        setTimeout(() => {
+                            setAlert(false)
+                        }, 3000)
                     } else {
                         setAlert(true)
                         setError(false)
                         setErrorText("")
+                        setTimeout(() => {
+                            setAlert(false)
+                        }, 3000)
                     }
                     setFormData(
                         {
@@ -101,12 +95,14 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                             subcategoryName: "",
                         }
                     )
-                    setSubmit(true)
                 })
                 .catch(err => {
+                    setAlert(true)
                     setError(true)
-                    setErrorText("An error has ocurred")
-                    setSubmit(true)
+                    setErrorText("Internal server error")
+                    setTimeout(() => {
+                        setAlert(false)
+                    }, 3000)
                     return err
                 })
 
@@ -255,7 +251,7 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                             </StyledSelect>
                         </FormControl>
 
-                        <StyledTextField
+                        <TextField
                             inputProps={{ style: { padding } }}
                             required={true}
                             label="Amount"
@@ -266,7 +262,7 @@ const TransactionsForm = ({ setAlert, setError, setErrorText, setSubmit }) => {
                             helperText={errorAmount && "Type only numbers"}
                         />
 
-                        <StyledTextField
+                        <TextField
                             inputProps={{ style: { padding } }}
                             label="Description"
                             name="description"

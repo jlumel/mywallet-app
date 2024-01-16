@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useUserContext } from "../../context/userContext"
 import { fetchAPI, updateSession } from '../../utils'
 import { TextField, FormControlLabel, Checkbox, Button, Container, Box } from '@mui/material'
@@ -26,8 +26,6 @@ const Form = ({ type }) => {
 
     const [errorPass2, setErrorPass2] = useState(false)
 
-    const [submit, setSubmit] = useState(false)
-
     const [alert, setAlert] = useState(false)
 
     const [error, setError] = useState(false)
@@ -47,12 +45,15 @@ const Form = ({ type }) => {
                 fetchAPI('post', '/user/login', formData)
                     .then(res => {
                         if (!res.data) {
+                            setLoading(false)
                             setErrorText(res.response.data.message)
                             setError(true)
-                        } else {
-                            setError(false)
-                            setErrorText("")
+                            setAlert(true)
+                            setTimeout(() => {
+                                setAlert(false)
+                            }, 3000)
                         }
+
                         if (res.data.username) {
                             setIsLogged(true)
                             setUsername(res.data.username)
@@ -62,13 +63,22 @@ const Form = ({ type }) => {
                             navigate('/')
                         } else {
                             setLoading(false)
+                            setErrorText(res.response.data.message)
+                            setError(true)
+                            setAlert(true)
+                            setTimeout(() => {
+                                setAlert(false)
+                            }, 3000)
                         }
-                        setSubmit(true)
                     })
                     .catch(err => {
                         setLoading(false)
+                        setErrorText("Internal server error")
                         setError(true)
-                        setSubmit(true)
+                        setAlert(true)
+                        setTimeout(() => {
+                            setAlert(false)
+                        }, 3000)
                         return err
                     })
                     .finally(() => {
@@ -89,21 +99,26 @@ const Form = ({ type }) => {
                 fetchAPI('post', '/user/register', formData)
                     .then(res => {
                         if (!res.data) {
+                            setLoading(false)
                             setErrorText(res.response.data.message)
                             setError(true)
+                            setAlert(true)
+                            setTimeout(() => {
+                                setAlert(false)
+                            }, 3000)
                         } else {
-                            setError(false)
-                            setErrorText("")
+                            setLoading(false)
                             navigate('/login')
                         }
-                        setLoading(false)
-                        setSubmit(true)
                     })
                     .catch(err => {
                         setLoading(false)
+                        setErrorText("Internal server error")
                         setError(true)
-                        setErrorText("An error has ocurred")
-                        setSubmit(true)
+                        setAlert(true)
+                        setTimeout(() => {
+                            setAlert(false)
+                        }, 3000)
                         return err
                     })
                     .finally(() => {
@@ -125,20 +140,29 @@ const Form = ({ type }) => {
                 fetchAPI('put', '/api/user/password', formData, token)
                     .then(res => {
                         if (!res.data) {
+                            setLoading(false)
                             setErrorText(res.response.data.message)
                             setError(true)
+                            setAlert(true)
+                            setTimeout(() => {
+                                setAlert(false)
+                            }, 3000)
                         } else {
-                            setError(false)
-                            setErrorText("")
+                            setLoading(false)
+                            setAlert(true)
+                            setTimeout(() => {
+                                setAlert(false)
+                            }, 3000)
                         }
-                        setLoading(false)
-                        setSubmit(true)
                     })
                     .catch(err => {
                         setLoading(false)
+                        setErrorText("Internal server error")
                         setError(true)
-                        setErrorText("An error has ocurred")
-                        setSubmit(true)
+                        setAlert(true)
+                        setTimeout(() => {
+                            setAlert(false)
+                        }, 3000)
                         return err
                     })
                     .finally(() => {
@@ -166,27 +190,6 @@ const Form = ({ type }) => {
     const handleCheckboxChange = () => {
         setFormData({ ...formData, showPassword: !formData.showPassword })
     }
-
-    useEffect(() => {
-
-        setLoading(true)
-        updateSession(setIsLogged, setIsLogged, token, setToken)
-            .finally(() => {
-                submit && setAlert(true)
-                setTimeout(() => {
-                    submit && setAlert(false)
-                }, 3000)
-                setLoading(false)
-                setLoading(false)
-            })
-
-    }, [submit])
-
-    useEffect(() => {
-
-        setSubmit(false)
-
-    }, [loading])
 
     return (
 

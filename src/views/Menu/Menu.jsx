@@ -28,7 +28,7 @@ const Menu = () => {
 
     return (
         <>
-            {loading ? <Loader /> : (isLogged ? accounts.length ? <LoggedInMenu /> : <CurrencySelection /> : <LoggedOutMenu />)}
+            {loading ? <Loader /> : (isLogged ? accounts?.length ? <LoggedInMenu /> : <CurrencySelection /> : <LoggedOutMenu />)}
         </>
     )
 }

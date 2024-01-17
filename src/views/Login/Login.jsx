@@ -15,7 +15,7 @@ const Login = () => {
     
        isLogged && navigate('/')
 
-       document.title = 'My Wallet | Login'
+       document.title = 'My Wallet | Log In'
 
     }, [isLogged])
 

@@ -44,7 +44,16 @@ export const updateData = async (setters, token) => {
   try {
     if (setters.setTransactions) {
       const response = await fetchAPI('get', '/api/transactions', null, token)
-      setters.setTransactions((response.data).reverse())
+      setters.setTransactions((response.data.sort((a, b) => {
+        if (a.timestamp > b.timestamp) {
+          return -1
+        }
+        if (a.acronym < b.acronym) {
+          return 1
+        }
+        return 0
+      }))
+      )
     }
     if (setters.setAccounts) {
       const response = await fetchAPI('get', '/api/accounts', null, token)
@@ -60,8 +69,7 @@ export const updateData = async (setters, token) => {
           return 1
         }
         return 0
-      })
-      )
+      }))
     }
     if (setters.setCategories) {
       const response = await fetchAPI('get', '/api/categories', null, token)

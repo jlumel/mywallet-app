@@ -244,7 +244,7 @@ const TransactionDetail = () => {
                                         <p><span className="titles">Currency: </span>{transaction.currencyAcronym}</p>
                                         <p><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
                                         <p><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{formData.amount}</p>
-                                        <p><span className="titles">Description: </span>{transaction.description || "-"}</p>
+                                        <p><span className="titles">Description: </span>{formData.description || "-"}</p>
                                         <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                                     </StyledPaper>
                                 }

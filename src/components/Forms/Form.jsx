@@ -54,7 +54,7 @@ const Form = ({ type }) => {
                             }, 3000)
                         }
 
-                        if (res.data.username) {
+                        if (res?.data?.username) {
                             setIsLogged(true)
                             setUsername(res.data.username)
                             setToken(res.data.token)

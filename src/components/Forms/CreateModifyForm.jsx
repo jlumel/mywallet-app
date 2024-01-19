@@ -75,7 +75,7 @@ const CreateModifyForm = ({ action }) => {
   }
 
   const handleChange = prop => event => {
-    !setFormAction && walletItem == "subcategory" && setRegistry("")
+
     setFormData({ ...formData, [prop]: event.target.value ? event.target.value : "" })
 
   }
@@ -240,7 +240,7 @@ const CreateModifyForm = ({ action }) => {
   useEffect(() => {
 
     updateData({ setAccounts, setCategories, setSubcategories }, token)
-  }, [])
+  }, [alert])
 
   return (
 

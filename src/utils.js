@@ -40,11 +40,23 @@ export const updateSession = async (setIsLogged, setUsername, token, setToken) =
 }
 
 export const updateData = async (setters, token) => {
-
   try {
-    if (setters.setTransactions) {
-      const response = await fetchAPI('get', '/api/transactions', null, token)
-      setters.setTransactions((response.data.sort((a, b) => {
+    const transactionPromise = setters.setTransactions ? fetchAPI('get', '/api/transactions', null, token) : null
+    const accountsPromise = setters.setAccounts ? fetchAPI('get', '/api/accounts', null, token) : null
+    const currenciesPromise = setters.setCurrencies ? fetchAPI('get', '/api/currencies', null, token) : null
+    const categoriesPromise = setters.setCategories ? fetchAPI('get', '/api/categories', null, token) : null
+    const subcategoriesPromise = setters.setSubcategories ? fetchAPI('get', '/api/subcategories', null, token) : null
+
+    const [transactionResponse, accountsResponse, currenciesResponse, categoriesResponse, subcategoriesResponse] = await Promise.all([
+      transactionPromise,
+      accountsPromise,
+      currenciesPromise,
+      categoriesPromise,
+      subcategoriesPromise
+    ])
+
+    if (transactionResponse) {
+      setters.setTransactions(transactionResponse.data.sort((a, b) => {
         if (a.timestamp > b.timestamp) {
           return -1
         }
@@ -53,15 +65,14 @@ export const updateData = async (setters, token) => {
         }
         return 0
       }))
-      )
     }
-    if (setters.setAccounts) {
-      const response = await fetchAPI('get', '/api/accounts', null, token)
-      setters.setAccounts(response.data)
+
+    if (accountsResponse) {
+      setters.setAccounts(accountsResponse.data)
     }
-    if (setters.setCurrencies) {
-      const response = await fetchAPI('get', '/api/currencies', null, token)
-      setters.setCurrencies(response.data.sort((a, b) => {
+
+    if (currenciesResponse) {
+      setters.setCurrencies(currenciesResponse.data.sort((a, b) => {
         if (a.acronym < b.acronym) {
           return -1
         }
@@ -71,17 +82,15 @@ export const updateData = async (setters, token) => {
         return 0
       }))
     }
-    if (setters.setCategories) {
-      const response = await fetchAPI('get', '/api/categories', null, token)
-      setters.setCategories(response.data)
-    }
-    if (setters.setSubcategories) {
 
-      const response = await fetchAPI('get', '/api/subcategories', null, token)
-      setters.setSubcategories(response.data)
+    if (categoriesResponse) {
+      setters.setCategories(categoriesResponse.data)
+    }
+
+    if (subcategoriesResponse) {
+      setters.setSubcategories(subcategoriesResponse.data)
     }
   } catch (err) {
     return err
   }
-
 }

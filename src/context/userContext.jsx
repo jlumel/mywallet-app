@@ -30,10 +30,6 @@ const UserProvider = ({ children, defaultToken }) => {
     const [categoryFilter, setCategoryFilter] = useState({ active: false, param: { key: "categoryName", value: "" } })
 
     useEffect(() => {
-        updateSession(setIsLogged, setUsername, token, setToken)
-    }, [])
-
-    useEffect(() => {
         isLogged && updateData({ setTransactions, setCurrencies, setCategories, setSubcategories }, token)
     }, [isLogged])
 

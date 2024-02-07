@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom"
 
 const Login = () => {
 
+    document.title = 'My Wallet | Log In'
+
     const { isLogged } = useUserContext()
 
     const navigate = useNavigate()
@@ -14,8 +16,6 @@ const Login = () => {
     useEffect(()=> {
     
        isLogged && navigate('/')
-
-       document.title = 'My Wallet | Log In'
 
     }, [isLogged])
 

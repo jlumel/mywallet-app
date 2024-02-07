@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom"
 
 const Admin = () => {
 
+    document.title = 'My Wallet | Wallet Items'
+    
     const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(false)
@@ -61,8 +63,6 @@ const Admin = () => {
     useEffect(() => {
 
         !isLogged && navigate('/')
-
-        document.title = 'My Wallet | Wallet Items'
 
         setLoading(true)
 

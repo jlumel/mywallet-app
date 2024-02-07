@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom"
 
 const AdminFormContainer = () => {
 
+    document.title = action == 'create' ? 'My Wallet | Create' : 'My Wallet | Modify'
+
     const navigate = useNavigate()
 
     const { action } = useParams()
@@ -20,8 +22,6 @@ const AdminFormContainer = () => {
     useEffect(() => {
 
         !isLogged && navigate('/')
-
-        document.title = action == 'create' ? 'My Wallet | Create' : 'My Wallet | Modify'
 
         setLoading(true)
 

@@ -8,6 +8,8 @@ import { useNavigate } from "react-router"
 
 const ChangePassword = () => {
 
+    document.title = 'My Wallet | Change password'
+
     const navigate = useNavigate()
 
     const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
@@ -18,8 +20,6 @@ const ChangePassword = () => {
     useEffect(() => {
 
         !isLogged && navigate('/')
-
-        document.title = 'My Wallet | Change password'
 
         setLoading(true)
 

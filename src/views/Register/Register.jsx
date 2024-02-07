@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom"
 
 const Register = () => {
 
+    document.title = 'My Wallet | Register'
+
     const { isLogged } = useUserContext()
 
     const navigate = useNavigate()
@@ -13,8 +15,6 @@ const Register = () => {
     useEffect(() => {
 
         isLogged && navigate('/')
-
-        document.title = 'My Wallet | Register'
 
     }, [isLogged])
 

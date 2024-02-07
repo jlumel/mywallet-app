@@ -7,6 +7,8 @@ import { useEffect } from "react"
 
 const Transactions = () => {
 
+    document.title = 'My Wallet | Transactions'
+
     const { isLogged } = useUserContext()
 
     const navigate = useNavigate()
@@ -14,8 +16,6 @@ const Transactions = () => {
     useEffect(() => {
 
         !isLogged && navigate('/')
-
-        document.title = 'My Wallet | Transactions'
 
     }, [])
 

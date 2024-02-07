@@ -47,6 +47,8 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 
 const TransactionDetail = () => {
 
+    document.title = 'My Wallet | Transaction detail'
+
     const navigate = useNavigate()
 
     const { id } = useParams()
@@ -153,8 +155,6 @@ const TransactionDetail = () => {
     useEffect(() => {
 
         !isLogged && navigate('/')
-
-        document.title = 'My Wallet | Transaction detail'
 
         setLoading(true)
         updateData({ setTransactions, setCategories, setSubcategories }, token)

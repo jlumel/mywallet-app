@@ -8,6 +8,8 @@ import { useNavigate } from "react-router"
 
 const Accounts = () => {
 
+    document.title = 'My Wallet | Accounts'
+
     const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(false)
@@ -18,8 +20,6 @@ const Accounts = () => {
         
         !isLogged && navigate('/')
         
-        document.title = 'My Wallet | Accounts'
-
         setLoading(true)
 
         updateSession(setIsLogged, setUsername, token, setToken)

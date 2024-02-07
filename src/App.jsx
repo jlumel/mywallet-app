@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Menu from './views/Menu'
-import NavBar from './views/NavBar'
+import NavBar from './components/NavBar'
 import { useUserContext } from './context/userContext'
 import Register from './views/Register'
 import Login from './views/Login/Login'

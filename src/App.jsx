@@ -15,9 +15,7 @@ import Admin from './views/Admin'
 import AdminFormContainer from './views/AdminFormContainer'
 import TransactionDetail from './views/TransactionDetail/TransactionDetail'
 
-const theme = createTheme({
-  direction: 'ltr'
-})
+const theme = createTheme()
 
 function App() {
 

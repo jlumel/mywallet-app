@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { updateSession, updateData } from '../utils'
+import { updateData } from '../utils'
 
 export const UserContext = React.createContext([])
 

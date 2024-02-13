@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useUserContext } from "../../context/userContext"
-import { fetchAPI, updateSession } from '../../utils'
+import { fetchAPI } from '../../utils'
 import { TextField, FormControlLabel, Checkbox, Button, Container, Box } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import Loader from '../Loader'
@@ -42,7 +42,7 @@ const Form = ({ type }) => {
         switch (type) {
             case 'Log In':
                 setLoading(true)
-                fetchAPI('post', '/user/login', formData)
+                fetchAPI('post', '/api/user/login', formData)
                     .then(res => {
                         if (!res.data) {
                             setLoading(false)
@@ -96,7 +96,7 @@ const Form = ({ type }) => {
 
             case 'Register':
                 setLoading(true)
-                fetchAPI('post', '/user/register', formData)
+                fetchAPI('post', '/api/user/register', formData)
                     .then(res => {
                         if (!res.data) {
                             setLoading(false)

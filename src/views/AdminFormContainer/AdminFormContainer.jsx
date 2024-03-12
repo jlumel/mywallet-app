@@ -9,11 +9,11 @@ import { useNavigate } from "react-router-dom"
 
 const AdminFormContainer = () => {
 
-    document.title = action == 'create' ? 'My Wallet | Create' : 'My Wallet | Modify'
-
     const navigate = useNavigate()
-
+    
     const { action } = useParams()
+    
+    document.title = action == 'create' ? 'My Wallet | Create' : 'My Wallet | Modify'
 
     const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 

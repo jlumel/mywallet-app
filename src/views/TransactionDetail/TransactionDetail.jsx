@@ -12,6 +12,7 @@ import SubmitAlert from "../../components/SubmitAlert"
 import { useNavigate } from "react-router-dom"
 import './TransactionDetail.css'
 import styled from "@emotion/styled"
+import dayjs from "dayjs"
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
     [theme.breakpoints.down('xl')]: {
@@ -125,6 +126,11 @@ const TransactionDetail = () => {
         setFormData({ ...formData, amount: event.target.value ? event.target.value : "" })
     }
 
+    const handleDateChange = newDate => {
+        
+        setFormData({ ...formData, timestamp: newDate.valueOf()})
+    }
+
     const handleDelete = () => {
 
         fetchAPI('delete', `/api/transactions/${id}`, null, token)
@@ -188,7 +194,7 @@ const TransactionDetail = () => {
             subcategoryName: transaction.subcategoryName,
             amount: transaction.amount,
             description: transaction.description,
-            timestamp: new Date(transaction.timestamp).toLocaleDateString()
+            timestamp: dayjs.unix(transaction.timestamp / 1000).format("DD/MM/YYYY")
         })
 
     }, [transactions])
@@ -240,7 +246,7 @@ const TransactionDetail = () => {
                                             <StyledTextField sx={{ width: '12rem', margin: '2.5rem 0 auto' }} inputProps={{ style: { padding: '0 0' } }} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
                                         <p><span className="titles">Date: </span></p><LocalizationProvider dateAdapter={AdapterDayjs}><DatePicker
-                                            value={formData.timestamp} onChange={handleChange('timestamp')}
+                                            inputFormat="dd/MM/yyyy" value={dayjs(formData.timestamp)} onChange={handleDateChange}
                                         /></LocalizationProvider>
                                     </StyledPaper>
                                     :

@@ -1,4 +1,7 @@
 import { Container, Box, Paper, Button, Select, MenuItem, TextField, Typography } from "@mui/material"
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useParams } from "react-router-dom"
 import { useUserContext } from '../../context/userContext'
 import { useEffect, useState } from "react"
@@ -64,6 +67,7 @@ const TransactionDetail = () => {
         subcategoryName: "",
         amount: "",
         description: "",
+        timestamp: "",
     })
 
     const [alert, setAlert] = useState(false)
@@ -184,6 +188,7 @@ const TransactionDetail = () => {
             subcategoryName: transaction.subcategoryName,
             amount: transaction.amount,
             description: transaction.description,
+            timestamp: new Date(transaction.timestamp).toLocaleDateString()
         })
 
     }, [transactions])
@@ -234,7 +239,9 @@ const TransactionDetail = () => {
                                             <p style={{ marginBottom: '0' }}><span className="titles">Description: </span></p>
                                             <StyledTextField sx={{ width: '12rem', margin: '2.5rem 0 auto' }} inputProps={{ style: { padding: '0 0' } }} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
-                                        <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
+                                        <p><span className="titles">Date: </span></p><LocalizationProvider dateAdapter={AdapterDayjs}><DatePicker
+                                            value={formData.timestamp} onChange={handleChange('timestamp')}
+                                        /></LocalizationProvider>
                                     </StyledPaper>
                                     :
                                     <StyledPaper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>

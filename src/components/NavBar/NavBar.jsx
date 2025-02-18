@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import './NavBar.css'
 import { useUserContext } from '../../context/userContext'
-import { capitalizeFirstLetter, fetchAPI } from '../../utils'
+import { capitalizeFirstLetter, lowercaseFirstLetter, fetchAPI } from '../../utils'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.ico'
 
@@ -38,8 +38,8 @@ const NavBar = () => {
         }
     }, [isLogged])
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null)
-    const [anchorElUser, setAnchorElUser] = React.useState(null)
+    const [anchorElNav, setAnchorElNav] = useState(null)
+    const [anchorElUser, setAnchorElUser] = useState(null)
 
     const handleOpenNavMenu = event => {
         setAnchorElNav(event.target)
@@ -63,23 +63,12 @@ const NavBar = () => {
             case 'Menu':
                 return '/'
 
-            case 'Transactions':
-                return 'transactions'
-
-            case 'Accounts':
-                return 'accounts'
-
             case 'Wallet Items':
                 return 'wallet-items'
 
-            case 'Register':
-                return 'register'
-
-            case 'Login':
-                return 'login'
             default:
+                lowercaseFirstLetter(page)
                 break
-
         }
     }
 

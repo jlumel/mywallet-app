@@ -19,6 +19,7 @@ export const fetchAPI = async (method, url, body, token) => {
 }
 
 export const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.slice(1)
+export const lowercaseFirstLetter = str => str.charAt(0).toLowerCase() + str.slice(1)
 
 export const updateSession = async (setIsLogged, setUsername, token, setToken) => {
 

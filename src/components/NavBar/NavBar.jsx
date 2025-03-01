@@ -67,8 +67,7 @@ const NavBar = () => {
                 return 'wallet-items'
 
             default:
-                lowercaseFirstLetter(page)
-                break
+                return lowercaseFirstLetter(page)
         }
     }
 

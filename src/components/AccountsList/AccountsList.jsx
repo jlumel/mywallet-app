@@ -1,7 +1,7 @@
 import { Paper, Box, Container } from "@mui/material"
 import { useState, useEffect } from "react"
 import { useUserContext } from "../../context/userContext"
-import { updateData, fetchAPI } from "../../utils"
+import { updateData, fetchAPI, formatCurrency } from "../../utils"
 import Loader from '../Loader'
 import { useNavigate } from "react-router-dom"
 
@@ -79,7 +79,7 @@ const AccountsList = () => {
                         {accounts.map(account =>
                             <Paper onClick={() => handleClick({ key: 'accountName', value: account.name })} key={account._id} sx={{ width: '12rem', height: '12rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
                                 <h2>{account.name}</h2>
-                                <h4>Balance: <span style={{ color: 'blue' }}>{currencies.length ? currencies.find(currency => currency.acronym == account.currencyAcronym)?.symbol : ""}{totals.totals?.length && totals.totals.find(total => total?._id == account.name)?.total || "0"}</span></h4>
+                                <h4>Balance: <span style={{ color: 'blue' }}>{formatCurrency(totals.totals?.length && totals.totals.find(total => total?._id == account.name)?.total || 0, account.currencyAcronym)}</span></h4>
                             </Paper>
                         )}
                     </Box>
@@ -101,7 +101,7 @@ const AccountsList = () => {
 
                                     return <Paper onClick={() => handleClick({ key: 'currencyAcronym', value: account.currencyAcronym })} key={account.currencyAcronym} sx={{ width: '12rem', height: '12rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
                                         <h2>Total {account.currencyAcronym}</h2>
-                                        <h4>Balance: <span style={{ color: 'blue' }}>{currencies.find(currency => account.currencyAcronym == currency.acronym)?.symbol}{totals.totalsByCurrency?.length && totals.totalsByCurrency.find(total => total?._id == account.currencyAcronym)?.total || "0"}</span></h4>
+                                        <h4>Balance: <span style={{ color: 'blue' }}>{formatCurrency(totals.totalsByCurrency?.length && totals.totalsByCurrency.find(total => total?._id == account.currencyAcronym)?.total || 0, account.currencyAcronym)}</span></h4>
                                     </Paper>
                                 }
                                 return null

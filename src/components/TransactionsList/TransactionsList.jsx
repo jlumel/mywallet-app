@@ -1,10 +1,10 @@
-import { Container, Box, Pagination, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Chip } from "@mui/material"
+import { Container, Box, Pagination, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Chip, Stack } from "@mui/material"
 import { styled } from '@mui/material/styles'
 import TableCell, { tableCellClasses } from "@mui/material/TableCell"
 import { useState, useEffect } from "react"
 import { useUserContext } from '../../context/userContext'
 import Loader from "../Loader"
-import { updateData } from "../../utils"
+import { updateData, formatCurrency } from "../../utils"
 import { TransactionsForm } from "../Forms"
 import SubmitAlert from "../SubmitAlert"
 import { useNavigate } from "react-router-dom"
@@ -46,7 +46,7 @@ const TransactionsList = () => {
 
     const navigate = useNavigate()
 
-    const { token, transactions, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
+    const { token, transactions, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter, setMinDateFilter, setMaxDateFilter } = useUserContext()
 
     const [rows, setRows] = useState([])
 
@@ -83,6 +83,10 @@ const TransactionsList = () => {
         key == 'currencyAcronym' && setCurrencyFilter({ active: false, param: { key: "currencyAcronym", value: "" } })
 
         key == 'categoryName' && setCategoryFilter({ active: false, param: { key: "categoryName", value: "" } })
+
+        key == 'minDate' && setMinDateFilter({ active: false, param: { key: "minDate", value: "" } })
+
+        key == 'maxDate' && setMaxDateFilter({ active: false, param: { key: "maxDate", value: "" } })
 
     }
 
@@ -128,7 +132,7 @@ const TransactionsList = () => {
 
     const endIndex = startIndex + ROWS_PER_PAGE
 
-    const createData = (id, type, currencyAcronym, amount, category, subcategory, account) => ({ id, type, currencyAcronym, amount, category, subcategory, account })
+    const createData = (id, type, currencyAcronym, amount, category, subcategory, account, timestamp) => ({ id, type, currencyAcronym, amount, category, subcategory, account, timestamp })
 
     const ListItem = styled('li')(({ theme }) => ({
         margin: theme.spacing(0.5),
@@ -153,23 +157,58 @@ const TransactionsList = () => {
     }, [alert])
 
     useEffect(() => {
-
         if (Object.keys(query).length) {
-
             setChipData(query.map(item => ({ key: `${item.key}`, label: `${item.key}:${item.value}` })))
 
-            let filteredTransactions
+            let filteredTransactions = transactions.length
+                ? transactions.filter(transaction =>
+                    query.every(filter => {
+                        const { key, value } = filter
 
-            filteredTransactions = transactions.length ? transactions.filter(transaction => Object.entries(query).every(([key, value]) => transaction[value.key] === value.value)) : []
+                        const transactionDate = new Date(transaction.timestamp)
 
-            setRows(filteredTransactions?.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
+                        if (key === 'minDate') {
+                            return transactionDate >= new Date(value)
+                        }
+
+                        if (key === 'maxDate') {
+                            return transactionDate <= new Date(value)
+                        }
+
+                        return transaction[key] === value
+                    })
+                )
+                : []
+
+            setRows(filteredTransactions.map(transaction =>
+                createData(
+                    transaction._id,
+                    transaction.type,
+                    transaction.currencyAcronym,
+                    transaction.amount,
+                    transaction.categoryName,
+                    transaction.subcategoryName,
+                    transaction.accountName,
+                    transaction.timestamp
+                )
+            ))
         } else {
             setChipData([])
-            transactions.length && setRows(transactions.map(transaction => createData(transaction._id, transaction.type, transaction.currencyAcronym, transaction.amount, transaction.categoryName, transaction.subcategoryName, transaction.accountName)))
+            transactions.length && setRows(transactions.map(transaction =>
+                createData(
+                    transaction._id,
+                    transaction.type,
+                    transaction.currencyAcronym,
+                    transaction.amount,
+                    transaction.categoryName,
+                    transaction.subcategoryName,
+                    transaction.accountName,
+                    transaction.timestamp
+                )
+            ))
         }
-
-
     }, [transactions, query])
+
 
     useEffect(() => {
 
@@ -184,8 +223,26 @@ const TransactionsList = () => {
 
     }, [rows])
 
-    return (
+    const calculateSumsByCurrency = () => {
+        const sums = {}
+        rows.forEach(tx => {
+            if (tx.category === "Saldo inicial") return
 
+            const sign = tx.type === 'debit' ? -1 : 1
+            const amount = sign * tx.amount
+
+            if (!sums[tx.currencyAcronym]) {
+                sums[tx.currencyAcronym] = 0
+            }
+
+            sums[tx.currencyAcronym] += amount
+        })
+        return sums
+    }
+
+    const currencySums = calculateSumsByCurrency()
+
+    return (
         <>
             {loading ? <Loader /> : <StyledContainer>
                 <>
@@ -203,28 +260,27 @@ const TransactionsList = () => {
                             margin: 'auto'
                         }}
                     >
-                        {chipData.map(data => {
-
-                            return (
-                                <ListItem key={data.key}>
-                                    <Chip
-                                        label={data.label}
-                                        onDelete={handleDeleteChip(data.key)}
-                                    />
-                                </ListItem>
-                            )
-                        })}
+                        {chipData.map(data => (
+                            <ListItem key={data.key}>
+                                <Chip
+                                    label={data.label}
+                                    onDelete={handleDeleteChip(data.key)}
+                                />
+                            </ListItem>
+                        ))}
                     </ul>
+
                     <SubmitAlert alert={alert} error={error} errorText={errorText} />
                     <FilterMenu />
-                    <Box sx={{
-                        marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
-                    }}>
 
+                    <Box sx={{
+                        marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
+                    }}>
                         <StyledTableContainer component={Paper}>
                             <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                                 <TableHead>
                                     <TableRow>
+                                        <StyledTableCell align="center">Date</StyledTableCell>
                                         <StyledTableCell align="center">Amount</StyledTableCell>
                                         <StyledTableCell align="center">Category</StyledTableCell>
                                         <StyledTableCell align="center">Subcategory</StyledTableCell>
@@ -234,7 +290,8 @@ const TransactionsList = () => {
                                 <TableBody>
                                     {rows.slice(startIndex, endIndex).map(row => (
                                         <StyledTableRow style={{ backgroundColor: row.type == 'debit' ? '#ef5350' : '#4caf50' }} key={row.id} onClick={event => handleDetail(event, row.id)}>
-                                            <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{currencies?.find(currency => currency.acronym == row.currencyAcronym)?.symbol}{row.amount}</StyledTableCell>
+                                            <StyledTableCell align="center">{new Date(row.timestamp).toLocaleDateString()}</StyledTableCell>
+                                            <StyledTableCell align="center">{row.type == 'debit' ? "-" : ""}{formatCurrency(row.amount, row.currencyAcronym)}</StyledTableCell>
                                             <StyledTableCell align="center">{row.category}</StyledTableCell>
                                             <StyledTableCell align="center">{row.subcategory || "-"}</StyledTableCell>
                                             <StyledTableCell align="center">{row.account}</StyledTableCell>
@@ -243,6 +300,26 @@ const TransactionsList = () => {
                                 </TableBody>
                             </Table>
                         </StyledTableContainer>
+
+                        <Box sx={{ mt: 2 }}>
+                            <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center">
+                                {Object.entries(currencySums).map(([currency, sum]) => {
+                                    const symbol = currencies?.find(c => c.acronym === currency)?.symbol || ''
+                                    const color = sum < 0 ? 'error' : 'success'
+                                    return (
+                                        <Chip
+                                            key={currency}
+                                            label={`${formatCurrency(sum, currency)}`}
+                                            color={color}
+                                            variant="outlined"
+                                            sx={{ fontSize: '1rem' }}
+                                        />
+                                    )
+                                })}
+                            </Stack>
+                        </Box>
+
+
                         <Box sx={{
                             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'
                         }}>
@@ -254,6 +331,7 @@ const TransactionsList = () => {
             </StyledContainer>}
         </>
     )
+
 }
 
 export default TransactionsList

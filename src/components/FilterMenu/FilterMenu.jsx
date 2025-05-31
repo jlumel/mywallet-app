@@ -1,11 +1,26 @@
-import { Switch, Box, Typography, FormControlLabel, FormGroup, Select, MenuItem } from "@mui/material"
+import { Switch, Box, Typography, FormControlLabel, FormGroup, Select, MenuItem, TextField } from "@mui/material"
 import styled from "@emotion/styled"
 import { useEffect } from "react"
 import { useUserContext } from "../../context/userContext"
 
 const FilterMenu = () => {
 
-    const { accounts, currencies, categories, accountFilter, currencyFilter, categoryFilter, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter } = useUserContext()
+    const {
+        accounts,
+        currencies,
+        categories,
+        accountFilter,
+        currencyFilter,
+        categoryFilter,
+        minDateFilter,
+        maxDateFilter,
+        setQuery,
+        setAccountFilter,
+        setCurrencyFilter,
+        setCategoryFilter,
+        setMinDateFilter,
+        setMaxDateFilter
+    } = useUserContext()
 
     const StyledBox = styled(Box)(({ theme }) => ({
         position: 'absolute',
@@ -37,11 +52,8 @@ const FilterMenu = () => {
     }))
 
     const handleToggleFilter = filterType => {
-
         switch (filterType) {
-
             case "account":
-
                 if (accountFilter.active) {
                     setAccountFilter({ active: false, param: { key: "accountName", value: "" } })
                 } else {
@@ -62,13 +74,25 @@ const FilterMenu = () => {
                     setCategoryFilter(prevFilter => ({ ...prevFilter, active: true }))
                 }
                 break
+            case "minDate":
+                if (minDateFilter.active) {
+                    setMinDateFilter({ active: false, param: { key: "minDate", value: "" } })
+                } else {
+                    setMinDateFilter(prevFilter => ({ ...prevFilter, active: true }))
+                }
+                break
+            case "maxDate":
+                if (maxDateFilter.active) {
+                    setMaxDateFilter({ active: false, param: { key: "maxDate", value: "" } })
+                } else {
+                    setMaxDateFilter(prevFilter => ({ ...prevFilter, active: true }))
+                }
+                break
         }
     }
 
     const handleFilterValueChange = filterType => event => {
-
         const newValue = event.target.value
-
         switch (filterType) {
             case "account":
                 setAccountFilter(prevFilter => ({ ...prevFilter, param: { key: "accountName", value: newValue } }))
@@ -79,24 +103,35 @@ const FilterMenu = () => {
             case "category":
                 setCategoryFilter(prevFilter => ({ ...prevFilter, param: { key: "categoryName", value: newValue } }))
                 break
+            case "minDate":
+                setMinDateFilter(prevFilter => ({ ...prevFilter, param: { key: "minDate", value: newValue } }))
+                break
+            case "maxDate":
+                setMaxDateFilter(prevFilter => ({ ...prevFilter, param: { key: "maxDate", value: newValue } }))
+                break
         }
     }
 
     useEffect(() => {
-
-        const filters = [accountFilter, categoryFilter, currencyFilter]
+        const filters = [
+            accountFilter,
+            categoryFilter,
+            currencyFilter,
+            minDateFilter,
+            maxDateFilter
+        ]
 
         const params = []
 
         filters.forEach(filter => {
-            if (filter.param.value) {
+            if (filter.active && filter.param && filter.param.value) {
                 params.push(filter.param)
             }
         })
 
         params.length ? setQuery(params) : setQuery([])
 
-    }, [accountFilter, categoryFilter, currencyFilter])
+    }, [accountFilter, categoryFilter, currencyFilter, minDateFilter, maxDateFilter])
 
     return (
         <StyledBox>
@@ -104,55 +139,78 @@ const FilterMenu = () => {
 
             <FormGroup>
 
+
+                <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
+                    <StyledFormControlLabel control={<Switch checked={minDateFilter.active} onClick={() => handleToggleFilter("minDate")} />} label="minDate" />
+                    <TextField
+                        type="date"
+                        size="small"
+                        sx={{ width: '9.3rem' }}
+                        value={minDateFilter.param.value}
+                        onChange={handleFilterValueChange('minDate')}
+                        InputLabelProps={{ shrink: true }}
+                        disabled={!minDateFilter.active}
+                    />
+                </Box>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
+                    <StyledFormControlLabel control={<Switch checked={maxDateFilter.active} onClick={() => handleToggleFilter("maxDate")} />} label="maxDate" />
+                    <TextField
+                        type="date"
+                        size="small"
+                        sx={{ width: '9.3rem' }}
+                        value={maxDateFilter.param.value}
+                        onChange={handleFilterValueChange('maxDate')}
+                        InputLabelProps={{ shrink: true }}
+                        disabled={!maxDateFilter.active}
+                    />
+                </Box>
+
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
                     <StyledFormControlLabel control={<Switch checked={accountFilter.active} onClick={() => handleToggleFilter("account")} />} label="Account" />
                     <StyledSelect
-                        sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={accountFilter.param.value}
                         onChange={handleFilterValueChange('account')}
                         label="Account"
                         disabled={!accountFilter.active}
                     >
                         {accounts.length ? accounts.map(account => (
-
                             <MenuItem key={account._id} value={account.name}>{account.name}</MenuItem>
                         )) : <MenuItem selected value="No accounts found">No accounts found</MenuItem>}
                     </StyledSelect>
                 </Box>
+
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
                     <StyledFormControlLabel control={<Switch checked={currencyFilter.active} onClick={() => handleToggleFilter("currency")} />} label="Currency" />
                     <StyledSelect
-                        sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={currencyFilter.param.value}
                         onChange={handleFilterValueChange('currency')}
                         label="Currency"
                         disabled={!currencyFilter.active}
                     >
                         {currencies.length ? currencies.map(currency => (
-
                             <MenuItem key={currency._id} value={currency.acronym}>{currency.acronym}</MenuItem>
                         )) : <MenuItem selected value="No currencies found">No currencies found</MenuItem>}
                     </StyledSelect>
                 </Box>
+
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
                     <StyledFormControlLabel control={<Switch checked={categoryFilter.active} onClick={() => handleToggleFilter("category")} />} label="Category" />
                     <StyledSelect
-                        sx={{ height: '1.5rem', width: '7.5rem' }}
                         value={categoryFilter.param.value}
                         onChange={handleFilterValueChange('category')}
                         label="Category"
                         disabled={!categoryFilter.active}
                     >
                         {categories.length ? categories.map(category => (
-
                             <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
                         )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
                     </StyledSelect>
                 </Box>
+
             </FormGroup>
         </StyledBox>
     )
-
 }
 
 export default FilterMenu

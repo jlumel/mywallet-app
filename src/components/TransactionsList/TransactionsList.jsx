@@ -29,20 +29,9 @@ const StyledContainer = styled(Container)(({ theme }) => ({
     }
 }))
 
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-    overflow: 'hidden',
-    height: '69.4vh',
-    [theme.breakpoints.down('xl')]: {
-        height: '51vh'
-    },
-    [theme.breakpoints.down('md')]: {
-        height: '46.5vh'
-    }
-}))
-
 const TransactionsList = () => {
 
-    const ROWS_PER_PAGE = window.innerWidth > 1400 ? 10 : 4
+    const ROWS_PER_PAGE = 10
 
     const navigate = useNavigate()
 
@@ -247,16 +236,15 @@ const TransactionsList = () => {
                 <>
                     <ul
                         style={{
-                            position: 'absolute',
-                            top: 145,
-                            left: 0,
-                            right: 0,
+                            position: 'sticky',
                             zIndex: 3,
                             display: 'flex',
                             justifyContent: 'center',
                             flexWrap: 'wrap',
                             listStyle: 'none',
-                            margin: 'auto'
+                            height: '1.5rem',
+                            margin: 'auto',
+                            pading: 0
                         }}
                     >
                         {chipData.map(data => (
@@ -275,7 +263,7 @@ const TransactionsList = () => {
                     <Box sx={{
                         marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                     }}>
-                        <StyledTableContainer component={Paper}>
+                        <TableContainer component={Paper}>
                             <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                                 <TableHead>
                                     <TableRow>
@@ -298,7 +286,7 @@ const TransactionsList = () => {
                                     ))}
                                 </TableBody>
                             </Table>
-                        </StyledTableContainer>
+                        </TableContainer>
 
                         <Box sx={{ mt: 2 }}>
                             <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center">

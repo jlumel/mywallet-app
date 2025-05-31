@@ -226,7 +226,6 @@ const TransactionsList = () => {
     const calculateSumsByCurrency = () => {
         const sums = {}
         rows.forEach(tx => {
-            if (tx.category === "Saldo inicial") return
 
             const sign = tx.type === 'debit' ? -1 : 1
             const amount = sign * tx.amount

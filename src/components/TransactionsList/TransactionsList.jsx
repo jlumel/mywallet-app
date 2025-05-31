@@ -35,7 +35,7 @@ const TransactionsList = () => {
 
     const navigate = useNavigate()
 
-    const { token, transactions, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter, setMinDateFilter, setMaxDateFilter } = useUserContext()
+    const { token, transactions, currencies, query, setTransactions, setAccounts, setCategories, setSubcategories, setQuery, setAccountFilter, setCurrencyFilter, setCategoryFilter, setSubcategoryFilter, setMinDateFilter, setMaxDateFilter } = useUserContext()
 
     const [rows, setRows] = useState([])
 
@@ -72,6 +72,8 @@ const TransactionsList = () => {
         key == 'currencyAcronym' && setCurrencyFilter({ active: false, param: { key: "currencyAcronym", value: "" } })
 
         key == 'categoryName' && setCategoryFilter({ active: false, param: { key: "categoryName", value: "" } })
+
+        key == 'subcategoryName' && setSubcategoryFilter({ active: false, param: { key: "subcategoryName", value: "" } })
 
         key == 'minDate' && setMinDateFilter({ active: false, param: { key: "minDate", value: "" } })
 
@@ -157,11 +159,12 @@ const TransactionsList = () => {
                         const transactionDate = new Date(transaction.timestamp)
 
                         if (key === 'minDate') {
-                            return transactionDate >= new Date(value)
+                            return transactionDate >= new Date(value).setHours(new Date(value).getHours() + 27)
                         }
 
                         if (key === 'maxDate') {
-                            return transactionDate <= new Date(value)
+
+                            return transactionDate <= new Date(value).setHours(new Date(value).getHours() + 27)
                         }
 
                         return transaction[key] === value
@@ -291,7 +294,6 @@ const TransactionsList = () => {
                         <Box sx={{ mt: 2 }}>
                             <Stack direction="row" spacing={1} flexWrap="wrap" justifyContent="center">
                                 {Object.entries(currencySums).map(([currency, sum]) => {
-                                    const symbol = currencies?.find(c => c.acronym === currency)?.symbol || ''
                                     const color = sum < 0 ? 'error' : 'success'
                                     return (
                                         <Chip

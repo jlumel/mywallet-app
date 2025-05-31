@@ -9,15 +9,18 @@ const FilterMenu = () => {
         accounts,
         currencies,
         categories,
+        subcategories,
         accountFilter,
         currencyFilter,
         categoryFilter,
+        subcategoryFilter,
         minDateFilter,
         maxDateFilter,
         setQuery,
         setAccountFilter,
         setCurrencyFilter,
         setCategoryFilter,
+        setSubcategoryFilter,
         setMinDateFilter,
         setMaxDateFilter
     } = useUserContext()
@@ -74,6 +77,13 @@ const FilterMenu = () => {
                     setCategoryFilter(prevFilter => ({ ...prevFilter, active: true }))
                 }
                 break
+            case "subcategory":
+                if (subcategoryFilter.active) {
+                    setSubcategoryFilter({ active: false, param: { key: "subcategoryName", value: "" } })
+                } else {
+                    setSubcategoryFilter(prevFilter => ({ ...prevFilter, active: true }))
+                }
+                break
             case "minDate":
                 if (minDateFilter.active) {
                     setMinDateFilter({ active: false, param: { key: "minDate", value: "" } })
@@ -103,6 +113,9 @@ const FilterMenu = () => {
             case "category":
                 setCategoryFilter(prevFilter => ({ ...prevFilter, param: { key: "categoryName", value: newValue } }))
                 break
+            case "subcategory":
+                setSubcategoryFilter(prevFilter => ({ ...prevFilter, param: { key: "subcategoryName", value: newValue } }))
+                break
             case "minDate":
                 setMinDateFilter(prevFilter => ({ ...prevFilter, param: { key: "minDate", value: newValue } }))
                 break
@@ -116,6 +129,7 @@ const FilterMenu = () => {
         const filters = [
             accountFilter,
             categoryFilter,
+            subcategoryFilter,
             currencyFilter,
             minDateFilter,
             maxDateFilter
@@ -131,7 +145,7 @@ const FilterMenu = () => {
 
         params.length ? setQuery(params) : setQuery([])
 
-    }, [accountFilter, categoryFilter, currencyFilter, minDateFilter, maxDateFilter])
+    }, [accountFilter, categoryFilter, subcategoryFilter, currencyFilter, minDateFilter, maxDateFilter])
 
     return (
         <StyledBox>
@@ -205,6 +219,20 @@ const FilterMenu = () => {
                         {categories.length ? categories.map(category => (
                             <MenuItem key={category._id} value={category.name}>{category.name}</MenuItem>
                         )) : <MenuItem selected value="No categories found">No categories found</MenuItem>}
+                    </StyledSelect>
+                </Box>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
+                    <StyledFormControlLabel control={<Switch checked={subcategoryFilter.active} onClick={() => handleToggleFilter("subcategory")} />} label="Subcategory" />
+                    <StyledSelect
+                        value={subcategoryFilter.param.value}
+                        onChange={handleFilterValueChange('subcategory')}
+                        label="Subcategory"
+                        disabled={!subcategoryFilter.active}
+                    >
+                        {subcategories.length ? subcategories.map(subcategory => (
+                            <MenuItem key={subcategory._id} value={subcategory.name}>{subcategory.name}</MenuItem>
+                        )) : <MenuItem selected value="No subcategories found">No subcategories found</MenuItem>}
                     </StyledSelect>
                 </Box>
 

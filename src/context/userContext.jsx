@@ -22,6 +22,7 @@ const UserProvider = ({ children, defaultToken }) => {
     const [accountFilter, setAccountFilter] = useState({ active: false, param: { key: "accountName", value: "" } })
     const [currencyFilter, setCurrencyFilter] = useState({ active: false, param: { key: "currencyAcronym", value: "" } })
     const [categoryFilter, setCategoryFilter] = useState({ active: false, param: { key: "categoryName", value: "" } })
+    const [subcategoryFilter, setSubcategoryFilter] = useState({ active: false, param: { key: "subcategoryName", value: "" } })
     const [minDateFilter, setMinDateFilter] = useState({ active: false, param: { key: "minDate", value: "" } })
     const [maxDateFilter, setMaxDateFilter] = useState({ active: false, param: { key: "maxDate", value: "" } })
 
@@ -45,6 +46,7 @@ const UserProvider = ({ children, defaultToken }) => {
             accountFilter,
             currencyFilter,
             categoryFilter,
+            subcategoryFilter,
             minDateFilter,
             maxDateFilter,
             setIsLogged,
@@ -59,6 +61,7 @@ const UserProvider = ({ children, defaultToken }) => {
             setAccountFilter,
             setCurrencyFilter,
             setCategoryFilter,
+            setSubcategoryFilter,
             setMinDateFilter,
             setMaxDateFilter
         }}>

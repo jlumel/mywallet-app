@@ -155,7 +155,7 @@ const FilterMenu = () => {
 
 
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
-                    <StyledFormControlLabel control={<Switch checked={minDateFilter.active} onClick={() => handleToggleFilter("minDate")} />} label="minDate" />
+                    <StyledFormControlLabel control={<Switch checked={minDateFilter.active} onClick={() => handleToggleFilter("minDate")} />} label="Min Date" />
                     <TextField
                         type="date"
                         size="small"
@@ -168,7 +168,7 @@ const FilterMenu = () => {
                 </Box>
 
                 <Box sx={{ display: 'flex', flexDirection: 'column' }} mt={2}>
-                    <StyledFormControlLabel control={<Switch checked={maxDateFilter.active} onClick={() => handleToggleFilter("maxDate")} />} label="maxDate" />
+                    <StyledFormControlLabel control={<Switch checked={maxDateFilter.active} onClick={() => handleToggleFilter("maxDate")} />} label="Max Date" />
                     <TextField
                         type="date"
                         size="small"

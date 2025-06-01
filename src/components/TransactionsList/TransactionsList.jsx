@@ -159,7 +159,7 @@ const TransactionsList = () => {
                         const transactionDate = new Date(transaction.timestamp)
 
                         if (key === 'minDate') {
-                            return transactionDate >= new Date(value).setHours(new Date(value).getHours() + 27)
+                            return transactionDate >= new Date(value).setHours(new Date(value).getHours() + 3)
                         }
 
                         if (key === 'maxDate') {

@@ -93,6 +93,11 @@ const TransactionDetail = () => {
                     } else {
                         setError(false)
                         setErrorText("")
+                        // Actualizar el estado local de transaction con los nuevos datos
+                        setTransaction(prev => ({
+                            ...prev,
+                            ...formData
+                        }))
                     }
                     setEdit(prev => !prev)
                 })

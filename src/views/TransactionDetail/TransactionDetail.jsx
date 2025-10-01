@@ -64,6 +64,7 @@ const TransactionDetail = () => {
         subcategoryName: "",
         amount: "",
         description: "",
+        timestamp: "",
     })
 
     const [alert, setAlert] = useState(false)
@@ -78,7 +79,7 @@ const TransactionDetail = () => {
 
     const toggleEdit = action => {
 
-        if (action == "confirm") {
+        if (action === "confirm") {
 
             fetchAPI('put', `/api/transactions/${id}`, formData, token)
                 .then(res => {
@@ -121,6 +122,14 @@ const TransactionDetail = () => {
         setFormData({ ...formData, amount: event.target.value ? event.target.value : "" })
     }
 
+    const handleDateChange = event => {
+        // Convertir el datetime-local a timestamp ISO
+        const newDate = event.target.value;
+        if (newDate) {
+            setFormData({ ...formData, timestamp: new Date(newDate).toISOString() });
+        }
+    }
+
     const handleDelete = () => {
 
         fetchAPI('delete', `/api/transactions/${id}`, null, token)
@@ -152,6 +161,18 @@ const TransactionDetail = () => {
             })
     }
 
+    // Función para formatear la fecha para el input datetime-local
+    const formatDateForInput = (timestamp) => {
+        if (!timestamp) return '';
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
     useEffect(() => {
 
         !isLogged && navigate('/')
@@ -176,7 +197,7 @@ const TransactionDetail = () => {
 
     useEffect(() => {
 
-        transactions.length && setTransaction(transactions.find(transaction => transaction._id == id))
+        transactions.length && setTransaction(transactions.find(transaction => transaction._id === id))
 
         setFormData({
 
@@ -184,6 +205,7 @@ const TransactionDetail = () => {
             subcategoryName: transaction.subcategoryName,
             amount: transaction.amount,
             description: transaction.description,
+            timestamp: transaction.timestamp,
         })
 
     }, [transactions])
@@ -217,8 +239,8 @@ const TransactionDetail = () => {
                                             </p>
                                             <StyledSelect sx={{ height: '1.5rem', margin: '2.5rem 0 auto' }} name="subcategoryName" value={formData.subcategoryName} onChange={handleChange('subcategoryName')}>
                                                 {
-                                                    subcategories.find(item => item.categoryName == formData.categoryName) ? subcategories.map(item =>
-                                                        item.categoryName == formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
+                                                    subcategories.find(item => item.categoryName === formData.categoryName) ? subcategories.map(item =>
+                                                        item.categoryName === formData.categoryName && <MenuItem key={item._id} value={item.name}>{item.name}</MenuItem>
                                                     )
                                                         :
                                                         <MenuItem selected value={`No subcategories found`}>No subcategories found</MenuItem>}
@@ -227,14 +249,32 @@ const TransactionDetail = () => {
                                         <p><span className="titles">Currency: </span>{transaction.currencyAcronym}</p>
                                         <p style={{ marginBottom: '0' }}><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
                                         <Box sx={{ display: 'flex' }}>
-                                            <p style={{ marginBottom: '0' }}><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}</p>
+                                            <p style={{ marginBottom: '0' }}><span className="titles">Amount: </span>{transaction.type === "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym === transaction.currencyAcronym)?.symbol}</p>
                                             <StyledTextField sx={{ width: '10rem', margin: '2.5rem 0 auto' }} inputProps={{ style: { padding: '0 0' } }} type="text" value={formData.amount} onChange={handleAmountChange} />
                                         </Box>
                                         <Box sx={{ display: 'flex' }}>
                                             <p style={{ marginBottom: '0' }}><span className="titles">Description: </span></p>
                                             <StyledTextField sx={{ width: '12rem', margin: '2.5rem 0 auto' }} inputProps={{ style: { padding: '0 0' } }} type="text" value={formData.description} onChange={handleChange('description')} />
                                         </Box>
-                                        <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <p style={{ marginBottom: '0' }}><span className="titles">Date: </span></p>
+                                            <TextField 
+                                                sx={{ 
+                                                    width: '15rem', 
+                                                    margin: '2.5rem 0 auto',
+                                                    '& input': {
+                                                        padding: '0.5rem',
+                                                        fontSize: '1rem'
+                                                    }
+                                                }} 
+                                                type="datetime-local" 
+                                                value={formatDateForInput(formData.timestamp)} 
+                                                onChange={handleDateChange}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            />
+                                        </Box>
                                     </StyledPaper>
                                     :
                                     <StyledPaper sx={{ cursor: 'pointer', textAlign: 'left', fontSize: '2rem', width: '50%', margin: 'auto', padding: '0 2rem' }}>
@@ -243,7 +283,7 @@ const TransactionDetail = () => {
                                         {formData.subcategoryName ? <p><span className="titles">Subcategory: </span>{formData.subcategoryName}</p> : <p>Subcategory: -</p>}
                                         <p><span className="titles">Currency: </span>{transaction.currencyAcronym}</p>
                                         <p><span className="titles">Type: </span>{transaction.type ? capitalizeFirstLetter(transaction.type) : ""}</p>
-                                        <p><span className="titles">Amount: </span>{transaction.type == "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym == transaction.currencyAcronym)?.symbol}{formData.amount}</p>
+                                        <p><span className="titles">Amount: </span>{transaction.type === "debit" && "-"}{currencies.length && currencies.find(currency => currency.acronym === transaction.currencyAcronym)?.symbol}{formData.amount}</p>
                                         <p><span className="titles">Description: </span>{formData.description || "-"}</p>
                                         <p><span className="titles">Date: </span>{new Date(transaction.timestamp).toLocaleDateString()} {new Date(transaction.timestamp).toLocaleTimeString()}</p>
                                     </StyledPaper>

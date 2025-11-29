@@ -3,7 +3,7 @@ import axios from "axios"
 export const fetchAPI = async (method, url, body, token) => {
 
   const instance = axios.create({
-    baseURL: import.meta.env.VITE_DEV_ENVIRONMENT == "true" ? 'http://localhost:8080' : 'https://mywalletapi.lumel.dev',
+    baseURL: import.meta.env.VITE_DEV_ENVIRONMENT == "true" ? 'http://localhost:3001' : 'https://mywalletapi.lumel.dev',
     headers: {
       'Authorization': `Bearer ${token}`
     },

@@ -10,12 +10,22 @@ export default defineConfig({
     ViteMinifyPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        cleanupOutdatedCaches: true,
+        navigateFallback: '/index.html',
+        maximumFileSizeToCacheInBytes: 3000000
+      },
+      includeAssets: ['favicon.ico'],
       manifest: {
         name: 'My Wallet',
         short_name: 'My Wallet',
         description: 'Personal Budget Manager',
         theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        scope: '/',
         icons: [
           {
             src: 'logo.png',
@@ -30,7 +40,7 @@ export default defineConfig({
           {
             src: 'logo.png',
             sizes: '512x512',
-            type: 'image/x-icon'
+            type: 'image/png'
           }
         ]
       }

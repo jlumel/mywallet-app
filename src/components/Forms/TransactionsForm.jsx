@@ -125,11 +125,13 @@ const TransactionsForm = ({ setAlert, setError, setErrorText }) => {
         boxShadow: theme.shadows[5],
         borderRadius: 7,
         padding: theme.spacing(2, 4, 3),
-        width: "20rem",
-        height: "42rem",
-        [theme.breakpoints.down('xl')]: {
-            width: '15rem',
-            height: '30rem'
+        width: "25rem",
+        maxHeight: "90vh",
+        overflowY: 'auto',
+        [theme.breakpoints.down('md')]: {
+            width: '90%',
+            height: 'auto',
+            maxHeight: '85vh'
         }
     }))
 

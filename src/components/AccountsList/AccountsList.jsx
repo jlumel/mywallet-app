@@ -70,14 +70,14 @@ const AccountsList = () => {
                         margin: "auto",
                         display: 'flex',
                         flexWrap: "wrap",
-                        justifyContent: "left",
+                        justifyContent: "center",
                         alignItems: 'left',
                         '& > :not(style)': {
                             margin: '0 1rem 1rem 0'
                         }
                     }}>
                         {accounts.map(account =>
-                            <Paper onClick={() => handleClick({ key: 'accountName', value: account.name })} key={account._id} sx={{ width: '12rem', height: '12rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+                            <Paper onClick={() => handleClick({ key: 'accountName', value: account.name })} key={account._id} sx={{ width: { xs: '43%', sm: '12rem' }, minHeight: '10rem', height: { xs: 'auto', sm: '12rem' }, cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center", margin: { xs: '0.5rem', sm: '0 1rem 1rem 0' } }}>
                                 <h2>{account.name}</h2>
                                 <h4>Balance: <span style={{ color: 'blue' }}>{formatCurrency(totals.totals?.length && totals.totals.find(total => total?._id == account.name)?.total || 0, account.currencyAcronym)}</span></h4>
                             </Paper>
@@ -99,7 +99,7 @@ const AccountsList = () => {
                                 if (matchingCurrency && !uniqueCurrencies.has(matchingCurrency.acronym)) {
                                     uniqueCurrencies.add(matchingCurrency.acronym)
 
-                                    return <Paper onClick={() => handleClick({ key: 'currencyAcronym', value: account.currencyAcronym })} key={account.currencyAcronym} sx={{ width: '12rem', height: '12rem', cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center" }}>
+                                    return <Paper onClick={() => handleClick({ key: 'currencyAcronym', value: account.currencyAcronym })} key={account.currencyAcronym} sx={{ width: { xs: '43%', sm: '12rem' }, minHeight: '10rem', height: { xs: 'auto', sm: '12rem' }, cursor: 'pointer', display: 'flex', alignContent: "center", justifyContent: "center", flexDirection: "column", textAlign: "center", margin: { xs: '0.5rem', sm: '0 1rem 1rem 0' } }}>
                                         <h2>Total {account.currencyAcronym}</h2>
                                         <h4>Balance: <span style={{ color: 'blue' }}>{formatCurrency(totals.totalsByCurrency?.length && totals.totalsByCurrency.find(total => total?._id == account.currencyAcronym)?.total || 0, account.currencyAcronym)}</span></h4>
                                     </Paper>

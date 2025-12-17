@@ -19,7 +19,10 @@ const LoggedInMenu = () => {
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === '#fff',
         ...theme.typography.body2,
-        padding: theme.spacing(8),
+        padding: theme.spacing(4),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(8),
+        },
         textAlign: 'center',
         color: theme.palette.text.secondary,
         cursor: 'pointer',

@@ -20,12 +20,13 @@ const StyledPagination = styled(Pagination)(({ theme }) => ({
     }
 }))
 
-const StyledContainer = styled(Container)(({ theme }) => ({
+const StyledContainer = styled(Box)(({ theme }) => ({
+    width: '100%', // Default to 100% since it's inside another Container in Transactions.jsx
     [theme.breakpoints.down('xl')]: {
-        width: '80%'
+        width: '100%'
     },
     [theme.breakpoints.down('md')]: {
-        width: '57%'
+        width: '100%'
     }
 }))
 
@@ -266,7 +267,7 @@ const TransactionsList = () => {
                     <Box sx={{
                         marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
                     }}>
-                        <TableContainer component={Paper}>
+                        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
                             <Table sx={{ marginBottom: '0' }} aria-label="transactions list">
                                 <TableHead>
                                     <TableRow>

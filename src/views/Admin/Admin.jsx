@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom"
 const Admin = () => {
 
     document.title = 'My Wallet | Wallet Items'
-    
+
     const { isLogged, token, setToken, setIsLogged, setUsername } = useUserContext()
 
     const [loading, setLoading] = useState(false)
@@ -22,7 +22,10 @@ const Admin = () => {
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === '#fff',
         ...theme.typography.body2,
-        padding: theme.spacing(8),
+        padding: theme.spacing(4),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(8),
+        },
         textAlign: 'center',
         color: theme.palette.text.secondary,
         cursor: 'pointer',

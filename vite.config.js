@@ -10,6 +10,7 @@ export default defineConfig({
     ViteMinifyPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
+      manifestFilename: 'manifest.json',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         cleanupOutdatedCaches: true,
@@ -18,6 +19,7 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico'],
       manifest: {
+        id: '/',
         name: 'My Wallet',
         short_name: 'My Wallet',
         description: 'Personal Budget Manager',

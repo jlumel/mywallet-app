@@ -54,22 +54,6 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png'
           }
-        ],
-        screenshots: [
-          {
-            src: "screenshots/home-wide.png",
-            sizes: "1280x720",
-            type: "image/png",
-            form_factor: "wide",
-            label: "Home"
-          },
-          {
-            src: "screenshots/home-narrow.png",
-            sizes: "720x1280",
-            type: "image/png",
-            form_factor: "narrow",
-            label: "Home"
-          }
         ]
       }
     })

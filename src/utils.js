@@ -6,8 +6,7 @@ export const fetchAPI = async (method, url, body, token) => {
     baseURL: import.meta.env.VITE_DEV_ENVIRONMENT == "true" ? 'http://localhost:3001' : 'https://mywalletapi.lumel.dev',
     headers: {
       'Authorization': `Bearer ${token}`
-    },
-    withCredentials: true
+    }
   })
 
   try {
